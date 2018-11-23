@@ -5,9 +5,9 @@
 using namespace std;
 
 Minion::Minion(int cost, string name, string description, int attack, int defense, int actionValue,
-               int recordActionValue, int magic)
+               int recordActionValue, int magic, bool hasAbility, bool hasTrigger)
         : Card{cost, name, description}, att{attack}, defense{defense}, actionValue{actionValue},
-          recordActionValue{recordActionValue}, magic{magic} {}
+          recordActionValue{recordActionValue}, magic{magic}, hasAbility{hasAbility}, hasTrigger{hasTrigger} {}
 
 Minion::~Minion() {}
 
@@ -93,7 +93,7 @@ bool Minion::play(Player &p, Card &c) {}
 
 
 AirElemental::AirElemental() :
-        Minion{1, "Air Elemental", "", 1, 1, 0, 1, 0} {}
+        Minion{1, "Air Elemental", "", 1, 1, 0, 1, 0, false, false} {}
 
 void AirElemental::trigger(Card::Trigger t, Player &p) {}
 void AirElemental::trigger(Card::Trigger t, Player &p, Card &c) {}
@@ -104,7 +104,7 @@ bool AirElemental::ability(Player &p, Card &c) { return false; }
 
 
 EarthElemental::EarthElemental() :
-        Minion{3, "Earth Elemental", "", 4, 4, 0, 1, 0} {}
+        Minion{3, "Earth Elemental", "", 4, 4, 0, 1, 0, false, false} {}
 
 void EarthElemental::trigger(Card::Trigger t, Player &p) {}
 void EarthElemental::trigger(Card::Trigger t, Player &p, Card &c) {}
@@ -114,7 +114,7 @@ bool EarthElemental::ability(Player &p) { return false; }
 bool EarthElemental::ability(Player &p, Card &c) { return false; }
 
 BoneGolem::BoneGolem() :
-        Minion{2, "Bone Golem", "Gain +1/+1 whenever a minion leaves play.", 1, 3, 0, 1, 0} {}
+        Minion{2, "Bone Golem", "Gain +1/+1 whenever a minion leaves play.", 1, 3, 0, 1, 0, false, true} {}
 void BoneGolem::trigger(Card::Trigger t, Player &p) {
     if (t == Card::Trigger::MINION_ENTER){
         this->mutateDef(-1);
@@ -130,7 +130,8 @@ bool BoneGolem::ability(Player &p, Card &c) { return false; }
 
 
 FireElemental::FireElemental() :
-        Minion{2, "Fire Elemental", "Whenever an opponent's minion enters play, deal 1 damage to it.", 2, 2, 0, 1, 0} {}
+        Minion{2, "Fire Elemental", "Whenever an opponent's minion enters play, deal 1 damage to it.", 2, 2, 0, 1, 0,
+               false, true} {}
 
 void FireElemental::trigger(Card::Trigger t, Player &p) {}
 
@@ -150,7 +151,8 @@ bool FireElemental::ability(Player &p, Card &c) { return false; }
 
 
 PotionSeller::PotionSeller() :
-        Minion{2, "Potion Seller", "At the end of your turn, all your minions gain +0/+1", 1, 3, 0, 1, 0} {}
+        Minion{2, "Potion Seller", "At the end of your turn, all your minions gain +0/+1", 1, 3, 0, 1, 0, false,
+               true} {}
 
 void PotionSeller::trigger(Card::Trigger t, Player &p) {
     if (t == Card::Trigger::END_OF_TURN){
@@ -164,7 +166,7 @@ void PotionSeller::trigger(Card::Trigger t, Player &p) {
 void PotionSeller::trigger(Card::Trigger t, Player &p, Card &c) {}
 
 NovicePyromancer::NovicePyromancer() :
-        Minion{1, "Novice Pyromancer", "Deals 1 damage to target minion", 1, 1, 0, 1, 1} {}
+        Minion{1, "Novice Pyromancer", "Deals 1 damage to target minion", 1, 1, 0, 1, 1, true, false} {}
 
 void NovicePyromancer::trigger(Card::Trigger t, Player &p) {}
 
@@ -184,7 +186,7 @@ bool NovicePyromancer::ability(Player &p, Card &c) {
 
 
 ApprenticeSummoner::ApprenticeSummoner() :
-        Minion{1, "Apprentice Summoner", "Summon a 1/1 air elemental", 1, 1, 0, 1, 1} {}
+        Minion{1, "Apprentice Summoner", "Summon a 1/1 air elemental", 1, 1, 0, 1, 1, true, false} {}
 
 void ApprenticeSummoner::trigger(Card::Trigger t, Player &p) {}
 
@@ -204,7 +206,7 @@ bool ApprenticeSummoner::ability(Player &p) {
 bool ApprenticeSummoner::ability(Player &p, Card &c) {}
 
 MasterSummoner::MasterSummoner() :
-        Minion{3, "Master Summoner", "Summon up to three 1/1 air elementals", 2, 3, 0, 1, 2} {}
+        Minion{3, "Master Summoner", "Summon up to three 1/1 air elementals", 2, 3, 0, 1, 2, true, false} {}
 
 void MasterSummoner::trigger(Card::Trigger t, Player &p) {}
 

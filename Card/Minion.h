@@ -10,10 +10,11 @@ class Player;
 class Minion : public Card {
 
 private:
-    int att, defense, actionValue, recordActionValue, magic;
+    int att, defense, actionValue, recordActionValue, magic;   //magic is the cost of ability
+    bool hasAbility, hasTrigger;
 public:
     Minion(int cost, std::string name, std::string description, int att, int def, int actionValue,
-           int recordActionValue, int magic);
+           int recordActionValue, int magic, bool hasAbility, bool hasTrigger);
 
     virtual ~Minion();
     int getActionValue();
@@ -112,6 +113,7 @@ public:
 };
 
 class ApprenticeSummoner : public Minion {
+public:
     ApprenticeSummoner();
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t,Player&,Card&) override;
@@ -122,6 +124,7 @@ class ApprenticeSummoner : public Minion {
 };
 
 class MasterSummoner : public Minion {
+public:
     MasterSummoner();
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t,Player&,Card&) override;
