@@ -6,42 +6,54 @@
 #include "Minion.h"
 
 Enchantment::Enchantment(int cost, std::string name, std::string description, Minion *minion)
-        : Card{cost, name, description}, minion{minion} {}
+        : Card{cost, name, description}, minion{minion},hasAttDef{true} {
+}
 
 Enchantment::~Enchantment() {}
 
-GiantStrength::GiantStrength(Minion *minion) : Enchantment{1, "Giant Strength", "", minion} {}
+GiantStrength::GiantStrength(Minion *minion) : Enchantment{1, "Giant Strength", "", minion} {
+    minion->pushEnchantment(this);
+}
 
 void GiantStrength::changeMinion() {
     this->minion->mutateAtt(2);   //add two attack
     this->minion->mutateDef(-2);  //add two defense
 }
 
-Enrage::Enrage(Minion *) : Enchantment{2, "Enrage", "", minion} {}
+Enrage::Enrage(Minion *minion) : Enchantment{2, "Enrage", "", minion} {
+    minion->pushEnchantment(this);
+}
 
 void Enrage::changeMinion() {
     this->minion->mutateAtt(this->minion->getAtt());  // doubles the attack
     this->minion->mutateDef(-1 * this->minion->getDef());  // doubles the defense
 }
 
-Haste::Haste(Minion *) : Enchantment{1, "Haste", "Enchanted minion gains +1 action each turn", minion} {}
-
-void Haste::changeMinion() {}
-
-void Haste::triggerChange(Card::Trigger t) {
-    if (t == Card::Trigger::END_OF_TURN) {
-        this->minion->setRecordActionValue(1);   // action value + 1 at the end of turn
-    }
+Haste::Haste(Minion *minion) : Enchantment{1, "Haste", "Enchanted minion gains +1 action each turn", minion} {
+    this->hasAttDef = false;
+    minion->pushEnchantment(this);
 }
 
-MagicFatigue::MagicFatigue(Minion *) : Enchantment{0, "Magic Fatigue",
-                                                   "Enchanted minion's activated ability costs 2 more", minion} {}
+void Haste::changeMinion() {
+    this->minion->setRecordActionValue(1);
+}
+
+
+
+MagicFatigue::MagicFatigue(Minion *minion) : Enchantment{0, "Magic Fatigue",
+                                                   "Enchanted minion's activated ability costs 2 more", minion} {
+    this->hasAttDef = false;
+    minion->pushEnchantment(this);
+}
 
 void MagicFatigue::changeMinion() {
     this->minion->setMagic(this->minion->getMagic());  //double the magic used for active ability
 }
 
-Silence::Silence(Minion *) : Enchantment{1, "Silence", "Enchanted minion cannot use abilities", minion} {}
+Silence::Silence(Minion *minion) : Enchantment{1, "Silence", "Enchanted minion cannot use abilities", minion} {
+    this->hasAttDef = false;
+    minion->pushEnchantment(this);
+}
 
 void Silence::changeMinion() {
     this->minion->setMagic(

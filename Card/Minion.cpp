@@ -23,7 +23,7 @@ void Minion::setDef() {   //raise dead
     this->defense = 1;
 }
 
-void Minion::setActionValue() {   //when the turn ends, call this function and set every minions' action value = 1;
+void Minion::setActionValue() {   //when the turn ends, call this function and set every minions' action value = recordAction value;
     this->actionValue == this->recordActionValue;
 }
 
@@ -89,6 +89,14 @@ bool Minion::play(Player &p) {
 }
 
 bool Minion::play(Player &p, Card &c) {}
+
+std::vector<Enchantment*> Minion::getEnchantment() {
+    return this->recordEnchantment;
+}
+
+void Minion::pushEnchantment(Enchantment *e) {
+    this->recordEnchantment.emplace_back(e);
+}
 
 
 

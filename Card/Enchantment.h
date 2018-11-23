@@ -10,8 +10,10 @@ class Minion;
 
 
 class Enchantment : public Card {
+
 protected:
     Minion* minion;
+    bool hasAttDef;
 public:
     Enchantment(int cost, std::string name, std::string description, Minion *);
     virtual ~Enchantment();

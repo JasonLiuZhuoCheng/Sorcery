@@ -3,15 +3,16 @@
 
 
 #include "Card.h"
-
+#include <vector>
 class Player;
-
+class Enchantment;
 
 class Minion : public Card {
 
 private:
     int att, defense, actionValue, recordActionValue, magic;   //magic is the cost of ability
     bool hasAbility, hasTrigger;
+    std::vector<Enchantment*> recordEnchantment;
 public:
     Minion(int cost, std::string name, std::string description, int att, int def, int actionValue,
            int recordActionValue, int magic, bool hasAbility, bool hasTrigger);
@@ -26,7 +27,8 @@ public:
     void setMagic(int);
 
     int getMagic();
-
+    std::vector<Enchantment*> getEnchantment();
+    void pushEnchantment(Enchantment*);
     void mutateDef(int);   // i is the damage source. When i is positive, it is receiving damage.
     void mutateAtt(int);   // i is the buff effect. When i is positive, it is buffing attack
     int getDef();
