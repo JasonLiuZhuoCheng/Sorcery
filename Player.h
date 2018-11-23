@@ -29,11 +29,12 @@ public:
 
     Board *getMyBoard(); // returns the pointer to "myBoard", allowing operations on "myBoard"
     Board *getOtherBoard(); // returns the pointer to "otherBoard", allowing operations on "otherBoard"
-    unique_ptr<Card> getCard(int i); // gets the ith Card from "hand"
+    Card &getCard(int i); // gets the ith Card from "hand"
+    std::unique_ptr<Card> playCard(int i);
     int getMagic();
     bool isActive();
 
-    void setDeck(vector<unique_ptr<Card>> &);
+    void addToDeck(std::unique_ptr<Card> card); // Adds a "card" to "deck"
     void setName(std::string &);
 
     void setOtherBoard(Board *); // sets the "board" of the opposing player, use for Observer Pattern

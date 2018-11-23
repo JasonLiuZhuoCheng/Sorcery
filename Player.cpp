@@ -10,9 +10,9 @@ Player::Player() : life{20}, magic{3}, otherBoard{nullptr}, activeStatus{false},
     myBoard = new Board();
 }
 
-unique_ptr<Card> Player::getCard(int i) {
-    return std::move(hand.at(i));
-    }
+Card & Player::getCard(int i) { return *(hand.at(i)); }
+
+unique_ptr<Card> Player::playCard(int i) { return std::move(hand.at(i)); }
 
 Board *Player::getMyBoard() { return myBoard; }
 
@@ -26,7 +26,9 @@ void Player::mutateLife(int i) { this->life += i; }
 
 void Player::mutateMagic(int i) { this->magic += i; }
 
-void Player::setDeck(vector<unique_ptr<Card>> &deck) { this->deck = deck; }
+void Player::addToDeck(std::unique_ptr<Card> card) {
+    deck.emplace_back(card);
+}
 
 void Player::setOtherBoard(Board *board) { this->otherBoard = board; }
 
