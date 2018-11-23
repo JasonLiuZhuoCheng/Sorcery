@@ -47,7 +47,7 @@ public:
     bool isDead();
 
     void drawCard(); // player draws a card from "deck", given "hand" is not full and "deck" is not empty
-    void addMinionToHand(Minion *); // Adds a minion to the player's "hand"
+    void addMinionToHand(unique_ptr<Minion> minion); // Adds a minion to the player's "hand"
     void discardCard(int); // discards ith card in a player's "hand"
 
     void notifyAll(Card::Trigger t, Player &); // using the Observer Pattern to notify "board" that Trigger "t" has happened

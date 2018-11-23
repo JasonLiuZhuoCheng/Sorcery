@@ -3,57 +3,59 @@
 //
 #include "Board.h"
 
-Minion *Board::getMinion(int i) { return minions.at(i); }
+Minion &Board::getMinion(int i) { return *(minions.at(i)); }
 
 int Board::getMinion(Minion &minion) {
     for (int i = 0; i < minions.size(); i++) {
-        if (getMinion(i) == &minion) {
+        if (&getMinion(i) == &minion) {
             return i;
         }
     }
     return -1;
 }
 
-Ritual *Board::getRitual() { return ritual; };
+Ritual &Board::getRitual() { return *ritual; };
 
-void Board::addMinion(Minion *minion) { minions.emplace_back(minion); }
+void Board::addMinion(std::unique_ptr<Minion> minion) { minions.emplace_back(minion); }
 
-Minion *Board::removeMinion(int i) {
-    Minion *temp = getMinion(i);
+std::unique_ptr<Minion> Board::removeMinion(int i) {
+    Minion m = getMinion(i);
+    std::unique_ptr<Minion> temp = std::make_unique<Minion>(m);
     minions.erase(minions.begin() + (i - 1));
-    return temp;
+    return std::move(temp);
 }
 
-Minion *Board::removeFromGraveyard() {
-    if(!graveyard.empty()) {
-        Minion *temp = graveyard.back();
-        graveyard.pop_back();
-        return temp;
+std::unique_ptr<Minion> Board::removeFromGraveyard() {
+    if(!isGraveyardEmpty()) {
+        return std::move(graveyard.back());
     }
     return nullptr;
 }
 
-void Board::addToGraveyard(Minion *minion) { graveyard.emplace_back(minion); }
+void Board::addToGraveyard(std::unique_ptr<Minion> minion) { graveyard.emplace_back(minion); }
 
-void Board::setRitual(Ritual *ritual) {
-    delete this->ritual;
-    this->ritual = ritual;
+void Board::setRitual(std::unique_ptr<Ritual> ritual) {
+    this->ritual.swap(ritual);
 }
+
+bool Board::hasRitual() { return ritual != nullptr; }
+
+bool Board::isGraveyardEmpty() { return graveyard.empty(); }
 
 int Board::numberOfMinions() { return minions.size(); }
 
 void Board::notifyAll(Card::Trigger t, Player &player) {
-    for (Minion *m : minions) {
-        m->trigger(t, player);
+    for (int i = 0; i < minions.size(); i++) {
+        getMinion(i).trigger(t, player);
     }
-    ritual->trigger(t, player);
+    getRitual().trigger(t, player);
 }
 
 void Board::notifyAll(Card::Trigger t, Player &player, Card &card) {
-    for(Minion *m : minions){
-        m->trigger(t, player, card);
+    for(int i = 0; i < minions.size(); i++){
+        getMinion(i).trigger(t, player, card);
     }
-    ritual->trigger(t, player, card);
+    getRitual().trigger(t, player, card);
 }
 
 

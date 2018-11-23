@@ -32,8 +32,8 @@ bool Unsummon::play(Player &player, Card &card) {
 Recharge::Recharge() : Spell(1, "Recharge", "Your ritual gains 3 charges") {}
 
 bool Recharge::play(Player &player) {
-    if(player.getMyBoard()->getRitual() != nullptr){ // Ritual slot is not empty
-        player.getMyBoard()->getRitual()->mutateCharges(3);
+    if(player.getMyBoard()->hasRitual()){ // Ritual slot is not empty
+        player.getMyBoard()->getRitual().mutateCharges(3);
         return true;
     }
     cout << "Ritual slot is empty" << endl;
@@ -53,9 +53,10 @@ bool Disenchant::play(Player &, Card &) {
 RaiseDead::RaiseDead(): Spell(1, "Raise Dead", "Resurrect the top minion in your graveyard and set its defense to 1") {}
 
 bool RaiseDead::play(Player &player) {
-    Minion *m = player.getMyBoard()->removeFromGraveyard();
-    if(m != nullptr) { // Graveyard is not empty
-        m->setDef();
+    Board *board = player.getMyBoard();
+    if(!board->isGraveyardEmpty()) { // Graveyard is not empty
+        board->addMinion(board->removeFromGraveyard());
+        board->getMinion(board->numberOfMinions() - 1).setDef();
         return true;
     }
     cout << "Graveyard is empty" << endl;
@@ -68,11 +69,11 @@ Blizzard::Blizzard(): Spell(3, "Blizzard", "Deal 2 damage to all minions") {}
 
 bool Blizzard::play(Player &player) {
     for(int i = 0; i < player.getMyBoard()->numberOfMinions(); i++){
-        player.getMyBoard()->getMinion(i)->mutateDef(2);
+        player.getMyBoard()->getMinion(i).mutateDef(2);
     }
 
     for(int i = 0; i < player.getOtherBoard()->numberOfMinions(); i++){
-        player.getOtherBoard()->getMinion(i)->mutateDef(2);
+        player.getOtherBoard()->getMinion(i).mutateDef(2);
     }
     return true;
 }

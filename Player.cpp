@@ -3,11 +3,11 @@
 //
 
 #include "Player.h"
+#include <algorithm>
 using namespace std;
 
 Player::Player() : life{20}, magic{3}, otherBoard{nullptr}, activeStatus{false}, maxMgaic{3} {
     myBoard = new Board();
-
 }
 
 unique_ptr<Card> Player::getCard(int i) {
@@ -19,6 +19,7 @@ Board *Player::getMyBoard() { return myBoard; }
 Board *Player::getOtherBoard() { return otherBoard; }
 
 int Player::getMagic() { return magic; }
+
 bool Player::isActive() { return activeStatus; }
 
 void Player::mutateLife(int i) { this->life += i; }
@@ -34,19 +35,12 @@ void Player::setName(string &name) { this->name = name; }
 bool Player::isDead() { return life <= 0; }
 
 void Player::shuffle() {
-    int size = deck.size();
-    vector<unique_ptr<Card>> temp;
-    for (int i = 0; i < size; i++) {
-        int r = rand() % size; // generate a random position
-        temp.emplace_back(std::move(deck.at(r)));
-    }
-    deck = temp;
+    std::random_shuffle(deck.begin(), deck.end());
 }
 
 void Player::drawCard() {
     if (!isHandfull() && !deck.empty()) {
-        hand.emplace_back(deck.back());
-        deck.pop_back();
+        hand.emplace_back(std::move(deck.back()));
     }else{
         cout << "unable to draw card (either hand is full or deck is empty)" << endl;
     }
@@ -70,7 +64,7 @@ void Player::notifyAll(Card::Trigger t, Player &player, Card &card) {
     otherBoard->notifyAll(t, player, card);
 }
 
-void Player::addMinionToHand(Minion *minion) {
+void Player::addMinionToHand(unique_ptr<Minion> minion) {
     if(!isHandfull()){
         hand.emplace_back(minion);
     }

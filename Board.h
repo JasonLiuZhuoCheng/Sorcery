@@ -10,24 +10,28 @@
 class Board final{
     std::vector<std::unique_ptr<Minion>> minions;
     std::vector<std::unique_ptr<Minion>> graveyard;
-    Ritual *ritual;
+    std::unique_ptr<Ritual> ritual;
 
 public:
-    Minion *removeFromGraveyard(); // removes the last dead minion from "graveyard", and return its pointer
+    std::unique_ptr<Minion> removeFromGraveyard(); // removes the last dead minion from "graveyard", and return its pointer
 
-    void addToGraveyard(Minion *minion); // adds the minion to the top of "graveyard"
+    void addToGraveyard(std::unique_ptr<Minion> minion); // adds the minion to the top of "graveyard"
 
-    Minion *removeMinion(int i); // removes the ith minion from "minions"
+    std::unique_ptr<Minion> removeMinion(int i); // removes the ith minion from "minions"
 
-    void addMinion(Minion *minion); // adds the minion to the back of "minions"
+    void addMinion(std::unique_ptr<Minion> minion); // adds the minion to the back of "minions"
 
-    Minion *getMinion(int i); // gets the ith minion from "minions"
+    Minion &getMinion(int i); // gets the ith minion from "minions"
 
     int getMinion(Minion &); // gets the index of a minion from "minions"
 
-    Ritual *getRitual();
+    Ritual &getRitual();
 
-    void setRitual(Ritual *ritual);
+    void setRitual(std::unique_ptr<Ritual> ritual);
+
+    bool hasRitual();
+
+    bool isGraveyardEmpty();
 
     int numberOfMinions();
 
