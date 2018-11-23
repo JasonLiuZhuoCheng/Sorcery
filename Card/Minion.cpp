@@ -64,14 +64,15 @@ void Minion::attack(Player &p) {
 }
 
 void Minion::attack(Player &p, int i) {
+    Board *b = p.getMyBoard();
     if (this->actionValue > 0){
-        p.getMyBoard()->getMinion(i)->mutateDef(this->att);
-        if (p.getMyBoard()->getMinion(i)->getDef() <= 0) {
-            p.getMyBoard()->addToGraveyard(p.getMyBoard()->getMinion(i));
+        b->getMinion(i).mutateDef(this->att);
+        if (b->getMinion(i).getDef() <= 0) {
+            b->addToGraveyard(b->removeMinion(i));
         }
-        this->mutateDef(p.getMyBoard()->getMinion(i)->att);
+        this->mutateDef(b->getMinion(i).att);
         if (this->getDef() <= 0) {
-            p.getOtherBoard()->addToGraveyard(this);
+            b->addToGraveyard(p.getOtherBoard()->removeMinion(i));
         }
     } else {
         cout << this->name <<"has no action value." << endl;
@@ -84,11 +85,11 @@ bool Minion::play(Player &p) {
         cout << "Minion slot is full" << endl;
         return false;
     }
-    p.getMyBoard()->addMinion(this);
+    //p.getMyBoard()->addMinion(this);
     return true;
 }
 
-bool Minion::play(Player &p, Card &c) {}
+bool Minion::play(Player &p, Card &c) { return false; }
 
 std::vector<Enchantment*> Minion::getEnchantment() {
     return this->recordEnchantment;
@@ -147,7 +148,8 @@ void FireElemental::trigger(Card::Trigger t, Player &p, Card &c) {
     if (t == Card::Trigger::MINION_ENTER){
         dynamic_cast<Minion&>(c).mutateDef(1);
         if (dynamic_cast<Minion &>(c).getDef() <= 0) {
-            p.getMyBoard()->addToGraveyard(dynamic_cast<Minion *>(&c));
+            p.getMyBoard()->addToGraveyard(
+                    p.getMyBoard()->removeMinion(p.getMyBoard()->getMinion(dynamic_cast<Minion &>(c))));
         }
     }
     else return;
@@ -165,8 +167,8 @@ PotionSeller::PotionSeller() :
 void PotionSeller::trigger(Card::Trigger t, Player &p) {
     if (t == Card::Trigger::END_OF_TURN){
         for (int i =0; i < p.getMyBoard()->numberOfMinions();i++){
-            p.getMyBoard()->getMinion(i)->mutateAtt(0);
-            p.getMyBoard()->getMinion(i)->mutateDef(-1);
+            p.getMyBoard()->getMinion(i).mutateAtt(0);
+            p.getMyBoard()->getMinion(i).mutateDef(-1);
         }
     }
 }
@@ -204,14 +206,14 @@ bool ApprenticeSummoner::ability(Player &p) {
     if (p.getMagic() == 0) return false;
     if (p.getMyBoard()->numberOfMinions() == 5) return false;
     else if (p.getMyBoard()->numberOfMinions() < 5) {
-        Minion *m = new AirElemental;
-        m->play(p);
+        unique_ptr<Minion> m{new AirElemental};
+        p.getMyBoard()->addMinion(std::move(m));
         p.mutateMagic(-1);
         return true;
-    }
+    } else return false;
 }
 
-bool ApprenticeSummoner::ability(Player &p, Card &c) {}
+bool ApprenticeSummoner::ability(Player &p, Card &c) { return false; }
 
 MasterSummoner::MasterSummoner() :
         Minion{3, "Master Summoner", "Summon up to three 1/1 air elementals", 2, 3, 0, 1, 2, true, false} {}
@@ -224,20 +226,20 @@ bool MasterSummoner::ability(Player &p) {
     if (p.getMagic() < 2) return false;
     if (p.getMyBoard()->numberOfMinions() == 5) return false;
     else if (p.getMyBoard()->numberOfMinions() < 5) {
-        Minion *m = new AirElemental;
-        m->play(p);
+        unique_ptr<Minion> m{new AirElemental};
+        p.getMyBoard()->addMinion(std::move(m));
         if (p.getMyBoard()->numberOfMinions() < 5) {
-            Minion *n = new AirElemental;
-            n->play(p);
+            unique_ptr<Minion> n{new AirElemental};
+            p.getMyBoard()->addMinion(std::move(n));
         }
         if (p.getMyBoard()->numberOfMinions() < 5) {
-            Minion *q = new AirElemental;
-            q->play(p);
+            unique_ptr<Minion> q{new AirElemental};
+            p.getMyBoard()->addMinion(std::move(q));
         }
         return true;
-    }
+    } else return false;
 }
 
-bool MasterSummoner::ability(Player &p, Card &c) {}
+bool MasterSummoner::ability(Player &p, Card &c) { return false; }
 
 
