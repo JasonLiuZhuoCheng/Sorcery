@@ -33,7 +33,7 @@ public:
     int getMagic();
     bool isActive();
 
-    void setDeck(vector<unique_ptr<Card>> &);
+    void addToDeck(std::unique_ptr<Card> card); // Adds a "card" to "deck"
     void setName(std::string &);
 
     void setOtherBoard(Board *); // sets the "board" of the opposing player, use for Observer Pattern

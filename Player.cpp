@@ -26,7 +26,9 @@ void Player::mutateLife(int i) { this->life += i; }
 
 void Player::mutateMagic(int i) { this->magic += i; }
 
-void Player::setDeck(vector<unique_ptr<Card>> &deck) { this->deck = deck; }
+void Player::addToDeck(std::unique_ptr<Card> card) {
+    deck.emplace_back(card);
+}
 
 void Player::setOtherBoard(Board *board) { this->otherBoard = board; }
 
