@@ -15,29 +15,28 @@ class Player final {
     int life, magic;
     string name;
     Board *myBoard;
-    //Board *otherBoard;
     vector<unique_ptr<Card>> hand;
     vector<unique_ptr<Card>> deck;
     bool activeStatus;
     bool isHandfull();
 
     int maxMgaic;
-
 public:
     Player();
     ~Player();
 
     Board *getMyBoard(); // returns the pointer to "myBoard", allowing operations on "myBoard"
-    Board *getOtherBoard(); // returns the pointer to "otherBoard", allowing operations on "otherBoard"
     Card &getCard(int i); // gets the ith Card from "hand"
+    std::string getName();
+    int getLife();
     void moveCardToBoard(int i);
     int getMagic();
     bool isActive();
+    int handSize();
 
     void addToDeck(std::unique_ptr<Card> card); // Adds a "card" to "deck"
     void setName(std::string &);
 
-    void setOtherBoard(Board *); // sets the "board" of the opposing player, use for Observer Pattern
     void mutateLife(int);
 
     void mutateMagic(int);
@@ -50,10 +49,6 @@ public:
     void drawCard(); // player draws a card from "deck", given "hand" is not full and "deck" is not empty
     void addMinionToHand(unique_ptr<Minion> minion); // Adds a minion to the player's "hand"
     void discardCard(int); // discards ith card in a player's "hand"
-
-
-   // void notifyAll(Card::Trigger t, Player &); // using the Observer Pattern to notify "board" that Trigger "t" has happened
-   // void notifyAll(Card::Trigger t, Player &, Card &);
 
     void setMagic();
 

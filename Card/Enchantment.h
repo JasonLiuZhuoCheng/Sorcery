@@ -13,13 +13,17 @@ class Enchantment : public Card {
 
 protected:
     Minion* minion;
+    std::string att, def;
     bool hasAttDef;
 public:
-    Enchantment(int cost, std::string name, std::string description, Minion *);
+    Enchantment(int cost, std::string att, std::string def, std::string name, std::string description, Minion *);
     virtual ~Enchantment();
 
     virtual void changeMinion();
 
+    bool hasStats();
+    std::string getAtt();
+    std::string getDef();
 };
 
 class GiantStrength final : public Enchantment {

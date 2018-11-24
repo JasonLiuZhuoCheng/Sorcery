@@ -6,6 +6,8 @@ using namespace std;
 
 Minion &Board::getMinion(int i) { return *(minions.at(i)); }
 
+Minion &Board::graveyardTop() { return  *(graveyard.back()); }
+
 int Board::getMinion(Minion &minion) {
     for (int i = 0; i < minions.size(); i++) {
         if (&getMinion(i) == &minion) {
@@ -17,14 +19,18 @@ int Board::getMinion(Minion &minion) {
 
 Ritual &Board::getRitual() { return *ritual; };
 
-void Board::addMinion(unique_ptr<Minion> minion) { minions.emplace_back(minion); }
+void Board::removeRitual() {
+    ritual.reset();
+}
 
-/*std::unique_ptr<Minion> Board::removeMinion(int i) {
-    Minion m = getMinion(i);
+void Board::addMinion(std::unique_ptr<Minion> minion) { minions.emplace_back(minion); }
+
+std::unique_ptr<Minion> Board::removeMinion(int i) {
+    Minion m = getMinion(i); // Make a copy of the minion
     std::unique_ptr<Minion> temp = std::make_unique<Minion>(m);
     minions.erase(minions.begin() + (i - 1));
     return std::move(temp);
-}*/
+}
 
 bool Board::removeFromGraveyard() {
     if(!isGraveyardEmpty() && !minionFull()) {

@@ -17,6 +17,8 @@ public:
 
     void addToGraveyard(Minion &minion); // adds the minion to the top of "graveyard"
 
+    Minion &graveyardTop(); // Peak at the top of the graveyard
+
     std::unique_ptr<Minion> removeMinion(int i); // removes the ith minion from "minions"
 
     void addMinion(std::unique_ptr<Minion> minion); // adds the minion to the back of "minions"
@@ -29,6 +31,8 @@ public:
 
     void setRitual(std::unique_ptr<Ritual> ritual);
 
+    void removeRitual();
+
     bool hasRitual();
 
     bool isGraveyardEmpty();
@@ -36,9 +40,9 @@ public:
     int numberOfMinions();
     bool minionFull();
 
-    void notifyAll(Card::Trigger t, Player &); // Using the Observer Pattern to notify all Minions and Ritual that Trigger "t" has happened
-    //void notifyAll(Card::Trigger t, Player &, Card &);
-    void notifyAll(Card::Trigger t, Minion  &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer);
+    void notifyAll(Card::Trigger t, Player &); // Trigger for "Start of turn" and "End of turn"
+
+    void notifyAll(Card::Trigger t, Minion  &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer); // Trigger for Minions
 };
 
 

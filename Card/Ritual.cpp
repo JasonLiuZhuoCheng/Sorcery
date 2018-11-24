@@ -8,11 +8,6 @@ Ritual::Ritual(int cost, std::string name, std::string description, int charges,
 
 void Ritual::mutateCharges(int i) { charges += i; }
 
-void Ritual::trigger(Trigger t, Player &){
-
-}
-void Ritual::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer){}
-
 int Ritual::getActiveCost() {
     return activeCost;
 }

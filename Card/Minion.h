@@ -11,11 +11,14 @@ class Minion : public Card {
 
 private:
     int att, defense, actionValue, recordActionValue, magic;   //magic is the cost of ability
-    bool hasAbility, hasTrigger;
+    bool haveAbility, haveTrigger;
     std::vector<Enchantment*> recordEnchantment;
+
+    bool canAttack();
+    bool isDead();
 public:
     Minion(int cost, std::string name, std::string description, int att, int def, int actionValue,
-           int recordActionValue, int magic, bool hasAbility, bool hasTrigger);
+           int recordActionValue, int magic, bool haveAbility, bool haveTrigger);
 
     virtual ~Minion();
     int getActionValue();
@@ -23,13 +26,17 @@ public:
     int getDef();
     int getAtt();
 
+    bool hasEnchant();
+    bool hasAbility();
+    bool hasTrigger();
 
     void setActionValue();
     void setRecordActionValue(int);
     void setDef(int i);
     void setMagic(int);
 
-    std::vector<Enchantment*> getEnchantment();
+    Enchantment &getEnchant(int i);
+    int numOfEnchant();
     void pushEnchantment(Enchantment*);
     void mutateDef(int);   // i is the damage source. When i is positive, it is receiving damage.
     void mutateAtt(int);   // i is the buff effect. When i is positive, it is buffing attack

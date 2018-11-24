@@ -6,9 +6,9 @@
 using namespace std;
 
 Minion::Minion(int cost, string name, string description, int attack, int defense, int actionValue,
-               int recordActionValue, int magic, bool hasAbility, bool hasTrigger)
+               int recordActionValue, int magic, bool haveAbility, bool haveTrigger)
         : Card{cost, name, description}, att{attack}, defense{defense}, actionValue{actionValue},
-          recordActionValue{recordActionValue}, magic{magic}, hasAbility{hasAbility}, hasTrigger{hasTrigger} {}
+          recordActionValue{recordActionValue}, magic{magic}, haveAbility{haveAbility}, haveTrigger{haveTrigger} {}
 
 Minion::~Minion() {}
 
@@ -17,6 +17,8 @@ void Minion::mutateDef(int i) {
 }
 
 int Minion::getDef() { return defense; }
+
+bool Minion::isDead(){ return defense <= 0; }
 
 void Minion::setDef(int i) { defense = i; }//only for Raised Dead
 
@@ -38,12 +40,22 @@ void Minion::setMagic(int i) {
 
 int Minion::getAtt() { return att; }
 
+bool Minion::hasAbility() { return haveAbility; }
+
+bool Minion::hasTrigger() { return haveTrigger; }
+
+bool Minion::hasEnchant() { return !recordEnchantment.empty(); }
+
+Enchantment &Minion::getEnchant(int i) { return  *(recordEnchantment.at(i)); }
+
+int Minion::numOfEnchant() { return recordEnchantment.size(); }
+
 void Minion::mutateAtt(int i) {
     att = att + i;
 }
 
 void Minion::attack(Player &p) {
-    if (actionValue > 0){
+    if (canAttack()){
         p.mutateLife(-getAtt());
         actionValue--;
     } else {
@@ -52,7 +64,7 @@ void Minion::attack(Player &p) {
 }
 
 void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
-    if(actionValue > 0){
+    if(canAttack()){
         mutateDef(-(otherMinion.getAtt()));
         otherMinion.mutateDef(-att);
         if(defense <= 0){
@@ -92,6 +104,7 @@ void Minion::pushEnchantment(Enchantment *e) {
 }
 
 //----------------------------------------Air Elemental--------------------------------------------------------
+bool Minion::canAttack() { return actionValue > 0; }
 
 AirElemental::AirElemental() :
         Minion{1, "Air Elemental", "", 1, 1, 0, 1, 0, false, false} {}

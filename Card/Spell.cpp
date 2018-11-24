@@ -19,8 +19,6 @@ bool Banish::play(Player &player, Card &card) {
         player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
         otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, *this, otherPlayer, player);
     }else{ // card must be a Ritual type
-
-
     }
     return true;
 }
