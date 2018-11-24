@@ -1,7 +1,9 @@
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <map>
 #include <memory>
+#include <typeindex>
 
 #include "Board.h"
 #include "Player.h"
@@ -13,22 +15,22 @@
 using namespace std;
 
 
-void endOfGame(bool quit, Player *p1, Player *p2){
+void endOfGame(bool quit, Player &p1, Player &p2){
     if(quit) {
         cout << "the player has quitted the game" << endl;
     }
-    else if(p1->isDead()){
+    else if(p1.isDead()){
         //player 1 is dead and palyer 2 wins
         cout << "player 2 has win!" << endl;
     }
-    else if(p2->isDead()){
+    else if(p2.isDead()){
         //player 2 is dead and palyer 1 wins
         cout << "player 1 has win!" << endl;
     }
 
 }
 //Make a deck from the file
-vector<unique_ptr<Card>> makeDeck(istream &in) {
+void makeDeck(istream &in, Player &p) {
     cout << "make a deck" << endl;
 
     vector<unique_ptr<Card>> deck;
@@ -70,8 +72,9 @@ vector<unique_ptr<Card>> makeDeck(istream &in) {
     while (getline(in, name)) {
         cout << count << name << endl;
              deck.push_back(cards[name]);
+             p.addToDeck(cards[name]);
+             count++;
     }
-    return deck;
 }
 
 void displayFile(string path) {
@@ -84,7 +87,7 @@ void displayFile(string path) {
 
 void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMode) {
     string input; // only use with cin for input purpose
-    int i; // only use with cin for input purpose
+    int i, j, p; // only use with cin for input purpose
     bool quit = false; // if the player choose to quit the game so no winner
     vector<unique_ptr<Display>> view;//vector for different displays
     if(graphicMode){
@@ -119,63 +122,78 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
         Player *player = round % 2 ? p1 : p2; // This is the active player in current round
         Player *other = (player == p1) ? p2 : p1;
 
-        player->notifyAll(Card::Trigger::START_OF_TURN, *player);
+        player->getMyBoard()->notifyAll(Card::Trigger::START_OF_TURN, *player);
 
         while(true) {
             //loop for a round of one player
-            if (in >> input) {}
-            else if(&in != &cin && cin >> input) {}
+            string cmd;
+            if (getline(in, input)) {}
+            else if(&in != &cin && getline(cin, input)) {}
             else { break; }
+            istringstream iss(input);
+            iss>>cmd;
 
-            if (input == "help") {
+            if (cmd == "help") {
                  displayFile("help.txt");
-            } else if (input == "end") {
+            } else if (cmd == "end") {
                 cout << "end is called" << endl;
-                player->notifyAll(Card::Trigger::END_OF_TURN, *player);
+                player->getMyBoard()->notifyAll(Card::Trigger::END_OF_TURN, *player);
                 break;
-            } else if (input == "quit") {
+            } else if (cmd == "quit") {
                 cout << "quit is called" << endl;
                 quit = true;
-            } else if (input == "draw" && testMode) {
+            } else if (cmd == "draw" && testMode) {
                 cout << "draw is called and it is in testMode" << endl;
                 player->drawCard();// 5.1.4
-            } else if (input == "discard" && testMode) {
+            } else if (cmd == "discard" && testMode) {
                 cout << "discard is called and it is in testMode" << endl;
                 cin >> i;  // 5.1.5
                 player->discardCard(i);
-            } else if (input == "attack") {
-                //TODO: 5.1.7, how to know which play to call, and if statement for if player has enough magic to attack
+            } else if (cmd == "attack") {
+                iss >> i;
                 cout << "attack is called" << endl;
-                cin >> i;
-                player->getMyBoard()->getMinion(i)->attack(*other);
-                // attack i j
-                int j;
-                //cin >> j;
-                //player->getBoard()->getMinion(i)->attack(other, other->getBoard()->getMinion(j));
-            } else if (input == "play") {
+                if(player->getMyBoard()->getMinion(i).getCost() >= player->getMagic()){
+                    //the player does not have enough magic to attack
+                    cout << "do not have enough magic to attack" << endl;
+                    continue;
+                }
+
+                if(iss >> j){
+                    Minion &myMinion = player->getMyBoard()->getMinion(i);
+                    Minion &otherMinion = other->getMyBoard()->getMinion(j);
+                    myMinion.attack(otherMinion, *player, *other);
+                    if (myMinion.isDead()){
+                        //Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &other
+                        player->getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, myMinion, otherMinion, *player, *other);
+                        other->getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, myMinion, *other, *player);
+                    }
+                    if(otherMinion.isDead()) {
+                        player->getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, myMinion, otherMinion, *player, *other);
+                        other->getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, myMinion, *player, *other);
+                    }
+                }else{
+                    player->getMyBoard()->getMinion(i).attack(*other);
+                }
+
+            } else if (cmd == "play") {
                 cout << "play is called" << endl;
-                //TODO: 5.1.7, how to know which play to call if statement for if player has enough magic to attack
                 cin >> i;
-                 if(player->getCard(i)->getCost() >= player->getMagic()){
+                if(player->getCard(i).getCost() >= player->getMagic()){
                     cout << "Do not have enough magic to play this card" << endl;
                      continue;
                 }
 
-                bool b = player->getCard(i)->play(*player);
-                //if(player->getCard(i)->play()){
-                //    player->mutateMagic(player->getCard(i)->getCost());
-                // }
-
-                //TODO: plays the ith card
-                // play i p t
-                int p, t;
-                cin >> p >> t;
-                Player *temp = p == 1 ? p1 : p2;
-                if(t == 'r'){
-                    player->getCard(i)->play(*temp, *(temp->getMyBoard()->getRitual()));
+                if(iss >> p >> j){ // play i p t
+                    Player  *pl = (p == 1) ? p1 : p2;
+                    iss >> j;
+                    bool success = player->getCard(i).play(*player, pl->getCard(i));
+                    if(success) player->moveCardToBoard(i);
                 }
-               // player->getCard(i)->play(temp, t)
-                //player->getCard(i)->play(temp, temp->getBoard()->getMinion(t));*/
+                else{ //play i
+                    bool success = player->getCard(i).play(*player);
+                    if(success) player->moveCardToBoard(i);
+                }
+
             } else if (input == "use") {
                 //TODO: 5.1.8 if statement for if player has enough magic to attack
             } else if (input == "inspect") {
@@ -196,7 +214,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
             }
         }
     }
-    endOfGame(quit, p1, p2);
+    endOfGame(quit, *p1, *p2);
 }
 
 int main(int argc, char *argv[]) {
@@ -235,9 +253,9 @@ int main(int argc, char *argv[]) {
     }
 
     ifstream f1{deckPath1};
-    p1->setDeck(makeDeck(f1));
+    makeDeck(f1, *p1);
     ifstream f2{deckPath2};
-    p2->setDeck(makeDeck(f2));
+    makeDeck(f2, *p2);
 
     ifstream f{initPath};
     if (readFile) {

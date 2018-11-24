@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Card.h"
 #include "Minion.h"
 #include "../Player.h"
@@ -12,11 +13,15 @@ Minion::Minion(int cost, string name, string description, int attack, int defens
 Minion::~Minion() {}
 
 void Minion::mutateDef(int i) {
-    this->defense = this->defense - i;    //mutate defense. i is the damage
+    this->defense = this->defense + i;    //mutate defense. i is the damage
 }
 
 int Minion::getDef() {
     return this->defense;
+}
+
+bool Minion::isDead(){
+    return (defense <= 0);
 }
 
 void Minion::setDef() {   //raise dead
@@ -44,7 +49,7 @@ void Minion::setMagic(int i) {
 }
 
 int Minion::getAtt() {
-    return -1 * this->att;
+    return this->att;
 }
 
 void Minion::mutateAtt(int i) {
@@ -52,32 +57,38 @@ void Minion::mutateAtt(int i) {
 }
 
 void Minion::attack(Player &p) {
-    if (this->actionValue > 0){
-        p.mutateLife(this->getAtt());
-        if (p.isDead()) {
-            cout << "One player is dead." << endl;
-        }
+    if (actionValue > 0){
+        p.mutateLife(-getAtt());
+        actionValue--;
     } else {
-        cout << this->name << "has no action value." << endl;
+        cout << name << " action value = 0." << endl;
     }
-    this->actionValue--;
 }
 
-void Minion::attack(Player &p, int i) {
-    Board *b = p.getMyBoard();
-    if (this->actionValue > 0){
-        b->getMinion(i).mutateDef(this->att);
+void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
+    if(actionValue > 0){
+        mutateDef(-(otherMinion.att));
+        if(){
+
+        }
+
+    }
+    else {
+        cout << this->name <<" action value = 0." << endl;
+    }
+    /*if (actionValue > 0){
+        b->getMinion(i).mutateDef(-att);
         if (b->getMinion(i).getDef() <= 0) {
-            b->addToGraveyard(b->removeMinion(i));
+            b->addToGraveyard();
         }
         this->mutateDef(b->getMinion(i).att);
-        if (this->getDef() <= 0) {
+        if (getDef() <= 0) {
             b->addToGraveyard(p.getOtherBoard()->removeMinion(i));
         }
+        actionValue--;
     } else {
-        cout << this->name <<"has no action value." << endl;
-    }
-    this->actionValue--;
+        cout << this->name <<" action value = 0." << endl;
+    }*/
 }
 
 bool Minion::play(Player &p) {
@@ -105,7 +116,7 @@ AirElemental::AirElemental() :
         Minion{1, "Air Elemental", "", 1, 1, 0, 1, 0, false, false} {}
 
 void AirElemental::trigger(Card::Trigger t, Player &p) {}
-void AirElemental::trigger(Card::Trigger t, Player &p, Card &c) {}
+void AirElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 bool AirElemental::ability(Player &p) { return false; }
 
@@ -116,7 +127,7 @@ EarthElemental::EarthElemental() :
         Minion{3, "Earth Elemental", "", 4, 4, 0, 1, 0, false, false} {}
 
 void EarthElemental::trigger(Card::Trigger t, Player &p) {}
-void EarthElemental::trigger(Card::Trigger t, Player &p, Card &c) {}
+void EarthElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 bool EarthElemental::ability(Player &p) { return false; }
 
@@ -124,13 +135,14 @@ bool EarthElemental::ability(Player &p, Card &c) { return false; }
 
 BoneGolem::BoneGolem() :
         Minion{2, "Bone Golem", "Gain +1/+1 whenever a minion leaves play.", 1, 3, 0, 1, 0, false, true} {}
-void BoneGolem::trigger(Card::Trigger t, Player &p) {
-    if (t == Card::Trigger::MINION_ENTER){
-        this->mutateDef(-1);
-        this->mutateAtt(1);
-    }else return;
+
+void BoneGolem::trigger(Card::Trigger t, Player &p) {}
+void BoneGolem::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
+    if((t == Card::Trigger::MY_MINION_LEAVE) || (t == Card::Trigger::OTHER_MINION_ENTER)){
+        mutateDef(1);
+        mutateAtt(1);
+    }
 }
-void BoneGolem::trigger(Card::Trigger t, Player &p, Card &c) {}
 
 bool BoneGolem::ability(Player &p) { return false; }
 
@@ -144,16 +156,15 @@ FireElemental::FireElemental() :
 
 void FireElemental::trigger(Card::Trigger t, Player &p) {}
 
-void FireElemental::trigger(Card::Trigger t, Player &p, Card &c) {
-    if (t == Card::Trigger::MINION_ENTER){
-        dynamic_cast<Minion&>(c).mutateDef(1);
-        if (dynamic_cast<Minion &>(c).getDef() <= 0) {
-            p.getMyBoard()->addToGraveyard(
-                    p.getMyBoard()->removeMinion(p.getMyBoard()->getMinion(dynamic_cast<Minion &>(c))));
+void FireElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &other) {
+    if (t == Card::Trigger::OTHER_MINION_ENTER){
+        otherMinion.mutateDef(-1);
+        if (otherMinion.getDef() <= 0) {
+            other.getMyBoard()->addToGraveyard(otherMinion);
         }
     }
-    else return;
 }
+
 
 bool FireElemental::ability(Player &p) { return false; }
 
@@ -168,19 +179,19 @@ void PotionSeller::trigger(Card::Trigger t, Player &p) {
     if (t == Card::Trigger::END_OF_TURN){
         for (int i =0; i < p.getMyBoard()->numberOfMinions();i++){
             p.getMyBoard()->getMinion(i).mutateAtt(0);
-            p.getMyBoard()->getMinion(i).mutateDef(-1);
+            p.getMyBoard()->getMinion(i).mutateDef(1);
         }
     }
 }
 
-void PotionSeller::trigger(Card::Trigger t, Player &p, Card &c) {}
+void PotionSeller::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 NovicePyromancer::NovicePyromancer() :
         Minion{1, "Novice Pyromancer", "Deals 1 damage to target minion", 1, 1, 0, 1, 1, true, false} {}
 
 void NovicePyromancer::trigger(Card::Trigger t, Player &p) {}
 
-void NovicePyromancer::trigger(Card::Trigger t, Player &p, Card &c) {}
+void NovicePyromancer::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 bool NovicePyromancer::ability(Player &p) { return false; }
 
@@ -200,7 +211,7 @@ ApprenticeSummoner::ApprenticeSummoner() :
 
 void ApprenticeSummoner::trigger(Card::Trigger t, Player &p) {}
 
-void ApprenticeSummoner::trigger(Card::Trigger t, Player &p, Card &c) {}
+void ApprenticeSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion) {}
 
 bool ApprenticeSummoner::ability(Player &p) {
     if (p.getMagic() == 0) return false;

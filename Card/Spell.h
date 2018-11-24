@@ -17,7 +17,6 @@ public:
     Banish();
 
     bool play(Player &) override;
-
     bool play(Player &, Card &) override;
 };
 
@@ -26,7 +25,6 @@ public:
     Unsummon();
 
     bool play(Player &) override;
-
     bool play(Player &, Card &) override;
 };
 

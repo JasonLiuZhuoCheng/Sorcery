@@ -16,8 +16,10 @@ public:
     virtual bool play(Player &) = 0;
     virtual bool play(Player &, Card &) = 0;
     int getCost();
+    std::string getName();
+    std::string getDescription();
     enum Trigger {
-        START_OF_TURN, END_OF_TURN, MINION_ENTER, MINION_LEAVE
+        START_OF_TURN, END_OF_TURN, MY_MINION_ENTER, OTHER_MINION_ENTER, OTHER_MINION_LEAVE, MY_MINION_LEAVE
     };
 
     Card(int, std::string &name, std::string &description);

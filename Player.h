@@ -3,7 +3,6 @@
 
 #include <string>
 #include <vector>
-#include <iostream>
 #include <memory>
 #include "Card/Card.h"
 #include "Board.h"
@@ -16,7 +15,7 @@ class Player final {
     int life, magic;
     string name;
     Board *myBoard;
-    Board *otherBoard;
+    //Board *otherBoard;
     vector<unique_ptr<Card>> hand;
     vector<unique_ptr<Card>> deck;
     bool activeStatus;
@@ -26,11 +25,12 @@ class Player final {
 
 public:
     Player();
+    ~Player();
 
     Board *getMyBoard(); // returns the pointer to "myBoard", allowing operations on "myBoard"
     Board *getOtherBoard(); // returns the pointer to "otherBoard", allowing operations on "otherBoard"
     Card &getCard(int i); // gets the ith Card from "hand"
-    std::unique_ptr<Card> playCard(int i);
+    void moveCardToBoard(int i);
     int getMagic();
     bool isActive();
 
@@ -51,8 +51,9 @@ public:
     void addMinionToHand(unique_ptr<Minion> minion); // Adds a minion to the player's "hand"
     void discardCard(int); // discards ith card in a player's "hand"
 
-    void notifyAll(Card::Trigger t, Player &); // using the Observer Pattern to notify "board" that Trigger "t" has happened
-    void notifyAll(Card::Trigger t, Player &, Card &);
+
+   // void notifyAll(Card::Trigger t, Player &); // using the Observer Pattern to notify "board" that Trigger "t" has happened
+   // void notifyAll(Card::Trigger t, Player &, Card &);
 
     void setMagic();
 

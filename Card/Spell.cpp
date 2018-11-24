@@ -1,6 +1,9 @@
 #include "Spell.h"
 #include "../Player.h"
+#include <iostream>
 #include <typeindex>
+
+using namespace std;
 
 Spell::Spell(int cost, std::string name, std::string description) : Card(cost, name, description) {}
 

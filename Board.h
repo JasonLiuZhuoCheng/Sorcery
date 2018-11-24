@@ -15,7 +15,7 @@ class Board final{
 public:
     std::unique_ptr<Minion> removeFromGraveyard(); // removes the last dead minion from "graveyard", and return its pointer
 
-    void addToGraveyard(std::unique_ptr<Minion> minion); // adds the minion to the top of "graveyard"
+    void addToGraveyard(Minion &minion); // adds the minion to the top of "graveyard"
 
     std::unique_ptr<Minion> removeMinion(int i); // removes the ith minion from "minions"
 
@@ -36,7 +36,8 @@ public:
     int numberOfMinions();
 
     void notifyAll(Card::Trigger t, Player &); // Using the Observer Pattern to notify all Minions and Ritual that Trigger "t" has happened
-    void notifyAll(Card::Trigger t, Player &, Card &);
+    //void notifyAll(Card::Trigger t, Player &, Card &);
+    void notifyAll(Card::Trigger t, Minion  &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer);
 };
 
 

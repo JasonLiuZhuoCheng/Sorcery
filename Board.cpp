@@ -18,12 +18,12 @@ Ritual &Board::getRitual() { return *ritual; };
 
 void Board::addMinion(std::unique_ptr<Minion> minion) { minions.emplace_back(minion); }
 
-std::unique_ptr<Minion> Board::removeMinion(int i) {
+/*std::unique_ptr<Minion> Board::removeMinion(int i) {
     Minion m = getMinion(i);
     std::unique_ptr<Minion> temp = std::make_unique<Minion>(m);
     minions.erase(minions.begin() + (i - 1));
     return std::move(temp);
-}
+}*/
 
 std::unique_ptr<Minion> Board::removeFromGraveyard() {
     if(!isGraveyardEmpty()) {
@@ -32,7 +32,12 @@ std::unique_ptr<Minion> Board::removeFromGraveyard() {
     return nullptr;
 }
 
-void Board::addToGraveyard(std::unique_ptr<Minion> minion) { graveyard.emplace_back(minion); }
+void Board::addToGraveyard(Minion &minion) {
+    int deadMinionIndex = getMinion(minion);
+    std::unique_ptr<Minion> deadMinion = std::move(minions.at(deadMinionIndex));// minion minion nullptr minion
+    minions.erase(minions.begin() + deadMinionIndex);// remove nullptr
+    graveyard.emplace_back(std::move(deadMinion));
+}
 
 void Board::setRitual(std::unique_ptr<Ritual> ritual) {
     this->ritual.swap(ritual);
@@ -51,11 +56,11 @@ void Board::notifyAll(Card::Trigger t, Player &player) {
     getRitual().trigger(t, player);
 }
 
-void Board::notifyAll(Card::Trigger t, Player &player, Card &card) {
+void Board::notifyAll(Card::Trigger t, Minion  &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
     for(int i = 0; i < minions.size(); i++){
-        getMinion(i).trigger(t, player, card);
+        getMinion(i).trigger(t, myMinion, otherMinion, player, otherPlayer);
     }
-    getRitual().trigger(t, player, card);
+    getRitual().trigger(t, myMinion, player, otherPlayer);
 }
 
 
