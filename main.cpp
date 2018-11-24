@@ -152,11 +152,6 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
             } else if (cmd == "attack") {
                 iss >> i;
                 cout << "attack is called" << endl;
-                if(player->getMyBoard()->getMinion(i).getCost() >= player->getMagic()){
-                    //the player does not have enough magic to attack
-                    cout << "do not have enough magic to attack" << endl;
-                    continue;
-                }
 
                 if(iss >> j){
                     Minion &myMinion = player->getMyBoard()->getMinion(i);
@@ -174,23 +169,22 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 }else{
                     player->getMyBoard()->getMinion(i).attack(*other);
                 }
-
             } else if (cmd == "play") {
                 cout << "play is called" << endl;
                 cin >> i;
-                if(player->getCard(i).getCost() >= player->getMagic()){
+                if(player->getCard(i).getCost() > player->getMagic()){
                     cout << "Do not have enough magic to play this card" << endl;
                      continue;
                 }
 
+                //PLAYER CAN PLAY THIS CARD
                 if(iss >> p >> j){ // play i p t
-                    Player  *pl = (p == 1) ? p1 : p2;
-                    iss >> j;
+                    Player  *PlayerGetPlayedOn = (p == 1) ? p1 : p2;
                     bool success = player->getCard(i).play(*player, pl->getCard(i));
                     if(success) player->moveCardToBoard(i);
                 }
                 else{ //play i
-                    bool success = player->getCard(i).play(*player);
+                    bool success = player->getCard(i).play(*player);//Uses on Minion, Ritual, some Spell
                     if(success) player->moveCardToBoard(i);
                 }
 

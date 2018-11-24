@@ -26,7 +26,7 @@ public:
 
     void setActionValue();
     void setRecordActionValue(int);
-    void setDef();
+    void setDef(int i);
     void setMagic(int);
 
     std::vector<Enchantment*> getEnchantment();

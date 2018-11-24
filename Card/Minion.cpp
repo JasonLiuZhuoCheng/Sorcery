@@ -24,8 +24,8 @@ bool Minion::isDead(){
     return (defense <= 0);
 }
 
-void Minion::setDef() {   //raise dead
-    this->defense = 1;
+void Minion::setDef(int i) {   //raise dead
+    this->defense = i;
 }
 
 void Minion::setActionValue() {   //when the turn ends, call this function and set every minions' action value = recordAction value;
@@ -67,28 +67,19 @@ void Minion::attack(Player &p) {
 
 void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
     if(actionValue > 0){
-        mutateDef(-(otherMinion.att));
-        if(){
-
+        mutateDef(-(otherMinion.getAtt()));
+        if(defense <= 0){
+            player.getMyBoard()->addToGraveyard(*this);
         }
-
+        otherMinion.mutateDef(-att);
+        if(otherMinion.getDef() <=0){
+            otherPlayer.getMyBoard()->addToGraveyard(otherMinion);
+        }
+        actionValue --;
     }
     else {
-        cout << this->name <<" action value = 0." << endl;
+        cout << this->name <<" not enough ." << endl;
     }
-    /*if (actionValue > 0){
-        b->getMinion(i).mutateDef(-att);
-        if (b->getMinion(i).getDef() <= 0) {
-            b->addToGraveyard();
-        }
-        this->mutateDef(b->getMinion(i).att);
-        if (getDef() <= 0) {
-            b->addToGraveyard(p.getOtherBoard()->removeMinion(i));
-        }
-        actionValue--;
-    } else {
-        cout << this->name <<" action value = 0." << endl;
-    }*/
 }
 
 bool Minion::play(Player &p) {
@@ -100,7 +91,10 @@ bool Minion::play(Player &p) {
     return true;
 }
 
-bool Minion::play(Player &p, Card &c) { return false; }
+bool Minion::play(Player &p, Card &c) {
+    //CANNOT PLAY WITH A TARGET
+    return false;
+}
 
 std::vector<Enchantment*> Minion::getEnchantment() {
     return this->recordEnchantment;

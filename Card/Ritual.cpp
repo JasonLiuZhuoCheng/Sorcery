@@ -21,12 +21,7 @@ int Ritual::getCharges() {
     return cost;
 }
 
-bool Ritual::play(Player& player){
-    //TODO: don't need to check, just put on board WRONG
-    if(activeCost <= charges) return true;
-    cout << "does not have enough charges" << endl;
-    return false;
-}
+bool Ritual::play(Player& player){ return true;}
 
 bool Ritual::play(Player&, Card &){ return false; }
 

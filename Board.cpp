@@ -2,6 +2,7 @@
 // Created by Matthew on 2018-11-14.
 //
 #include "Board.h"
+using namespace std;
 
 Minion &Board::getMinion(int i) { return *(minions.at(i)); }
 
@@ -27,7 +28,9 @@ void Board::addMinion(std::unique_ptr<Minion> minion) { minions.emplace_back(min
 
 std::unique_ptr<Minion> Board::removeFromGraveyard() {
     if(!isGraveyardEmpty()) {
-        return std::move(graveyard.back());
+        unique_ptr<Minion> MinionGetRemoved  = std::move(graveyard.back());
+        graveyard.erase(graveyard);
+        return
     }
     return nullptr;
 }
