@@ -13,47 +13,33 @@ Minion::Minion(int cost, string name, string description, int attack, int defens
 Minion::~Minion() {}
 
 void Minion::mutateDef(int i) {
-    this->defense = this->defense + i;    //mutate defense. i is the damage
+    defense = defense + i;    //mutate defense. i is the damage
 }
 
-int Minion::getDef() {
-    return this->defense;
-}
+int Minion::getDef() { return defense; }
 
-bool Minion::isDead(){
-    return (defense <= 0);
-}
-
-void Minion::setDef(int i) {   //raise dead
-    this->defense = i;
-}
+void Minion::setDef(int i) { defense = i; }//only for Raised Dead
 
 void Minion::setActionValue() {   //when the turn ends, call this function and set every minions' action value = recordAction value;
-    this->actionValue == this->recordActionValue;
+    actionValue = recordActionValue;
 }
 
-int Minion::getActionValue() {
-    return this->actionValue;
-}
+int Minion::getActionValue() { return actionValue; }
 
 void Minion::setRecordActionValue(int i) {
-    this->recordActionValue = this->recordActionValue + i;
+    recordActionValue = recordActionValue + i;
 }
 
-int Minion::getMagic() {
-    return this->magic;
-}
+int Minion::getMagic() { return magic; }
 
 void Minion::setMagic(int i) {
-    this->magic = this->magic + i;
+    this->magic = magic + i;
 }
 
-int Minion::getAtt() {
-    return this->att;
-}
+int Minion::getAtt() { return att; }
 
 void Minion::mutateAtt(int i) {
-    this->att = this->att + i;
+    att = att + i;
 }
 
 void Minion::attack(Player &p) {
@@ -82,19 +68,16 @@ void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
     }
 }
 
-bool Minion::play(Player &p) {
-    if (p.getMyBoard()->numberOfMinions() == 5) {
+bool Minion::play(Player &player, Player &otherPlayer) {
+    if (player.getMyBoard()->minionFull()) {
         cout << "Minion slot is full" << endl;
         return false;
     }
-    //p.getMyBoard()->addMinion(this);
     return true;
 }
 
-bool Minion::play(Player &p, Card &c) {
-    //CANNOT PLAY WITH A TARGET
-    return false;
-}
+//CANNOT PLAY WITH A TARGET
+bool Minion::play(Player &p, Card &c) { return false; }
 
 std::vector<Enchantment*> Minion::getEnchantment() {
     return this->recordEnchantment;
@@ -197,15 +180,12 @@ bool NovicePyromancer::ability(Player &p, Card &c) {
     } else return false;
 }
 
-
-
-
 ApprenticeSummoner::ApprenticeSummoner() :
         Minion{1, "Apprentice Summoner", "Summon a 1/1 air elemental", 1, 1, 0, 1, 1, true, false} {}
 
 void ApprenticeSummoner::trigger(Card::Trigger t, Player &p) {}
 
-void ApprenticeSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion) {}
+void ApprenticeSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 bool ApprenticeSummoner::ability(Player &p) {
     if (p.getMagic() == 0) return false;
@@ -225,7 +205,7 @@ MasterSummoner::MasterSummoner() :
 
 void MasterSummoner::trigger(Card::Trigger t, Player &p) {}
 
-void MasterSummoner::trigger(Card::Trigger t, Player &p, Card &c) {}
+void MasterSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 bool MasterSummoner::ability(Player &p) {
     if (p.getMagic() < 2) return false;

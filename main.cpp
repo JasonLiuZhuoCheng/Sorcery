@@ -157,12 +157,12 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     Minion &myMinion = player->getMyBoard()->getMinion(i);
                     Minion &otherMinion = other->getMyBoard()->getMinion(j);
                     myMinion.attack(otherMinion, *player, *other);
-                    if (myMinion.isDead()){
+                    if (myMinion.getDef() <= 0){
                         //Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &other
                         player->getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, myMinion, otherMinion, *player, *other);
                         other->getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, myMinion, *other, *player);
                     }
-                    if(otherMinion.isDead()) {
+                    if(otherMinion.getDef() <= 0) {
                         player->getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, myMinion, otherMinion, *player, *other);
                         other->getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, myMinion, *player, *other);
                     }
@@ -184,7 +184,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     if(success) player->moveCardToBoard(i);
                 }
                 else{ //play i
-                    bool success = player->getCard(i).play(*player);//Uses on Minion, Ritual, some Spell
+                    bool success = player->getCard(i).play(*player, *other);//Uses on Minion, Ritual, some Spell
                     if(success) player->moveCardToBoard(i);
                 }
 

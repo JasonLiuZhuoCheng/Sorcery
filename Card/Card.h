@@ -13,7 +13,7 @@ protected:
     int cost; // cost of magic
     std::string name, description;
 public:
-    virtual bool play(Player &) = 0;
+    virtual bool play(Player &player, Player &otherPlayer) = 0;
     virtual bool play(Player &, Card &) = 0;
     int getCost();
     std::string getName();
