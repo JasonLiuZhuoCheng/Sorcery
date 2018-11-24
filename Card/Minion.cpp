@@ -54,12 +54,16 @@ void Minion::attack(Player &p) {
 void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
     if(actionValue > 0){
         mutateDef(-(otherMinion.getAtt()));
+        otherMinion.mutateDef(-att);
         if(defense <= 0){
             player.getMyBoard()->addToGraveyard(*this);
+            player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
+            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, *this, otherPlayer, player);
         }
-        otherMinion.mutateDef(-att);
         if(otherMinion.getDef() <=0){
             otherPlayer.getMyBoard()->addToGraveyard(otherMinion);
+            player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
+            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, *this, player, otherPlayer);
         }
         actionValue --;
     }
@@ -87,7 +91,7 @@ void Minion::pushEnchantment(Enchantment *e) {
     this->recordEnchantment.emplace_back(e);
 }
 
-
+//----------------------------------------Air Elemental--------------------------------------------------------
 
 AirElemental::AirElemental() :
         Minion{1, "Air Elemental", "", 1, 1, 0, 1, 0, false, false} {}
@@ -99,7 +103,7 @@ bool AirElemental::ability(Player &p) { return false; }
 
 bool AirElemental::ability(Player &p, Card &c) { return false; }
 
-
+//---------------------------------------Earth Elemental----------------------------------------------------------
 EarthElemental::EarthElemental() :
         Minion{3, "Earth Elemental", "", 4, 4, 0, 1, 0, false, false} {}
 
@@ -110,6 +114,7 @@ bool EarthElemental::ability(Player &p) { return false; }
 
 bool EarthElemental::ability(Player &p, Card &c) { return false; }
 
+//---------------------------------------------Bone Golem-----------------------------------------
 BoneGolem::BoneGolem() :
         Minion{2, "Bone Golem", "Gain +1/+1 whenever a minion leaves play.", 1, 3, 0, 1, 0, false, true} {}
 
@@ -126,7 +131,7 @@ bool BoneGolem::ability(Player &p) { return false; }
 bool BoneGolem::ability(Player &p, Card &c) { return false; }
 
 
-
+//------------------------------------------Fire Elemental-----------------------------------------------
 FireElemental::FireElemental() :
         Minion{2, "Fire Elemental", "Whenever an opponent's minion enters play, deal 1 damage to it.", 2, 2, 0, 1, 0,
                false, true} {}
@@ -152,6 +157,7 @@ PotionSeller::PotionSeller() :
         Minion{2, "Potion Seller", "At the end of your turn, all your minions gain +0/+1", 1, 3, 0, 1, 0, false,
                true} {}
 
+//---------------------------------------------Potion Seller---------------------------------------------------
 void PotionSeller::trigger(Card::Trigger t, Player &p) {
     if (t == Card::Trigger::END_OF_TURN){
         for (int i =0; i < p.getMyBoard()->numberOfMinions();i++){
@@ -163,6 +169,7 @@ void PotionSeller::trigger(Card::Trigger t, Player &p) {
 
 void PotionSeller::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
+//--------------------------------------------Novice Pyromancer------------------------------------------------
 NovicePyromancer::NovicePyromancer() :
         Minion{1, "Novice Pyromancer", "Deals 1 damage to target minion", 1, 1, 0, 1, 1, true, false} {}
 
@@ -180,6 +187,7 @@ bool NovicePyromancer::ability(Player &p, Card &c) {
     } else return false;
 }
 
+//---------------------------------------------Apprentice Summoner-----------------------------------------------
 ApprenticeSummoner::ApprenticeSummoner() :
         Minion{1, "Apprentice Summoner", "Summon a 1/1 air elemental", 1, 1, 0, 1, 1, true, false} {}
 
@@ -200,6 +208,7 @@ bool ApprenticeSummoner::ability(Player &p) {
 
 bool ApprenticeSummoner::ability(Player &p, Card &c) { return false; }
 
+//--------------------------------------------------Master Summoner--------------------------------------
 MasterSummoner::MasterSummoner() :
         Minion{3, "Master Summoner", "Summon up to three 1/1 air elementals", 2, 3, 0, 1, 2, true, false} {}
 

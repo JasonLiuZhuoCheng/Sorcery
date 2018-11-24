@@ -25,6 +25,7 @@ bool Ritual::play(Player& player){ return true;}
 
 bool Ritual::play(Player&, Card &){ return false; }
 
+//---------------------------------------------------Dark Ritual---------------------------------------------
 DarkRitual::DarkRitual():
     Ritual(0, "DarkRitual", "At the start of you turn, Gain 1 magic", 5, 1){}
 
@@ -39,6 +40,7 @@ void DarkRitual::trigger(Card::Trigger t, Player &player) {
 void DarkRitual::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 
+//---------------------------------------------------Aura of Power----------------------------------------
 AuraOfPower::AuraOfPower():
     Ritual(1, "AuraOfPower", "Whenever a minion enter a play under your control, it gains +1/+1", 4, 1){}
 
@@ -52,6 +54,7 @@ void AuraOfPower::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Play
     }
 }
 
+//------------------------------------------------------Standstill-------------------------------------------
 Standstill::Standstill():
         Ritual(1, "Standstill", "Whenever a minion enter a play, destroy it", 4, 2){}
 
@@ -63,7 +66,7 @@ void Standstill::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Playe
         player.getMyBoard()->addToGraveyard(myMinion);
         mutateCharges(-activeCost);
     }
-    else if((t == Card::Trigger::OTHER_MINION_ENTER)) && canPlay()){
+    else if((t == Card::Trigger::OTHER_MINION_ENTER)) && canPlay() && otherPlayer){
         otherPlayer.getMyBoard()->addToGraveyard(otherMinion);
         mutateCharges(-activeCost);
     }

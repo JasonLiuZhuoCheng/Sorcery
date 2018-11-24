@@ -13,11 +13,13 @@ Banish::Banish() : Spell(2, "Banish", "Destroy target minion or ritual") {}
 bool Banish::play(Player &player, Player &otherPlayer) { return false; }
 
 bool Banish::play(Player &player, Card &card) {
-    cout << "This might not work" << endl;
-    Board *temp = player.getMyBoard();
-    if(std::type_index(typeid(card)) == std::type_index(typeid(Minion))){
-        temp->addToGraveyard(temp->removeMinion(temp->getMinion(dynamic_cast<Minion &>(card))));
+    if(dynamic_cast<Minion*>(&card)){
+        player.getMyBoard()->addToGraveyard(dynamic_cast<Minion &>(card));
+
+        player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
+        otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, *this, otherPlayer, player);
     }else{ // card must be a Ritual type
+
 
     }
     return true;
@@ -73,11 +75,15 @@ Blizzard::Blizzard(): Spell(3, "Blizzard", "Deal 2 damage to all minions") {}
 
 bool Blizzard::play(Player &player, Player &otherPlayer) {
     for(int i = 0; i < player.getMyBoard()->numberOfMinions(); ++i){
-        player.getMyBoard()->getMinion(i).mutateDef(2);
+        player.getMyBoard()->getMinion(i).mutateDef(-2);
+
     }
 
+    //if(getMinion(i).getDef <= 0){
+    //
+    // }
     for(int i = 0; i < otherPlayer.getMyBoard()->numberOfMinions(); ++i){
-        otherPlayer.getMyBoard()->getMinion(i).mutateDef(2);
+        otherPlayer.getMyBoard()->getMinion(i).mutateDef(-2);
     }
     return true;
 }

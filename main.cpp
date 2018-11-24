@@ -157,14 +157,8 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     Minion &myMinion = player->getMyBoard()->getMinion(i);
                     Minion &otherMinion = other->getMyBoard()->getMinion(j);
                     myMinion.attack(otherMinion, *player, *other);
-                    if (myMinion.getDef() <= 0){
-                        //Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &other
-                        player->getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, myMinion, otherMinion, *player, *other);
-                        other->getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, myMinion, *other, *player);
-                    }
                     if(otherMinion.getDef() <= 0) {
-                        player->getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, myMinion, otherMinion, *player, *other);
-                        other->getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, myMinion, *player, *other);
+
                     }
                 }else{
                     player->getMyBoard()->getMinion(i).attack(*other);
@@ -172,20 +166,30 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
             } else if (cmd == "play") {
                 cout << "play is called" << endl;
                 cin >> i;
+
                 if(player->getCard(i).getCost() > player->getMagic()){
                     cout << "Do not have enough magic to play this card" << endl;
                      continue;
                 }
 
                 //PLAYER CAN PLAY THIS CARD
-                if(iss >> p >> j){ // play i p t
+                if(iss >> p >> j){  // play i p t
                     Player  *PlayerGetPlayedOn = (p == 1) ? p1 : p2;
-                    bool success = player->getCard(i).play(*player, pl->getCard(i));
+
+                    bool success = player->getCard(i).play(*player, *PlayerGetPlayedOn, );
                     if(success) player->moveCardToBoard(i);
                 }
                 else{ //play i
-                    bool success = player->getCard(i).play(*player, *other);//Uses on Minion, Ritual, some Spell
-                    if(success) player->moveCardToBoard(i);
+                    Card &playedCard = player->getCard(i);
+                    bool success = playedCard.canplay(*player, *other);//Uses on Minion, Ritual, Spell(Recharge, RaiseDead, Blizzard)
+                    if(success) {
+                        player->moveCardToBoard(i);
+                        if (dynamic_cast<Minion *>(&playedCard)) {
+                            Minion &thisMinion = dynamic_cast<Minion&>(playedCard);
+                            player->getMyBoard()->notifyAll(Card::Trigger::MY_MINION_ENTER, thisMinion, thisMinion, *player, *other);
+                            other->getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_ENTER, thisMinion, thisMinion, *other, *player);
+                        }
+                    }
                 }
 
             } else if (input == "use") {
