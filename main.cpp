@@ -211,11 +211,11 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
             } else if (input == "hand") {
                 //displays the hand of an active player
                 for(auto &it: view){
-                    it->displayHand(player);
+                    it->displayHand(*player);
                 }
             } else if (input == "board") {
                 for(auto &it: view){
-                    it->displayBoard(player->getMyBoard());
+                    it->display(*p1,*p2);
                 }
             }
         }

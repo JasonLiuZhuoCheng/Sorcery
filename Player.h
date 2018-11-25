@@ -12,7 +12,7 @@ using namespace std;
 const int maxHand = 5;
 
 class Player final {
-    int life, magic;
+    int id,life, magic;
     string name;
     Board *myBoard;
     vector<unique_ptr<Card>> hand;

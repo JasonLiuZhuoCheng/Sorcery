@@ -243,5 +243,3 @@ bool MasterSummoner::ability(Player &p) {
 }
 
 bool MasterSummoner::ability(Player &p, Card &c) { return false; }
-
-

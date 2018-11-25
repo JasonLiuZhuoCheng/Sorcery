@@ -4,24 +4,23 @@
 #include "ascii_graphics.h"
 using namespace std;
 
-void Graphic::displayMinion(Minion &minion){}
-
-void Graphic::displayHand(Player &player){
-    for(int i=0; i<5; i++){
-
+void Text::print(card_template_t t1) {
+    for (int i = 0; i < t1.size(); i++) {
+        std::cout << t1.at(i) << endl;
     }
 }
 
-void Graphic::displayBoard(Board &board){
-
+void Text::print(card_template_t t1, card_template_t t2, card_template_t t3, card_template_t t4, card_template_t t5) {
+    for (int i = 0; i < t1.size(); i++){
+        std::cout << t1.at(i)+t2.at(i)+t3.at(i)+t4.at(i)+t5.at(i) << endl;
+    }
 }
-//---------------------------------------------------Text-----------------------------------
 
 void Text::displayMinion(Minion &minion){
     if(minion.hasEnchant()){
-        printMinion(minion);
+        print(makeMinion(minion));
         for(int i = 0; i < minion.numOfEnchant(); i++){
-            printEnchantment(minion.getEnchant(i));
+            print(makeEnchantment(minion.getEnchant(i)));
         }
     }
 }
@@ -29,44 +28,61 @@ void Text::displayMinion(Minion &minion){
 void Text::displayHand(Player &player) {
     for(int i = 0; i < player.handSize(); i++){
         if(std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Minion))){
-            printMinion(dynamic_cast<Minion &>(player.getCard(i)));
+            print(makeMinion(dynamic_cast<Minion &>(player.getCard(i))));
         }
         else if(std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Ritual))){
-            printRitual(dynamic_cast<Ritual &>(player.getCard(i)));
+            print(makeRitual(dynamic_cast<Ritual &>(player.getCard(i))));
         }
         else if(std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Enchantment))){
-            printEnchantment(dynamic_cast<Enchantment &>(player.getCard(i)));
+            print(makeEnchantment(dynamic_cast<Enchantment &>(player.getCard(i))));
         }
         else{
-            printSpell(dynamic_cast<Spell &>(player.getCard(i)));
+            print(makeSpell(dynamic_cast<Spell &>(player.getCard(i))));
         }
     }
 }
 
-void Text::display(Player &p1, Player &p2) {
-    printBoard(p1);
-    CENTRE_GRAPHIC;
-    printBoard(p2);
-}
 
-static void print(card_template_t t1, card_template_t t2, card_template_t t3, card_template_t t4, card_template_t t5){
-    for (int i = 0; i < t1.size(); i++){
-        std::cout << t1.at(i)+t2.at(i)+t3.at(i)+t4.at(i)+t5.at(i) << std::endl;
+void Text::display(Player &p1, Player &p2) {
+    std::vector<std::string> c = CENTRE_GRAPHIC;
+    std::vector<std::string> Empty = CARD_TEMPLATE_EMPTY
+    print((makeRitual(p1.getMyBoard()->getRitual())),Empty,makePlayer(p1),Empty,makeMinion(p1.getMyBoard()->graveyardTop()));
+    if (p1.getMyBoard()->numberOfMinions() == 0){
+        print(Empty,Empty,Empty,Empty,Empty);
+    } else if (p1.getMyBoard()->numberOfMinions() == 1){
+        print(p1.getMyBoard()->getMinion(1),Empty,Empty,Empty,Empty);
+    } else if (p1.getMyBoard()->numberOfMinions() == 2){
+        print(p1.getMyBoard()->getMinion(1),p1.getMyBoard()->getMinion(2),Empty,Empty,Empty);
+    } else if (p1.getMyBoard()->numberOfMinions() == 3){
+        print(p1.getMyBoard()->getMinion(1),p1.getMyBoard()->getMinion(2),p1.getMyBoard()->getMinion(3),Empty,Empty);
+    } else if (p1.getMyBoard()->numberOfMinions() == 4){
+        print(p1.getMyBoard()->getMinion(1),p1.getMyBoard()->getMinion(2),p1.getMyBoard()->getMinion(3),p1.getMyBoard()->getMinion(4),Empty);
+    } else {
+        print(p1.getMyBoard()->getMinion(1),p1.getMyBoard()->getMinion(2),p1.getMyBoard()->getMinion(3),p1.getMyBoard()->getMinion(4),p1.getMyBoard()->getMinion(5));
     }
 
+    for(auto &row : c){
+        std::cout << row << std::endl;
+    }
+    if (p2.getMyBoard()->numberOfMinions() == 0){
+        print(Empty,Empty,Empty,Empty,Empty);
+    } else if (p2.getMyBoard()->numberOfMinions() == 1){
+        print(p2.getMyBoard()->getMinion(1),Empty,Empty,Empty,Empty);
+    } else if (p2.getMyBoard()->numberOfMinions() == 2){
+        print(p2.getMyBoard()->getMinion(1),p2.getMyBoard()->getMinion(2),Empty,Empty,Empty);
+    } else if (p1.getMyBoard()->numberOfMinions() == 3){
+        print(p2.getMyBoard()->getMinion(1),p2.getMyBoard()->getMinion(2),p2.getMyBoard()->getMinion(3),Empty,Empty);
+    } else if (p2.getMyBoard()->numberOfMinions() == 4){
+        print(p2.getMyBoard()->getMinion(1),p2.getMyBoard()->getMinion(2),p2.getMyBoard()->getMinion(3),p2.getMyBoard()->getMinion(4),Empty);
+    } else {
+        print(p2.getMyBoard()->getMinion(1),p2.getMyBoard()->getMinion(2),p2.getMyBoard()->getMinion(3),p2.getMyBoard()->getMinion(4),p2.getMyBoard()->getMinion(5));
+    }
+    print((makeRitual(p2.getMyBoard()->getRitual())),Empty,makePlayer(p2),Empty,makeMinion(p2.getMyBoard()->graveyardTop()));
 }
 
 
-void Text::printBoard(Player &player) {
-    Board *b = player.getMyBoard();
-    // Display the first row of board
 
-}
-
-
-
-
-card_template_t Text::printMinion(Minion &minion){
+card_template_t Text::makeMinion(Minion &minion){
     if(minion.hasAbility()){
         // display_minion_activated_ability(std::string name,int cost,int attack, int defence,
         // int ability_cost,std::string ability_desc)
@@ -89,7 +105,7 @@ card_template_t Text::printMinion(Minion &minion){
                 minion.getDescription());
     }
     else{
-        // display_minion_no_ability(std::string name,int cost,int attack,int defence);
+       // display_minion_no_ability(std::string name,int cost,int attack,int defence);
         return display_minion_no_ability(
                 minion.getName(),
                 minion.getCost(),
@@ -98,8 +114,8 @@ card_template_t Text::printMinion(Minion &minion){
     }
 }
 
-card_template_t Text::printEnchantment(Enchantment &enchantment){
-    if(enchantment.hasStats()){
+card_template_t Text::makeEnchantment(Enchantment &enchantment){
+    if(enchantment.hasAttDef()){
         //display_enchantment_attack_defence(std::string name,int cost,std::string desc,
         // std::string attack,std::string defence);
         return display_enchantment_attack_defence(
@@ -109,23 +125,23 @@ card_template_t Text::printEnchantment(Enchantment &enchantment){
                 enchantment.getAtt(),
                 enchantment.getDef());
     }else{
-        // display_enchantment(std::string name,int cost,std::string desc);
-        return display_enchantment(
-                enchantment.getName(),
-                enchantment.getCost(),
-                enchantment.getDescription());
+       // display_enchantment(std::string name,int cost,std::string desc);
+       return display_enchantment(
+               enchantment.getName(),
+               enchantment.getCost(),
+               enchantment.getDescription()
+               )
     }
 }
 
-card_template_t Text::printSpell(Spell &spell){
+card_template_t Text::makeSpell(Spell &spell){
     //display_spell(std::string name,int cost,std::string desc)
     return display_spell(
             spell.getName(),
             spell.getCost(),
             spell.getDescription());
 }
-
-card_template_t Text::printRitual(Ritual &ritual){
+card_template_t Text::makeRitual(Ritual &ritual){
     //display_ritual(std::string name,int cost,int ritual_cost,std::string ritual_desc,
     // int ritual_charges)
     return display_ritual(
@@ -136,12 +152,12 @@ card_template_t Text::printRitual(Ritual &ritual){
             ritual.getCharges());
 }
 
-void Text::printMinionsOnBoard(Board &board) {
-    for(int i = 0; i < board.numberOfMinions(); i++){
-        printMinion(board.getMinion(i));
-    }
-    for(int i = 0; i < 5 - board.numberOfMinions(); i++){
-        CARD_TEMPLATE_BORDER;
-    }
+card_template_t Text::makePlayer(Player &player) {
+    return display_player_card(
+            1,
+            player.getName(),
+            player.getLife(),
+            player.getMagic()
+            );
 }
 
