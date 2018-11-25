@@ -159,8 +159,8 @@ void FireElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Pl
 }
 
 bool FireElemental::canUseAbility(Player &) { return !this->isSilence(); }
-void FireElemental::ability(Player &p) { }
-void FireElemental::ability(Player &p, Card &c) { }
+void FireElemental::ability(Player &p) {}
+void FireElemental::ability(Player &p, Card &c) {}
 //---------------------------------------------Potion Seller---------------------------------------------------
 PotionSeller::PotionSeller() :
         Minion{2, "Potion Seller", "At the end of your turn, all your minions gain +0/+1", 1, 3, 0, 1, 0, 0, false,
@@ -188,15 +188,17 @@ void NovicePyromancer::trigger(Card::Trigger t, Player &p) {}
 
 void NovicePyromancer::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool canUse(Player &player){ return player.getMagic() >= 1; }
+bool NovicePyromancer::canUseAbility(Player &player){ return !this->isSilence();  }
 
 void NovicePyromancer::ability(Player &p) { }
 
-void NovicePyromancer::ability(Player &p, Card &c) {
-    if (canUse(p)) {
-        dynamic_cast<Minion &>(c).mutateDef(1);
-        p.mutateMagic(-1);
-    }
+void NovicePyromancer::ability(Player &p, Player &other, Card &c) {
+    Minion &targetMinion = dynamic_cast<Minion &>(c);
+        targetMinion.mutateDef(-1);
+        if(targetMinion.isDead()){
+            player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
+            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, *this, otherPlayer, player);
+        }
 }
 //---------------------------------------------Apprentice Summoner-----------------------------------------------
 ApprenticeSummoner::ApprenticeSummoner() :
@@ -209,10 +211,8 @@ void ApprenticeSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinio
 bool ApprenticeSummoner::canUseAbility(Player &player) { return !player.getMyBoard()->minionFull() && !this->isSilence(); }
 
 void ApprenticeSummoner::ability(Player &p) {
-    if(canUse(p)) {
         unique_ptr<Minion> m{new AirElemental};
         p.getMyBoard()->addMinion(std::move(m));
-    }
 }
 
 void ApprenticeSummoner::ability(Player &p, Card &c) {}
@@ -227,13 +227,11 @@ void MasterSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, P
 bool MasterSummoner::canUseAbility(Player &player) { return !player.getMyBoard()->minionFull() && !this->isSilence(); }
 
 void MasterSummoner::ability(Player &player) {
-    if (!player.getMyBoard()->minionFull()) {
         for (int i = 0; i < 3; i++) {
             if (player.getMyBoard()->minionFull()) break;
             unique_ptr<Minion> m{new AirElemental};
             player.getMyBoard()->addMinion(std::move(m));
         }
-    }
 }
 
 void MasterSummoner::ability(Player &p, Card &c) {}

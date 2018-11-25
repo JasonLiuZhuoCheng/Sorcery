@@ -218,21 +218,22 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     continue;
                 }
                 bool success = playedMinion.canUseAbility(*player);
-                
+
                 if(iss >> p){// use i p t
                     //for Novice Pyromancer
                     iss>>j;
-
-
-                }else{//use i
-                    playedMinion.ability(*player);
+                    Player *targetPlayer = (p == 1) ? p1 : p2;
+                    Card &targetCard = targetPlayer->getMyBoard()->getMinion(j);
                     if(success){
-
+                        playedMinion.ability(*player, targetCard);
+                        player->mutateMagic(-playedMinion.getMagic());//mutate magic
                     }
-
-
+                }else{//use i
                     //for Apprentice Summoner and Master Summoner
-
+                    if(success){
+                        playedMinion.ability(*player);
+                        player->mutateMagic(-playedMinion.getMagic());//mutate magic
+                    }
                 }
             } else if (input == "inspect") {
                 cin >> i;
