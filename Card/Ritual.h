@@ -15,8 +15,8 @@ public:
     void mutateCharges(int);
     bool canPlay();
     bool canUse();
-    void effect(Player&player, Player &otherPlayer) override;
-    void effect(Player&, Card &) override;
+    void effect(Player &player, Player &otherPlayer) override;
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
     int getActiveCost();
     int getCharges();
     virtual void trigger(Trigger t, Player &) = 0;

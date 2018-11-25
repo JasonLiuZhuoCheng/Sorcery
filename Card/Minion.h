@@ -44,7 +44,7 @@ public:
     void attack(Player &); // attacks the opposing player
     void attack(Minion &otherMinion, Player &player, Player &otherPlayer); // attacks the ith minion of the opposing player
 
-    bool canPlay(Player &);
+    bool canPlay(Player &) override;
     void effect(Player &player, Player &otherPlayer) override;
     void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;  //This will never be call
 

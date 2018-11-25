@@ -21,7 +21,7 @@ bool Ritual::canUse(){ return (activeCost < charges); }
 bool Ritual::canPlay(){ return true; }
 
 void Ritual::effect(Player& player, Player &otherPlayer){}
-void Ritual::effect(Player&, Card &){}
+void Ritual::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card){}
 
 //---------------------------------------------------Dark Ritual---------------------------------------------
 DarkRitual::DarkRitual():

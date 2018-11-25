@@ -68,7 +68,6 @@ void makeDeck(istream &in, Player &p) {
     string name;
     int count = 0 ;
     while (getline(in, name)) {
-        if(name == )
         p.addToDeck(make_unique<Card>(*cards[name]));
     }
 }
@@ -118,10 +117,9 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
         Player *player = round % 2 ? p1 : p2; // This is the active player in current round
         Player *other = (player == p1) ? p2 : p1;
 
-        player->getMyBoard()->notifyAll(Card::Trigger::START_OF_TURN, *player);
-
         while(true) {
             //loop for a round of one player
+            player->getMyBoard()->notifyAll(Card::Trigger::START_OF_TURN, *player);
             string cmd;
             if (getline(in, input)) {}
             else if(&in != &cin && getline(cin, input)) {}
@@ -169,13 +167,25 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                      continue;
                 }
 
+                player->mutateMagic(-playedCard.getCost());//mutate magic
                 //PLAYER HAS ENOUGH MAGIC TO PLAY THIS CARD
-                if(iss >> p >> j){  // play i p t
+                if(iss >> p){  // play i p t
                     //uses on Enchantment, and Spell(Banish, Unsommon, Dischantment)
-                    Player  *PlayerGetPlayedOn = (p == 1) ? p1 : p2;
-                    bool success = playedCard.canPlay(*player);
-                    if(success) {
-                        player->moveCardToBoard(i);
+                    Player *targetPlayer = (p == 1) ? p1 : p2;
+                    if(iss >> j) { // play i p t(number)
+                        //uses on Enchantments, Spell(Banish, Unsommon, Dischantment)
+                        Card &targetCard = targetPlayer->getMyBoard()->getMinion(j);
+                        bool success = playedCard.canPlay(*player);
+                        if (success) {
+                            player->moveEnchantmentToMinion(playedCard, targetCard);
+                            //Player &player, Player &targetPlayer, Player &otherPlayer, Card &card
+                            playedCard.effect(*player, *targetPlayer, *other, playedCard);
+
+                        }
+                    }
+                    else{// play i p t(r)
+                        //uses on Banish
+
                     }
                 }
                 else{ //play i
@@ -184,11 +194,6 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     if(success) {//The user is able to play this card
                         player->moveCardToBoard(i);
                         playedCard.effect(*player, *other);
-                        if (dynamic_cast<Minion *>(&playedCard)) {
-                            Minion &thisMinion = dynamic_cast<Minion&>(playedCard);
-                            player->getMyBoard()->notifyAll(Card::Trigger::MY_MINION_ENTER, thisMinion, thisMinion, *player, *other);
-                            other->getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_ENTER, thisMinion, thisMinion, *other, *player);
-                        }
                     }
                 }
 

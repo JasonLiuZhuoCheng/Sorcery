@@ -11,7 +11,6 @@ Spell::Spell(int cost, std::string name, std::string description) : Card(cost, n
 Banish::Banish() : Spell(2, "Banish", "Destroy target minion or ritual") {}
 
 bool Banish::canPlay(Player &player) { return true; }
-
 void Banish::effect(Player &player, Player &otherPlayer) { }
 
 void Banish::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
@@ -59,16 +58,17 @@ void Disenchant::effect(Player &player, Player &targetPlayer, Player &otherPlaye
 
 }
 
-//--------------------------------------------RaiseDead Class---------------------------------------------
+//--------------------------------------------Raise Dead---------------------------------------------
 RaiseDead::RaiseDead(): Spell(1, "Raise Dead", "Resurrect the top minion in your graveyard and set its defense to 1") {}
 
 // Graveyard is not empty and minion slot is not full(if not, then do the remove and add its defence to 1)
-bool RaiseDead::canPlay(Player &player) {
-    return !player.getMyBoard()->isGraveyardEmpty() && player.getMyBoard()->numberOfMinions() < 5;
-}
+bool RaiseDead::canPlay(Player &player) { return (!(player.getMyBoard()->isGraveyardEmpty()) && !(player.getMyBoard()->minionFull())); }
 
 void RaiseDead::effect(Player &player, Player &otherPlayer) {
+    Minion &minionRemoved = player.getMyBoard()->graveyardTop();
     player.getMyBoard()->removeFromGraveyard();
+    player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_ENTER, minionRemoved, minionRemoved, player, otherPlayer);
+    player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_ENTER, minionRemoved, minionRemoved, otherPlayer, player);
 }
 
 void RaiseDead::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) { }

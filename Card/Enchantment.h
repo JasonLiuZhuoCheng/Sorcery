@@ -21,11 +21,9 @@ public:
     virtual ~Enchantment();
 
     bool canPlay();
-    void effect(Player &player, Player &otherPlayer);
-    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card);
-
+    void effect(Player &player, Player &otherPlayer) override;
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
     virtual void changeMinion();
-
     bool hasStats();
     std::string getAtt();
     std::string getDef();
