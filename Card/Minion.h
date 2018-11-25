@@ -11,33 +11,40 @@ class Enchantment;
 class Minion : public Card {
 
 private:
-    int att, defense, actionValue, recordActionValue, magic;   //magic is the cost of ability
+    int att, defense, actionValue, recordActionValue, magic, silence;   //magic is the cost of ability
     bool haveAbility, haveTrigger;
     std::vector<std::unique_ptr<Enchantment>> recordEnchantment;
 
 public:
     Minion(int cost, std::string name, std::string description, int att, int def, int actionValue,
-           int recordActionValue, int magic, bool haveAbility, bool haveTrigger);
+           int recordActionValue, int magic, int silence, bool haveAbility, bool haveTrigger);
 
     bool canAttack();
     bool isDead();
     int getActionValue();
+    int getRecordActionValue();
     int getMagic();
     int getDef();
     int getAtt();
+    int getSilence();
 
     bool hasEnchant();
     bool hasAbility();
     bool hasTrigger();
+    bool isSilence();
 
     void resetActionValue();
+    void setActionValue(int i);
     void setRecordActionValue(int);
     void setDef(int i);
     void setMagic(int);
+    void setSilence(int i);
 
     Enchantment &getEnchant(int i);
     int numOfEnchant();
     void pushEnchantment(std::unique_ptr<Enchantment> e);
+    void dischant(); // Dischant the top layer of enchantment
+
     void mutateDef(int);   // i is the damage source. When i is positive, it is receiving damage.
     void mutateAtt(int);   // i is the buff effect. When i is positive, it is buffing attack
 

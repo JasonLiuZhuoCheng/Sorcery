@@ -2,13 +2,15 @@
 #include "Card.h"
 #include "Minion.h"
 #include "../Player.h"
+#include "Enchantment.h"
+
 
 using namespace std;
 
 Minion::Minion(int cost, string name, string description, int attack, int defense, int actionValue,
-               int recordActionValue, int magic, bool haveAbility, bool haveTrigger)
+               int recordActionValue, int magic, int silence, bool haveAbility, bool haveTrigger)
         : Card{cost, name, description}, att{attack}, defense{defense}, actionValue{actionValue},
-          recordActionValue{recordActionValue}, magic{magic}, haveAbility{haveAbility}, haveTrigger{haveTrigger} {}
+          recordActionValue{recordActionValue}, magic{magic}, silence{silence}, haveAbility{haveAbility}, haveTrigger{haveTrigger}{}
 
 void Minion::mutateDef(int i) { defense += i; }
 
@@ -21,9 +23,19 @@ void Minion::setDef(int i) { defense = i; } //only for Raised Dead
 //when the turn ends, call this function and set every minions' action value = recordAction value;
 void Minion::resetActionValue() { actionValue = recordActionValue; }
 
+void Minion::setActionValue(int i) { actionValue = i; }
+
 int Minion::getActionValue() { return actionValue; }
 
 void Minion::setRecordActionValue(int i) { recordActionValue = i; }
+
+int Minion::getRecordActionValue() { return recordActionValue; }
+
+int Minion::getSilence() { return silence; }
+
+void Minion::setSilence(int i) { silence = i; }
+
+bool Minion::isSilence() { return silence > 0; }
 
 int Minion::getMagic() { return magic; }
 
@@ -40,6 +52,14 @@ bool Minion::hasEnchant() { return !recordEnchantment.empty(); }
 Enchantment &Minion::getEnchant(int i) { return  *(recordEnchantment.at(i)); }
 
 int Minion::numOfEnchant() { return recordEnchantment.size(); }
+
+void Minion::dischant() {
+    if(hasEnchant()){
+        unique_ptr<Enchantment> e = std::move(recordEnchantment.back());
+        recordEnchantment.erase(recordEnchantment.end());
+        e->removeEnchantment(*this);
+    }
+}
 
 void Minion::mutateAtt(int i) { att += i; }
 
@@ -87,29 +107,29 @@ void Minion::pushEnchantment(std::unique_ptr<Enchantment> e) { recordEnchantment
 bool Minion::canAttack() { return actionValue > 0; }
 
 AirElemental::AirElemental() :
-        Minion{1, "Air Elemental", "", 1, 1, 0, 1, 0, false, false} {}
+        Minion{1, "Air Elemental", "", 1, 1, 0, 1, 0, 0, false, false} {}
 
 void AirElemental::trigger(Card::Trigger t, Player &p) {}
 void AirElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool AirElemental::canUse(Player &) { return false; }
+bool AirElemental::canUseAbility(Player &) { return !this->isSilence(); }
 void AirElemental::ability(Player &p) {}
 void AirElemental::ability(Player &p, Card &c) {}
 
 //---------------------------------------Earth Elemental----------------------------------------------------------
 EarthElemental::EarthElemental() :
-        Minion{3, "Earth Elemental", "", 4, 4, 0, 1, 0, false, false} {}
+        Minion{3, "Earth Elemental", "", 4, 4, 0, 1, 0, 0, false, false} {}
 
 void EarthElemental::trigger(Card::Trigger t, Player &p) {}
 void EarthElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool EarthElemental::canUse(Player &) { return false; }
-void EarthElemental::ability(Player &p) { }
+bool EarthElemental::canUseAbility(Player &) { return !this->isSilence(); }
+void EarthElemental::ability(Player &p) {}
 void EarthElemental::ability(Player &p, Card &c) { }
 
 //---------------------------------------------Bone Golem-----------------------------------------
 BoneGolem::BoneGolem() :
-        Minion{2, "Bone Golem", "Gain +1/+1 whenever a minion leaves play.", 1, 3, 0, 1, 0, false, true} {}
+        Minion{2, "Bone Golem", "Gain +1/+1 whenever a minion leaves play.", 1, 3, 0, 1, 0, 0, false, true} {}
 
 void BoneGolem::trigger(Card::Trigger t, Player &p) {}
 void BoneGolem::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
@@ -119,12 +139,12 @@ void BoneGolem::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player
     }
 }
 
-bool BoneGolem::canUse(Player &) { return false; }
+bool BoneGolem::canUseAbility(Player &) { return !this->isSilence(); }
 void BoneGolem::ability(Player &p) {}
 void BoneGolem::ability(Player &p, Card &c) {}
 //------------------------------------------Fire Elemental-----------------------------------------------
 FireElemental::FireElemental() :
-        Minion{2, "Fire Elemental", "Whenever an opponent's minion enters play, deal 1 damage to it.", 2, 2, 0, 1, 0,
+        Minion{2, "Fire Elemental", "Whenever an opponent's minion enters play, deal 1 damage to it.", 2, 2, 0, 1, 0, 0,
                false, true} {}
 
 void FireElemental::trigger(Card::Trigger t, Player &p) {}
@@ -138,12 +158,12 @@ void FireElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Pl
     }
 }
 
-bool FireElemental::canUse(Player &) { return false; }
+bool FireElemental::canUseAbility(Player &) { return !this->isSilence(); }
 void FireElemental::ability(Player &p) { }
 void FireElemental::ability(Player &p, Card &c) { }
 //---------------------------------------------Potion Seller---------------------------------------------------
 PotionSeller::PotionSeller() :
-        Minion{2, "Potion Seller", "At the end of your turn, all your minions gain +0/+1", 1, 3, 0, 1, 0, false,
+        Minion{2, "Potion Seller", "At the end of your turn, all your minions gain +0/+1", 1, 3, 0, 1, 0, 0, false,
                true} {}
 
 void PotionSeller::trigger(Card::Trigger t, Player &p) {
@@ -157,12 +177,12 @@ void PotionSeller::trigger(Card::Trigger t, Player &p) {
 
 void PotionSeller::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool PotionSeller::canUse(Player &) { return false; }
+bool PotionSeller::canUseAbility(Player &) { return !this->isSilence(); }
 void PotionSeller::ability(Player &p) { }
 void PotionSeller::ability(Player &p, Card &c) { }
 //--------------------------------------------Novice Pyromancer------------------------------------------------
 NovicePyromancer::NovicePyromancer() :
-        Minion{1, "Novice Pyromancer", "Deals 1 damage to target minion", 1, 1, 0, 1, 1, true, false} {}
+        Minion{1, "Novice Pyromancer", "Deals 1 damage to target minion", 1, 1, 0, 1, 1, 0, true, false} {}
 
 void NovicePyromancer::trigger(Card::Trigger t, Player &p) {}
 
@@ -180,36 +200,31 @@ void NovicePyromancer::ability(Player &p, Card &c) {
 }
 //---------------------------------------------Apprentice Summoner-----------------------------------------------
 ApprenticeSummoner::ApprenticeSummoner() :
-        Minion{1, "Apprentice Summoner", "Summon a 1/1 air elemental", 1, 1, 0, 1, 1, true, false} {}
+        Minion{1, "Apprentice Summoner", "Summon a 1/1 air elemental", 1, 1, 0, 1, 1, 0, true, false} {}
 
 void ApprenticeSummoner::trigger(Card::Trigger t, Player &p) {}
 
 void ApprenticeSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool ApprenticeSummoner::canUseAbility(Player &player) {
-    return player.getMagic() >= 1 &&
-}
+bool ApprenticeSummoner::canUseAbility(Player &player) { return !player.getMyBoard()->minionFull() && !this->isSilence(); }
 
-void ApprenticeSummoner::ability(Player &player) {
-    unique_ptr<Minion> m{new AirElemental};
-    if(!player.getMyBoard()->minionFull();) {
-        player.getMyBoard()->addMinion(std::move(m));
+void ApprenticeSummoner::ability(Player &p) {
+    if(canUse(p)) {
+        unique_ptr<Minion> m{new AirElemental};
+        p.getMyBoard()->addMinion(std::move(m));
     }
 }
 
 void ApprenticeSummoner::ability(Player &p, Card &c) {}
-
 //--------------------------------------------------Master Summoner--------------------------------------
 MasterSummoner::MasterSummoner() :
-        Minion{3, "Master Summoner", "Summon up to three 1/1 air elementals", 2, 3, 0, 1, 2, true, false} {}
+        Minion{3, "Master Summoner", "Summon up to three 1/1 air elementals", 2, 3, 0, 1, 2, 0, true, false} {}
 
 void MasterSummoner::trigger(Card::Trigger t, Player &p) {}
 
 void MasterSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool MasterSummoner::canUseAbility(Player &player) {
-    return player.getMagic() >= 2 &&
-}
+bool MasterSummoner::canUseAbility(Player &player) { return !player.getMyBoard()->minionFull() && !this->isSilence(); }
 
 void MasterSummoner::ability(Player &player) {
     if (!player.getMyBoard()->minionFull()) {
