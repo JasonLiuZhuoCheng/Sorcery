@@ -29,6 +29,19 @@ void endOfGame(bool quit, Player &p1, Player &p2){
     }
 
 }
+
+
+void startTurn(Player &player, Player &otherPlayer, int round){
+    // Resets all active player's minion actionValue
+    Board *b = player.getMyBoard();
+    for(int i = 0; i < b->numberOfMinions(); i++){
+        b->getMinion(i).resetActionValue();
+    }
+    player.setMagic((round - 1)/2 + 4);
+    b->notifyAll(Card::Trigger::START_OF_TURN, player);
+    otherPlayer.getMyBoard()->notifyAll(Card::Trigger::START_OF_TURN, player);
+}
+
 //Make a deck from the file
 void makeDeck(istream &in, Player &p) {
     cout << "make a deck" << endl;
@@ -118,7 +131,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
         Player *player = round % 2 ? p1 : p2; // This is the active player in current round
         Player *other = (player == p1) ? p2 : p1;
 
-        player->getMyBoard()->notifyAll(Card::Trigger::START_OF_TURN, *player);
+        startTurn(*player, *other, round);
 
         while(true) {
             //loop for a round of one player

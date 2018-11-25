@@ -55,11 +55,11 @@ void Player::addToDeck(std::unique_ptr<Card> card) {
 
 void Player::setName(string &name) { this->name = name; }
 
+void Player::setMagic(int i) { magic = i; }
+
 bool Player::isDead() { return life <= 0; }
 
-void Player::shuffle() {
-    std::random_shuffle(deck.begin(), deck.end());
-}
+void Player::shuffle() { std::random_shuffle(deck.begin(), deck.end()); }
 
 void Player::drawCard() {
     if (!isHandfull() && !deck.empty()) {
@@ -84,14 +84,6 @@ void Player::addMinionToHand(unique_ptr<Minion> minion) {
 }
 
 bool Player::isHandfull() { return hand.size() < maxHand; }
-
-void Player::setMagic() {
-    magic = maxMgaic;
-}
-
-void Player::setMaxMagic() {
-    maxMgaic++;
-}
 
 
 
