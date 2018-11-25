@@ -11,14 +11,13 @@ using namespace std;
 
 const int maxHand = 5;
 
-class Player final {
+class Player{
     int id,life, magic;
     string name;
     Board *myBoard;
     vector<unique_ptr<Card>> hand;
     vector<unique_ptr<Card>> deck;
-    bool activeStatus;
-    bool isHandfull();
+
 public:
     Player(int id);
     ~Player();
@@ -35,15 +34,16 @@ public:
     void mutateMagic(int);
     void setMagic(int);
 
+    bool isHandfull();
     bool isDead();
-    bool isActive();
     int handSize();
 
     void addToDeck(std::unique_ptr<Card> card); // Adds a "card" to "deck"
     void moveCardToBoard(int i);
+    void moveEnchantmentToMinion(int i, Card &ifMinion);
     void shuffle();
     void drawCard(); // player draws a card from "deck", given "hand" is not full and "deck" is not empty
-    void addMinionToHand(unique_ptr<Minion> minion); // Adds a minion to the player's "hand"
+    void addMinionToHand(unique_ptr<Minion> minion); //Adds a minion to the player's "hand"
     void discardCard(int); // discards ith card in a player's "hand"
 };
 

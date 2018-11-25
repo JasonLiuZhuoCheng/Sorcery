@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 #ifndef HEARTHSTONE_MINION_H
 #define HEARTHSTONE_MINION_H
 
@@ -16,12 +15,12 @@ private:
     bool haveAbility, haveTrigger;
     std::vector<std::unique_ptr<Enchantment>> recordEnchantment;
 
-    bool canAttack();
-    bool isDead();
 public:
     Minion(int cost, std::string name, std::string description, int att, int def, int actionValue,
            int recordActionValue, int magic, bool haveAbility, bool haveTrigger);
 
+    bool canAttack();
+    bool isDead();
     int getActionValue();
     int getMagic();
     int getDef();

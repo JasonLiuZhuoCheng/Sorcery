@@ -29,7 +29,7 @@ DarkRitual::DarkRitual():
 
 
 void DarkRitual::trigger(Card::Trigger t, Player &player) {
-    if(t == Card::Trigger::START_OF_TURN && canPlay()) {//if the condition is right and the player is able to use this card
+    if(t == Card::Trigger::START_OF_TURN && canUse()) {//if the condition is right and the player is able to use this card
         player.mutateMagic(1);
         mutateCharges(-activeCost);
     }
@@ -60,13 +60,17 @@ Standstill::Standstill():
 void Standstill::trigger(Trigger t, Player &){}
 
 void Standstill::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer){
-    if((t == Card::Trigger::MY_MINION_ENTER) && canPlay()){
+    if((t == Card::Trigger::MY_MINION_ENTER) && canUse()){
         player.getMyBoard()->addToGraveyard(myMinion);
         mutateCharges(-activeCost);
+        player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, myMinion, otherMinion, player, otherPlayer);
+        otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, myMinion, otherPlayer, player);
     }
-    else if(((t == Card::Trigger::OTHER_MINION_ENTER)) && canUse())&& otherPlayer){
+    else if(((t == Card::Trigger::OTHER_MINION_ENTER)) && canUse()&&(&otherPlayer.getMyBoard()->graveyardTop() != &otherMinion)){
         otherPlayer.getMyBoard()->addToGraveyard(otherMinion);
         mutateCharges(-activeCost);
+        player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, myMinion, otherMinion, player, otherPlayer);
+        otherPlayer.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, myMinion, otherPlayer, player);
     }
 }
 

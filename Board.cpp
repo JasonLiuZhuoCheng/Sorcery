@@ -26,17 +26,17 @@ void Board::removeRitual() {
 void Board::addMinion(std::unique_ptr<Minion> minion) { minions.emplace_back(minion); }
 
 std::unique_ptr<Minion> Board::removeMinion(int i) {
-    Minion m = getMinion(i); // Make a copy of the minion
-    std::unique_ptr<Minion> temp = std::make_unique<Minion>(m);
+    Minion &minion = getMinion(i);
+   std::unique_ptr<Minion> tempMinion = std::make_unique<Minion>(minion);
     minions.erase(minions.begin() + (i - 1));
-    return std::move(temp);
+    return std::move(tempMinion);
 }
 
 void Board::removeFromGraveyard() {
-    unique_ptr<Minion> MinionGetRemoved  = std::move(graveyard.back());
-    MinionGetRemoved->setDef(1);
+    unique_ptr<Minion> minionGetRemoved  = std::move(graveyard.back());
+    minionGetRemoved->setDef(1);
     graveyard.erase(graveyard.end());
-    minions.emplace_back(move(MinionGetRemoved));
+    minions.emplace_back(move(minionGetRemoved));
 }
 
 void Board::addToGraveyard(Minion &minion) {

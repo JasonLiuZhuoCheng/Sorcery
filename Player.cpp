@@ -4,12 +4,13 @@
 
 #include "Player.h"
 #include "Card/Enchantment.h"
+
 #include <algorithm>
 #include <iostream>
 using namespace std;
 
 
-Player::Player(int id) : id{id},life{20}, magic{3}, activeStatus{false}, maxMgaic{3} {
+Player::Player(int id) : id{id},life{20}, magic{3}{
     myBoard = new Board();
 }
 
@@ -18,6 +19,23 @@ std::string Player::getName() { return  name; }
 int Player::getLife() { return  life; }
 
 Card & Player::getCard(int i) { return *(hand.at(i)); }
+
+void Player::addMinionToHand(unique_ptr<Minion> minion) {
+    if(!isHandfull()){
+        hand.emplace_back(minion);
+    }
+}
+
+
+void Player::moveEnchantmentToMinion(int i, Card &ifMinion) {
+    Card *card = hand[i].release();
+    Enchantment *enchantment = nullptr;
+    Minion *minion = nullptr;
+    if((enchantment = dynamic_cast<Enchantment *>(card)) && (minion = dynamic_cast<Minion *>(&ifMinion))){
+        minion->pushEnchantment(unique_ptr<Enchantment>(enchantment));
+    }
+    hand.erase(hand.begin() + i);
+}
 
 /*
  * playCard: Will only be invoked if card[i] is played successfully
@@ -33,21 +51,13 @@ void Player::moveCardToBoard(int i) {
     // Remove card from hand
     hand.erase(hand.begin() + i);
 }
-int Player::getID() {
-    return this->id;
-}
+int Player::getID() { return id; }
 
 Board *Player::getMyBoard() { return myBoard; }
-
 int Player::getMagic() { return magic; }
-
-bool Player::isActive() { return activeStatus; }
-
 int Player::handSize() { return hand.size(); }
-
-void Player::mutateLife(int i) { this->life += i; }
-
-void Player::mutateMagic(int i) { this->magic += i; }
+void Player::mutateLife(int i) { life += i; }
+void Player::mutateMagic(int i) { magic += i; }
 
 void Player::addToDeck(std::unique_ptr<Card> card) {
     deck.emplace_back(card);
@@ -75,12 +85,6 @@ void Player::discardCard(int i) {
         return;
     }
     hand.erase(hand.begin() + (i - 1));
-}
-
-void Player::addMinionToHand(unique_ptr<Minion> minion) {
-    if(!isHandfull()){
-        hand.emplace_back(minion);
-    }
 }
 
 bool Player::isHandfull() { return hand.size() < maxHand; }
