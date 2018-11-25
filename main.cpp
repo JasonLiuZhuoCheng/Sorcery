@@ -224,8 +224,8 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
 }
 
 int main(int argc, char *argv[]) {
-    Player *p1 = new Player{};
-    Player *p2 = new Player{};
+    Player *p1 = new Player{1};
+    Player *p2 = new Player{2};
 
     //5.2 all the command line arguments
     int numArgs = argc - 1;

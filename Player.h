@@ -22,9 +22,9 @@ class Player final {
 
     int maxMgaic;
 public:
-    Player();
+    Player(int id);
     ~Player();
-
+    int getID();
     Board *getMyBoard(); // returns the pointer to "myBoard", allowing operations on "myBoard"
     Card &getCard(int i); // gets the ith Card from "hand"
     std::string getName();

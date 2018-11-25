@@ -154,7 +154,7 @@ card_template_t Text::makeRitual(Ritual &ritual){
 
 card_template_t Text::makePlayer(Player &player) {
     return display_player_card(
-            1,
+            player.getID(),
             player.getName(),
             player.getLife(),
             player.getMagic()

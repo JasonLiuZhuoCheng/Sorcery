@@ -9,7 +9,7 @@
 using namespace std;
 
 
-Player::Player() : life{20}, magic{3}, activeStatus{false}, maxMgaic{3} {
+Player::Player(int id) : id{id},life{20}, magic{3}, activeStatus{false}, maxMgaic{3} {
     myBoard = new Board();
 }
 
@@ -32,6 +32,9 @@ void Player::moveCardToBoard(int i) {
     else if ((ritual = dynamic_cast<Ritual*>(card)) != nullptr) myBoard->setRitual(unique_ptr<Ritual>(ritual));
     // Remove card from hand
     hand.erase(hand.begin() + i);
+}
+int Player::getID() {
+    return this->id;
 }
 
 Board *Player::getMyBoard() { return myBoard; }
