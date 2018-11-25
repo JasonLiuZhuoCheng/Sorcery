@@ -46,8 +46,8 @@ void AuraOfPower::trigger(Trigger t, Player &){}
 
 void AuraOfPower::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer){
     if(t == Card::Trigger::MY_MINION_ENTER && canUse()) {
-        dynamic_cast<Minion &>(myMinion).mutateAtt(1);
-        dynamic_cast<Minion &>(myMinion).mutateDef(1);
+        myMinion.mutateAtt(1);
+        myMinion.mutateDef(1);
         mutateCharges(-activeCost);
     }
 }
