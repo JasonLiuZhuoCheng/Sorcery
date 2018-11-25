@@ -11,28 +11,41 @@ Spell::Spell(int cost, std::string name, std::string description) : Card(cost, n
 Banish::Banish() : Spell(2, "Banish", "Destroy target minion or ritual") {}
 
 bool Banish::canPlay(Player &player) { return true; }
-void Banish::effect(Player &player, Player &otherPlayer) { }
-
-void Banish::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
-    if(dynamic_cast<Minion*>(&card)){
-        targetPlayer.getMyBoard()->addToGraveyard(dynamic_cast<Minion &>(card));
-        //TODO:Trigger
-        player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
-        otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, *this, otherPlayer, player);
+void Banish::effect(Player &player, Player &otherPlayer) {}
+void Banish::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &targetCard) {
+    auto minion = dynamic_cast<Minion*>(&targetCard);
+    if(minion){
+        targetPlayer.getMyBoard()->addToGraveyard(*minion);
+        if(&targetPlayer == &player){
+            player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *minion, *minion, player, otherPlayer);
+            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, *minion, *minion, otherPlayer, player);
+        }else{
+            player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, *minion, *minion, player, otherPlayer);
+            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *minion, *minion, otherPlayer, player);
+        }
     }else{ // card must be a Ritual type
+        targetPlayer.getMyBoard()->setRitual(nullptr);
     }
 }
 
 //--------------------------------------------Unsommon Class----------------------------------------------
 Unsummon::Unsummon() : Spell(1, "Unsummon", "Return target minion to its owner's hand") {}
 
-bool Unsummon::canPlay(Player &player) { return true; }
+bool Unsummon::canPlay(Player &player) { return player.isHandfull(); }
 
 void Unsummon::effect(Player &player, Player &otherPlayer) { }
 
-void Unsummon::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
-    int index = targetPlayer.getMyBoard()->getMinion(dynamic_cast<Minion &>(card));
-    targetPlayer.addMinionToHand(targetPlayer.getMyBoard()->removeMinion(index));
+void Unsummon::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &targetCard) {
+    auto minion = dynamic_cast<Minion*>(&targetCard);
+    int index = targetPlayer.getMyBoard()->getMinion(dynamic_cast<Minion &>(targetCard));//get the index of targetCard
+    targetPlayer.addMinionToHand(targetPlayer.getMyBoard()->removeMinion(index));//added the minion to the player's hand
+    if(&targetPlayer == &player){
+        player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *minion, *minion, player, otherPlayer);
+        otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, *minion, *minion, otherPlayer, player);
+    }else{
+        player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, *minion, *minion, player, otherPlayer);
+        otherPlayer.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *minion, *minion, otherPlayer, player);
+    }
 }
 
 //-------------------------------------------Recharge Class------------------------------------------------
@@ -81,10 +94,23 @@ bool Blizzard::canPlay(Player &player) { return true; }
 
 void Blizzard::effect(Player &player, Player &otherPlayer) {
     for(int i = 0; i < player.getMyBoard()->numberOfMinions(); ++i){
-        player.getMyBoard()->getMinion(i).mutateDef(-2);
+        Minion &effectedMinion = player.getMyBoard()->getMinion(i);
+        effectedMinion.mutateDef(-2);
+        if(effectedMinion.isDead()){
+            player.getMyBoard()->addToGraveyard(effectedMinion);
+            player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_ENTER, effectedMinion, effectedMinion, player, otherPlayer);
+            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_ENTER, effectedMinion, effectedMinion, otherPlayer, player);
+        }
     }
+
     for(int i = 0; i < otherPlayer.getMyBoard()->numberOfMinions(); ++i){
-        otherPlayer.getMyBoard()->getMinion(i).mutateDef(-2);
+        Minion &effectedMinion = player.getMyBoard()->getMinion(i);
+        effectedMinion.mutateDef(-2);
+        if(effectedMinion.isDead()){
+            otherPlayer.getMyBoard()->addToGraveyard(effectedMinion);
+            player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, effectedMinion, effectedMinion, player, otherPlayer);
+            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_ENTER, effectedMinion, effectedMinion, otherPlayer, player);
+        }
     }
 }
 

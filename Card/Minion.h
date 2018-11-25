@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 #ifndef HEARTHSTONE_MINION_H
 #define HEARTHSTONE_MINION_H
 
@@ -12,33 +11,40 @@ class Enchantment;
 class Minion : public Card {
 
 private:
-    int att, defense, actionValue, recordActionValue, magic;   //magic is the cost of ability
+    int att, defense, actionValue, recordActionValue, magic, silence;   //magic is the cost of ability
     bool haveAbility, haveTrigger;
     std::vector<std::unique_ptr<Enchantment>> recordEnchantment;
 
-    bool canAttack();
-    bool isDead();
 public:
     Minion(int cost, std::string name, std::string description, int att, int def, int actionValue,
-           int recordActionValue, int magic, bool haveAbility, bool haveTrigger);
+           int recordActionValue, int magic, int silence, bool haveAbility, bool haveTrigger);
 
+    bool canAttack();
+    bool isDead();
     int getActionValue();
+    int getRecordActionValue();
     int getMagic();
     int getDef();
     int getAtt();
+    int getSilence();
 
     bool hasEnchant();
     bool hasAbility();
     bool hasTrigger();
+    bool isSilence();
 
     void resetActionValue();
+    void setActionValue(int i);
     void setRecordActionValue(int);
     void setDef(int i);
     void setMagic(int);
+    void setSilence(int i);
 
     Enchantment &getEnchant(int i);
     int numOfEnchant();
     void pushEnchantment(std::unique_ptr<Enchantment> e);
+    void dischant(); // Dischant the top layer of enchantment
+
     void mutateDef(int);   // i is the damage source. When i is positive, it is receiving damage.
     void mutateAtt(int);   // i is the buff effect. When i is positive, it is buffing attack
 
@@ -52,9 +58,9 @@ public:
     virtual void trigger(Trigger t  , Player &) {};          // did not implement these two
     virtual void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {};
 
-    virtual bool canUse(Player &) = 0;
+    virtual bool canUseAbility(Player &) = 0;
     virtual void ability(Player &) = 0;
-    virtual void ability(Player &, Card &) = 0;
+    virtual void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) = 0;
 };
 
 
@@ -64,9 +70,9 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -76,9 +82,9 @@ public:
     void trigger(Trigger t, Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -88,9 +94,9 @@ public:
     void trigger(Trigger t, Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 class FireElemental final : public Minion {
@@ -99,9 +105,9 @@ public:
     void trigger(Trigger t, Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -111,9 +117,9 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -123,9 +129,9 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -135,9 +141,9 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -147,9 +153,9 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 #endif
