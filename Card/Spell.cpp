@@ -14,9 +14,10 @@ bool Banish::canPlay(Player &player) { return true; }
 
 void Banish::effect(Player &player, Player &otherPlayer) { }
 
-void Banish::effect(Player &player, Card &card) {
+void Banish::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
     if(dynamic_cast<Minion*>(&card)){
-        player.getMyBoard()->addToGraveyard(dynamic_cast<Minion &>(card));
+        targetPlayer.getMyBoard()->addToGraveyard(dynamic_cast<Minion &>(card));
+        //TODO:Trigger
         player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
         otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, *this, otherPlayer, player);
     }else{ // card must be a Ritual type
@@ -30,9 +31,9 @@ bool Unsummon::canPlay(Player &player) { return true; }
 
 void Unsummon::effect(Player &player, Player &otherPlayer) { }
 
-void Unsummon::effect(Player &player, Card &card) {
-    int index = player.getMyBoard()->getMinion(dynamic_cast<Minion &>(card));
-    player.addMinionToHand(player.getMyBoard()->removeMinion(index));
+void Unsummon::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
+    int index = targetPlayer.getMyBoard()->getMinion(dynamic_cast<Minion &>(card));
+    targetPlayer.addMinionToHand(targetPlayer.getMyBoard()->removeMinion(index));
 }
 
 //-------------------------------------------Recharge Class------------------------------------------------
@@ -43,7 +44,7 @@ bool Recharge::canPlay(Player &player) { return player.getMyBoard()->hasRitual()
 
 void Recharge::effect(Player &player, Player &otherPlayer) { player.getMyBoard()->getRitual().mutateCharges(3); }
 
-void Recharge::effect(Player &, Card &) {}
+void Recharge::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {}
 
 //-------------------------------------------Disenchant Class----------------------------------------------
 Disenchant::Disenchant() : Spell(1, "Disenchant", "Destroy the top enchantment on target minion") {}
@@ -52,8 +53,10 @@ bool Disenchant::canPlay(Player &player) {}
 
 void Disenchant::effect(Player &player, Player &otherPlayer) {}
 
-void Disenchant::effect(Player &, Card &) {
+void Disenchant::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
     //TODO will be implement after Enchantment
+
+
 }
 
 //--------------------------------------------RaiseDead Class---------------------------------------------
@@ -68,7 +71,7 @@ void RaiseDead::effect(Player &player, Player &otherPlayer) {
     player.getMyBoard()->removeFromGraveyard();
 }
 
-void RaiseDead::effect(Player &, Card &) { }
+void RaiseDead::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) { }
 
 
 //------------------------------------------------Blizzard Class--------------------------------------------------
@@ -85,5 +88,5 @@ void Blizzard::effect(Player &player, Player &otherPlayer) {
     }
 }
 
-void Blizzard::effect(Player &, Card &) {}
+void Blizzard::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {}
 

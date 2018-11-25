@@ -10,17 +10,15 @@ Minion::Minion(int cost, string name, string description, int attack, int defens
         : Card{cost, name, description}, att{attack}, defense{defense}, actionValue{actionValue},
           recordActionValue{recordActionValue}, magic{magic}, haveAbility{haveAbility}, haveTrigger{haveTrigger} {}
 
-Minion::~Minion() {}
-
 void Minion::mutateDef(int i) {
-    defense = defense + i;    //mutate defense. i is the damage
+    defense += i;    //mutate defense. i is the damage
 }
 
 int Minion::getDef() { return defense; }
 
 bool Minion::isDead(){ return defense <= 0; }
 
-void Minion::setDef(int i) { defense = i; }//only for Raised Dead
+void Minion::setDef(int i) { defense = i; } //only for Raised Dead
 
 void Minion::setActionValue() {   //when the turn ends, call this function and set every minions' action value = recordAction value;
     actionValue = recordActionValue;
@@ -84,12 +82,11 @@ void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
     }
 }
 
+
 bool Minion::canPlay(Player &player){
     if (player.getMyBoard()->minionFull()) {
         cout << "Minion slot is full" << endl;
-        return false;
     }
-    return true;
 }
 
 void Minion::effect(Player &player, Player &otherPlayer) {
@@ -97,15 +94,9 @@ void Minion::effect(Player &player, Player &otherPlayer) {
 }
 
 //CANNOT PLAY WITH A TARGET
-void Minion::effect(Player &p, Card &c) { return false; }
+void Minion::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) { }
 
-std::vector<Enchantment*> Minion::getEnchantment() {
-    return this->recordEnchantment;
-}
-
-void Minion::pushEnchantment(Enchantment *e) {
-    this->recordEnchantment.emplace_back(e);
-}
+void Minion::pushEnchantment(std::unique_ptr<Enchantment> e) { recordEnchantment.emplace_back(e); }
 
 //----------------------------------------Air Elemental--------------------------------------------------------
 bool Minion::canAttack() { return actionValue > 0; }

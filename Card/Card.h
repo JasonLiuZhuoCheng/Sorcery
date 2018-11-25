@@ -15,7 +15,7 @@ protected:
 public:
     virtual bool canPlay( Player &player) = 0;
     virtual void effect(Player &player, Player &otherPlayer) = 0;
-    virtual void effect(Player &, Card &) = 0;
+    virtual void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) = 0;
     int getCost();
     std::string getName();
     std::string getDescription();

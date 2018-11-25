@@ -11,6 +11,8 @@ Enchantment::Enchantment(int cost, std::string att, std::string def, std::string
 
 Enchantment::~Enchantment() {}
 
+void Enchantment::effect(Player &player, Player &otherPlayer) {}
+
 bool Enchantment::hasStats() { return  hasAttDef; }
 
 bool Enchantment::canPlay() { return true; }

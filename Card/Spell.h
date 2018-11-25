@@ -16,9 +16,9 @@ class Banish final: public Spell {
 public:
     Banish();
 
-    bool canPlay(Player &player);
+    bool canPlay(Player &player) override;
     void effect(Player &player, Player &otherPlayer) override;
-    void effect(Player &, Card &) override;
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 class Unsummon final: public Spell {
@@ -27,7 +27,7 @@ public:
 
     bool canPlay(Player &player) override;
     void effect(Player &player, Player &otherPlayer) override;
-    void effect(Player &, Card &) override;
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 class Recharge final: public Spell {
@@ -36,7 +36,7 @@ public:
 
     bool canPlay(Player &player) override;
     void effect(Player &player, Player &otherPlayer) override;
-    void effect(Player &, Card &) override;
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 class Disenchant final: public Spell {
@@ -45,7 +45,7 @@ public:
 
     bool canPlay(Player &player) override;
     void effect(Player &player, Player &otherPlayer) override;
-    void effect(Player &, Card &) override;
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 class RaiseDead final: public Spell {
@@ -54,7 +54,7 @@ public:
 
     bool canPlay(Player &player) override;
     void effect(Player &player, Player &otherPlayer) override;
-    void effect(Player &, Card &) override;
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 class Blizzard final: public Spell{
@@ -63,7 +63,7 @@ public:
 
     bool canPlay(Player &player) override;
     void effect(Player &player, Player &otherPlayer) override;
-    void effect(Player &, Card&) override;
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 #endif

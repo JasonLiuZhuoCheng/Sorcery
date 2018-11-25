@@ -6,6 +6,7 @@
 #define HEARTHSTONE_ENCHANTMENT_H
 
 #include "Card.h"
+
 class Minion;
 
 
@@ -21,7 +22,7 @@ public:
 
     bool canPlay();
     void effect(Player &player, Player &otherPlayer);
-    void effect(Player &player, Card &card);
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card);
 
     virtual void changeMinion();
 
@@ -33,6 +34,7 @@ public:
 class GiantStrength final : public Enchantment {
 public:
     explicit GiantStrength(Minion *);
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card);
 
     void changeMinion() override;
 };
