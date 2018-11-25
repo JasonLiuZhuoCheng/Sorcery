@@ -173,7 +173,8 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     cout << "Do not have enough magic to play this card" << endl;
                      continue;
                 }
-                player->mutateMagic(-playedCard.getCost());//mutate magic
+                bool success = playedCard.canPlay(*player);
+
 
                 //PLAYER HAS ENOUGH MAGIC TO PLAY THIS CARD
                 if(iss >> p){  // play i p t
@@ -182,40 +183,55 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     if(iss >> j) { // play i p t(number)
                         //uses on Enchantments, Spell(Banish, Unsommon, Dischantment)
                         Card &targetCard = targetPlayer->getMyBoard()->getMinion(j);
-                        bool success = playedCard.canPlay(*player);
                         if (success) {
                             player->moveEnchantmentToMinion(i, targetCard);
                             playedCard.effect(*player, *targetPlayer, *other, targetCard);
+                            player->mutateMagic(-playedCard.getCost());//mutate magic
                         }
                     }
                     else{// play i p t(r)
                         //uses on Banish
                         Card &targetRitual = targetPlayer->getMyBoard()->getRitual();
-                        bool success = playedCard.canPlay(*player);
                         if (success) {
                             player->moveEnchantmentToMinion(i, targetRitual);
                             playedCard.effect(*player, *targetPlayer, *other, targetRitual);
+                            player->mutateMagic(-playedCard.getCost());//mutate magic
                         }
                     }
                 }
                 else{ //play i
                     //play Minion, Ritual, Spell(Recharge, RaiseDead, Blizzard)
-                    bool success = playedCard.canPlay(*player);
                     if(success) {//The user is able to play this card
                         player->moveCardToBoard(i);
                         playedCard.effect(*player, *other);
+                        player->mutateMagic(-playedCard.getCost());//mutate magic
                     }
                 }
 
             } else if (input == "use") {
-                cout << "use is called" << endl;
+                cout << "use ability is called" << endl;
                 iss >> i;
+                Minion &playedMinion = player->getMyBoard()->getMinion(i);
 
+                if(playedMinion.getMagic() > player->getMagic()){
+                    cout << "Do not have enough magic to use the ability of this minion" << endl;
+                    continue;
+                }
+                bool success = playedMinion.canUseAbility(*player);
+                
                 if(iss >> p){// use i p t
+                    //for Novice Pyromancer
                     iss>>j;
 
+
                 }else{//use i
-                    
+                    playedMinion.ability(*player);
+                    if(success){
+
+                    }
+
+
+                    //for Apprentice Summoner and Master Summoner
 
                 }
             } else if (input == "inspect") {

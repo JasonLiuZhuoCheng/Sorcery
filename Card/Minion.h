@@ -51,7 +51,7 @@ public:
     virtual void trigger(Trigger t  , Player &) {};          // did not implement these two
     virtual void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {};
 
-    virtual bool canUse(Player &) = 0;
+    virtual bool canUseAbility(Player &) = 0;
     virtual void ability(Player &) = 0;
     virtual void ability(Player &, Card &) = 0;
 };
@@ -63,7 +63,7 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &, Card &) override;
 };
@@ -75,7 +75,7 @@ public:
     void trigger(Trigger t, Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &, Card &) override;
 };
@@ -87,7 +87,7 @@ public:
     void trigger(Trigger t, Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &, Card &) override;
 };
@@ -98,7 +98,7 @@ public:
     void trigger(Trigger t, Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &, Card &) override;
 };
@@ -110,7 +110,7 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &, Card &) override;
 };
@@ -122,7 +122,7 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &, Card &) override;
 };
@@ -134,7 +134,7 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &, Card &) override;
 };
@@ -146,7 +146,7 @@ public:
     void trigger(Trigger t,Player&) override;
     void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
 
-    bool canUse(Player &);
+    bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &, Card &) override;
 };

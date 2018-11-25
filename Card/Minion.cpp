@@ -82,6 +82,7 @@ void Minion::effect(Player &player, Player &otherPlayer) {
 void Minion::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {}
 
 void Minion::pushEnchantment(std::unique_ptr<Enchantment> e) { recordEnchantment.emplace_back(e); }
+
 //----------------------------------------Air Elemental--------------------------------------------------------
 bool Minion::canAttack() { return actionValue > 0; }
 
@@ -185,13 +186,15 @@ void ApprenticeSummoner::trigger(Card::Trigger t, Player &p) {}
 
 void ApprenticeSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool ApprenticeSummoner::canUse(Player &player) {
-    return player.getMagic() >= 1 && !player.getMyBoard()->minionFull();
+bool ApprenticeSummoner::canUseAbility(Player &player) {
+    return player.getMagic() >= 1 &&
 }
-void ApprenticeSummoner::ability(Player &p) {
+
+void ApprenticeSummoner::ability(Player &player) {
     unique_ptr<Minion> m{new AirElemental};
-    p.getMyBoard()->addMinion(std::move(m));
-    p.mutateMagic(-1);
+    if(!player.getMyBoard()->minionFull();) {
+        player.getMyBoard()->addMinion(std::move(m));
+    }
 }
 
 void ApprenticeSummoner::ability(Player &p, Card &c) {}
@@ -204,12 +207,12 @@ void MasterSummoner::trigger(Card::Trigger t, Player &p) {}
 
 void MasterSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool MasterSummoner::canUse(Player &player) {
-    return player.getMagic() >= 2 && !player.getMyBoard()->minionFull();
+bool MasterSummoner::canUseAbility(Player &player) {
+    return player.getMagic() >= 2 &&
 }
 
 void MasterSummoner::ability(Player &player) {
-    if (canUse(player)) {
+    if (!player.getMyBoard()->minionFull()) {
         for (int i = 0; i < 3; i++) {
             if (player.getMyBoard()->minionFull()) break;
             unique_ptr<Minion> m{new AirElemental};
