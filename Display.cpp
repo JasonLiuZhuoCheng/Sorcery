@@ -50,15 +50,19 @@ void Text::display(Player &p1, Player &p2) {
     if (p1.getMyBoard()->numberOfMinions() == 0){
         print(Empty,Empty,Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 1){
-        print(p1.getMyBoard()->getMinion(1),Empty,Empty,Empty,Empty);
+        print(makeMinion(p1.getMyBoard()->getMinion(1)),Empty,Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 2){
-        print(p1.getMyBoard()->getMinion(1),p1.getMyBoard()->getMinion(2),Empty,Empty,Empty);
+        print(makeMinion(p1.getMyBoard()->getMinion(1)),makeMinion(p1.getMyBoard()->getMinion(2)),Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 3){
-        print(p1.getMyBoard()->getMinion(1),p1.getMyBoard()->getMinion(2),p1.getMyBoard()->getMinion(3),Empty,Empty);
+        print(makeMinion(p1.getMyBoard()->getMinion(1)),makeMinion(p1.getMyBoard()->getMinion(2)),
+              makeMinion(p1.getMyBoard()->getMinion(3)),Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 4){
-        print(p1.getMyBoard()->getMinion(1),p1.getMyBoard()->getMinion(2),p1.getMyBoard()->getMinion(3),p1.getMyBoard()->getMinion(4),Empty);
+        print(makeMinion(p1.getMyBoard()->getMinion(1)),makeMinion(p1.getMyBoard()->getMinion(2))
+                ,makeMinion(p1.getMyBoard()->getMinion(3)),makeMinion(p1.getMyBoard()->getMinion(4)),Empty);
     } else {
-        print(p1.getMyBoard()->getMinion(1),p1.getMyBoard()->getMinion(2),p1.getMyBoard()->getMinion(3),p1.getMyBoard()->getMinion(4),p1.getMyBoard()->getMinion(5));
+        print(makeMinion(p1.getMyBoard()->getMinion(1)),makeMinion(p1.getMyBoard()->getMinion(2)),
+              makeMinion(p1.getMyBoard()->getMinion(3)),makeMinion(p1.getMyBoard()->getMinion(4)),
+              makeMinion(p1.getMyBoard()->getMinion(5)));
     }
 
     for(auto &row : c){
@@ -67,15 +71,19 @@ void Text::display(Player &p1, Player &p2) {
     if (p2.getMyBoard()->numberOfMinions() == 0){
         print(Empty,Empty,Empty,Empty,Empty);
     } else if (p2.getMyBoard()->numberOfMinions() == 1){
-        print(p2.getMyBoard()->getMinion(1),Empty,Empty,Empty,Empty);
+        print(makeMinion(p2.getMyBoard()->getMinion(1)),Empty,Empty,Empty,Empty);
     } else if (p2.getMyBoard()->numberOfMinions() == 2){
-        print(p2.getMyBoard()->getMinion(1),p2.getMyBoard()->getMinion(2),Empty,Empty,Empty);
+        print(makeMinion(p2.getMyBoard()->getMinion(1)),makeMinion(p2.getMyBoard()->getMinion(2)),Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 3){
-        print(p2.getMyBoard()->getMinion(1),p2.getMyBoard()->getMinion(2),p2.getMyBoard()->getMinion(3),Empty,Empty);
+        print(makeMinion(p2.getMyBoard()->getMinion(1)),makeMinion(p2.getMyBoard()->getMinion(2)),
+                makeMinion(p2.getMyBoard()->getMinion(3)),Empty,Empty);
     } else if (p2.getMyBoard()->numberOfMinions() == 4){
-        print(p2.getMyBoard()->getMinion(1),p2.getMyBoard()->getMinion(2),p2.getMyBoard()->getMinion(3),p2.getMyBoard()->getMinion(4),Empty);
+        print(makeMinion(p2.getMyBoard()->getMinion(1)),makeMinion(p2.getMyBoard()->getMinion(2))
+                ,makeMinion(p2.getMyBoard()->getMinion(3)),makeMinion(p2.getMyBoard()->getMinion(4)),Empty);
     } else {
-        print(p2.getMyBoard()->getMinion(1),p2.getMyBoard()->getMinion(2),p2.getMyBoard()->getMinion(3),p2.getMyBoard()->getMinion(4),p2.getMyBoard()->getMinion(5));
+        print(makeMinion(p2.getMyBoard()->getMinion(1)),makeMinion(p2.getMyBoard()->getMinion(2)),
+                makeMinion(p2.getMyBoard()->getMinion(3)),makeMinion(p2.getMyBoard()->getMinion(4)),
+                makeMinion(p2.getMyBoard()->getMinion(5)));
     }
     print((makeRitual(p2.getMyBoard()->getRitual())),Empty,makePlayer(p2),Empty,makeMinion(p2.getMyBoard()->graveyardTop()));
 }
@@ -115,7 +123,7 @@ card_template_t Text::makeMinion(Minion &minion){
 }
 
 card_template_t Text::makeEnchantment(Enchantment &enchantment){
-    if(enchantment.hasAttDef()){
+    if(enchantment.hasStats()){
         //display_enchantment_attack_defence(std::string name,int cost,std::string desc,
         // std::string attack,std::string defence);
         return display_enchantment_attack_defence(
@@ -130,7 +138,7 @@ card_template_t Text::makeEnchantment(Enchantment &enchantment){
                enchantment.getName(),
                enchantment.getCost(),
                enchantment.getDescription()
-               )
+               );
     }
 }
 
