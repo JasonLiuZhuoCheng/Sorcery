@@ -13,8 +13,10 @@ public:
     Ritual(int cost, std::string name, std::string description, int charges, int activeCost);
 
     void mutateCharges(int);
-    bool play(Player&);
-    bool play(Player&, Card &);
+    bool canPlay();
+    bool canUse();
+    void effect(Player&player, Player &otherPlayer) override;
+    void effect(Player&, Card &) override;
     int getActiveCost();
     int getCharges();
     virtual void trigger(Trigger t, Player &) = 0;

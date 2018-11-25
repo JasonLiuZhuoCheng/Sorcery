@@ -8,17 +8,20 @@ Ritual::Ritual(int cost, std::string name, std::string description, int charges,
 
 void Ritual::mutateCharges(int i) { charges += i; }
 
-int Ritual::getActiveCost() {
-    return activeCost;
+
+void Ritual::trigger(Trigger t, Player &){
+
 }
+void Ritual::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer){}
 
-int Ritual::getCharges() {
-    return cost;
-}
+int Ritual::getActiveCost() { return activeCost; }
+int Ritual::getCharges() { return cost; }
 
-bool Ritual::play(Player& player){ return true;}
+bool Ritual::canUse(){ return (activeCost < charges); }
+bool Ritual::canPlay(){ return true; }
 
-bool Ritual::play(Player&, Card &){ return false; }
+void Ritual::effect(Player& player, Player &otherPlayer){}
+void Ritual::effect(Player&, Card &){}
 
 //---------------------------------------------------Dark Ritual---------------------------------------------
 DarkRitual::DarkRitual():
@@ -42,7 +45,7 @@ AuraOfPower::AuraOfPower():
 void AuraOfPower::trigger(Trigger t, Player &){}
 
 void AuraOfPower::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer){
-    if(t == Card::Trigger::MY_MINION_ENTER && canPlay()) {
+    if(t == Card::Trigger::MY_MINION_ENTER && canUse()) {
         dynamic_cast<Minion &>(myMinion).mutateAtt(1);
         dynamic_cast<Minion &>(myMinion).mutateDef(1);
         mutateCharges(-activeCost);
@@ -61,7 +64,7 @@ void Standstill::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Playe
         player.getMyBoard()->addToGraveyard(myMinion);
         mutateCharges(-activeCost);
     }
-    else if((t == Card::Trigger::OTHER_MINION_ENTER)) && canPlay() && otherPlayer){
+    else if(((t == Card::Trigger::OTHER_MINION_ENTER)) && canUse())&& otherPlayer){
         otherPlayer.getMyBoard()->addToGraveyard(otherMinion);
         mutateCharges(-activeCost);
     }

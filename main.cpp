@@ -32,8 +32,6 @@ void endOfGame(bool quit, Player &p1, Player &p2){
 //Make a deck from the file
 void makeDeck(istream &in, Player &p) {
     cout << "make a deck" << endl;
-
-    vector<unique_ptr<Card>> deck;
     map<string, unique_ptr<Card>> cards;
 
     //Spells
@@ -70,10 +68,8 @@ void makeDeck(istream &in, Player &p) {
     string name;
     int count = 0 ;
     while (getline(in, name)) {
-        cout << count << name << endl;
-             deck.push_back(cards[name]);
-             p.addToDeck(cards[name]);
-             count++;
+        if(name == )
+        p.addToDeck(make_unique<Card>(*cards[name]));
     }
 }
 
@@ -130,6 +126,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
             if (getline(in, input)) {}
             else if(&in != &cin && getline(cin, input)) {}
             else { break; }
+
             istringstream iss(input);
             iss>>cmd;
 
@@ -165,25 +162,28 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 }
             } else if (cmd == "play") {
                 cout << "play is called" << endl;
-                cin >> i;
-
-                if(player->getCard(i).getCost() > player->getMagic()){
+                iss >> i;
+                Card &playedCard = player->getCard(i);
+                if(playedCard.getCost() > player->getMagic()){
                     cout << "Do not have enough magic to play this card" << endl;
                      continue;
                 }
 
-                //PLAYER CAN PLAY THIS CARD
+                //PLAYER HAS ENOUGH MAGIC TO PLAY THIS CARD
                 if(iss >> p >> j){  // play i p t
+                    //uses on Enchantment, and Spell(Banish, Unsommon, Dischantment)
                     Player  *PlayerGetPlayedOn = (p == 1) ? p1 : p2;
-
-                    bool success = player->getCard(i).play(*player, *PlayerGetPlayedOn, );
-                    if(success) player->moveCardToBoard(i);
-                }
-                else{ //play i
-                    Card &playedCard = player->getCard(i);
-                    bool success = playedCard.canplay(*player, *other);//Uses on Minion, Ritual, Spell(Recharge, RaiseDead, Blizzard)
+                    bool success = playedCard.canPlay(*player);
                     if(success) {
                         player->moveCardToBoard(i);
+                    }
+                }
+                else{ //play i
+                    //play Minion, Ritual, Spell(Recharge, RaiseDead, Blizzard)
+                    bool success = playedCard.canPlay(*player);
+                    if(success) {//The user is able to play this card
+                        player->moveCardToBoard(i);
+                        playedCard.effect(*player, *other);
                         if (dynamic_cast<Minion *>(&playedCard)) {
                             Minion &thisMinion = dynamic_cast<Minion&>(playedCard);
                             player->getMyBoard()->notifyAll(Card::Trigger::MY_MINION_ENTER, thisMinion, thisMinion, *player, *other);
@@ -193,7 +193,15 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 }
 
             } else if (input == "use") {
-                //TODO: 5.1.8 if statement for if player has enough magic to attack
+                cout << "use is called" << endl;
+                iss >> i;
+
+                if(iss >> p >> j){// use i p t
+
+
+                }else{//use i
+
+                }
             } else if (input == "inspect") {
                 cin >> i;
                //loop through to output the interface

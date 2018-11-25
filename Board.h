@@ -14,21 +14,13 @@ class Board final{
 
 public:
     void removeFromGraveyard(); // removes the last dead minion from "graveyard", and put it on board
-
     void addToGraveyard(Minion &minion); // adds the minion to the top of "graveyard"
-
     Minion &graveyardTop(); // Peak at the top of the graveyard
-
     std::unique_ptr<Minion> removeMinion(int i); // removes the ith minion from "minions"
-
     void addMinion(std::unique_ptr<Minion> minion); // adds the minion to the back of "minions"
-
     Minion &getMinion(int i); // gets the ith minion from "minions"
-
     int getMinion(Minion &); // gets the index of a minion from "minions"
-
     Ritual &getRitual();
-
     void setRitual(std::unique_ptr<Ritual> ritual);
 
     void removeRitual();

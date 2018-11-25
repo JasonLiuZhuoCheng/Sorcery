@@ -33,19 +33,13 @@ public:
     int getMagic();
     bool isActive();
     int handSize();
-
     void addToDeck(std::unique_ptr<Card> card); // Adds a "card" to "deck"
     void setName(std::string &);
-
     void mutateLife(int);
-
     void mutateMagic(int);
     void setMagic(int);
-
     void shuffle();
-
     bool isDead();
-
     void drawCard(); // player draws a card from "deck", given "hand" is not full and "deck" is not empty
     void addMinionToHand(unique_ptr<Minion> minion); // Adds a minion to the player's "hand"
     void discardCard(int); // discards ith card in a player's "hand"

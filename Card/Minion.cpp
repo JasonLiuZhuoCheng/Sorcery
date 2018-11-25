@@ -84,7 +84,7 @@ void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
     }
 }
 
-bool Minion::play(Player &player, Player &otherPlayer) {
+bool Minion::canPlay(Player &player){
     if (player.getMyBoard()->minionFull()) {
         cout << "Minion slot is full" << endl;
         return false;
@@ -92,8 +92,12 @@ bool Minion::play(Player &player, Player &otherPlayer) {
     return true;
 }
 
+void Minion::effect(Player &player, Player &otherPlayer) {
+   player.moveCardToBoard(*this);
+}
+
 //CANNOT PLAY WITH A TARGET
-bool Minion::play(Player &p, Card &c) { return false; }
+void Minion::effect(Player &p, Card &c) { return false; }
 
 std::vector<Enchantment*> Minion::getEnchantment() {
     return this->recordEnchantment;

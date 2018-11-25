@@ -43,8 +43,9 @@ public:
 
     void attack(Player &); // attacks the opposing player
     void attack(Minion &otherMinion, Player &player, Player &otherPlayer); // attacks the ith minion of the opposing player
-    bool play(Player &player, Player &otherPlayer) override; //put the ith minion on the minion slot and return true if succeed.
-    bool play(Player &, Card &) override;  //always false
+    bool canPlay(Player &player) override;
+    void effect(Player &player, Player &otherPlayer) override; //
+    void effect(Player &, Card &) override;  //do not use this function
     virtual void trigger(Trigger t, Player &) {};          // did not implement these two
     virtual void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {};
     virtual bool ability(Player &);
