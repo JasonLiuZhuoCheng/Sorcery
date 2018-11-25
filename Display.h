@@ -1,13 +1,16 @@
 #ifndef HEARTHSTONE_DISPLAY_H
 #define HEARTHSTONE_DISPLAY_H
 
-#include "Card/Minion.h"
-#include "Card/Ritual.h"
-#include "Card/Enchantment.h"
-#include "Card/Spell.h"
+
 #include "Board.h"
-#include "Player.h"
 #include "ascii_graphics.h"
+#include "Card/Card.h"
+
+class Player;
+class Minion;
+class Enchantment;
+class Spell;
+class Ritual;
 
 class Display{
 public:

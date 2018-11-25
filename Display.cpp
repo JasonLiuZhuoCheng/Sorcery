@@ -2,6 +2,12 @@
 #include <typeindex>
 #include "Display.h"
 #include "ascii_graphics.h"
+#include "Card/Minion.h"
+#include "Card/Enchantment.h"
+#include "Card/Spell.h"
+#include "Player.h"
+#include "Card/Card.h"
+
 using namespace std;
 
 void Text::print(card_template_t t1) {
@@ -17,36 +23,78 @@ void Text::print(card_template_t t1, card_template_t t2, card_template_t t3, car
 }
 
 void Text::displayMinion(Minion &minion){
+    int t = 0;
+    int numberOfEnchant = minion.numOfEnchant();
+    std::vector<std::string> Empty = CARD_TEMPLATE_EMPTY;
     if(minion.hasEnchant()){
         print(makeMinion(minion));
-        for(int i = 0; i < minion.numOfEnchant(); i++){
-            print(makeEnchantment(minion.getEnchant(i)));
+        while (numberOfEnchant >= 5){
+            print(makeEnchantment(minion.getEnchant(t*5)),
+                  makeEnchantment(minion.getEnchant(t*5+1)),
+                  makeEnchantment(minion.getEnchant(t*5+2)),
+                  makeEnchantment(minion.getEnchant(t*5+3)),
+                  makeEnchantment(minion.getEnchant(t*5+4)));
+            t++;
+            numberOfEnchant = numberOfEnchant - 5;
         }
+        if (numberOfEnchant == 0){
+            return;
+        }
+        else if (numberOfEnchant == 1){
+            print(makeEnchantment((minion.getEnchant(t*5))),Empty,Empty,Empty,Empty);
+        } else if (numberOfEnchant == 2){
+            print(makeEnchantment(minion.getEnchant(t*5)),makeEnchantment(minion.getEnchant(t*5+1)),Empty,Empty,Empty);
+        } else if (numberOfEnchant == 3){
+            print(makeEnchantment(minion.getEnchant(t*5)),makeEnchantment(minion.getEnchant(t*5+1))
+                    ,makeEnchantment(minion.getEnchant(t*5+2)),Empty,Empty);
+        } else {
+            print(makeEnchantment(minion.getEnchant(t*5)),makeEnchantment(minion.getEnchant(t*5+1))
+                    ,makeEnchantment(minion.getEnchant(t*5+2)),makeEnchantment((minion.getEnchant(t*5+3))),Empty);
+        };
+    }
+    else {
+        print(makeMinion(minion));
     }
 }
 
 void Text::displayHand(Player &player) {
-    for(int i = 0; i < player.handSize(); i++){
-        if(std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Minion))){
-            print(makeMinion(dynamic_cast<Minion &>(player.getCard(i))));
+    std::vector<std::string> Empty = CARD_TEMPLATE_EMPTY;
+    std::vector<card_template_t> Store;
+    for (int i = 0; i < player.handSize(); i++) {
+        if (std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Minion))) {
+            Store.emplace_back(makeMinion(dynamic_cast<Minion &>(player.getCard(i))));
+        } else if (std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Ritual))) {
+            Store.emplace_back(makeRitual(dynamic_cast<Ritual &>(player.getCard(i))));
+        } else if (std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Enchantment))) {
+            Store.emplace_back(makeEnchantment(dynamic_cast<Enchantment &>(player.getCard(i))));
+        } else {
+            Store.emplace_back(makeSpell(dynamic_cast<Spell &>(player.getCard(i))));
         }
-        else if(std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Ritual))){
-            print(makeRitual(dynamic_cast<Ritual &>(player.getCard(i))));
-        }
-        else if(std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Enchantment))){
-            print(makeEnchantment(dynamic_cast<Enchantment &>(player.getCard(i))));
-        }
-        else{
-            print(makeSpell(dynamic_cast<Spell &>(player.getCard(i))));
-        }
+    }
+    if (Store.size() == 0){
+        print(Empty,Empty,Empty,Empty,Empty);
+    } else if (Store.size() == 1){
+        print(Store.at(0),Empty,Empty,Empty,Empty);
+    } else if (Store.size() == 2){
+        print(Store.at(0),Store.at(1),Empty,Empty,Empty);
+    } else if (Store.size() == 3){
+        print(Store.at(0),Store.at(1),Store.at(2),Empty,Empty);
+    } else if (Store.size() == 4){
+        print(Store.at(0),Store.at(1),Store.at(2),Store.at(3),Empty);
+    } else {
+        print(Store.at(0),Store.at(1),Store.at(2),Store.at(3),Store.at(4));
     }
 }
 
 
 void Text::display(Player &p1, Player &p2) {
     std::vector<std::string> c = CENTRE_GRAPHIC;
-    std::vector<std::string> Empty = CARD_TEMPLATE_EMPTY
-    print((makeRitual(p1.getMyBoard()->getRitual())),Empty,makePlayer(p1),Empty,makeMinion(p1.getMyBoard()->graveyardTop()));
+    std::vector<std::string> Empty = CARD_TEMPLATE_BORDER;
+    std::vector<std::string> RitualOne = p1.getMyBoard()->getRitual() == nullptr ? CARD_TEMPLATE_BORDER : makeRitual(p1.getMyBoard()->getRitual());
+    std::vector<std::string> RitualTwo = p2.getMyBoard()->getRitual() == nullptr ? CARD_TEMPLATE_BORDER : makeRitual(p1.getMyBoard()->getRitual());
+    std::vector<std::string> GraveOne = p1.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p1.getMyBoard()->graveyardTop());
+    std::vector<std::string> GraveTwo = p2.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p2.getMyBoard()->graveyardTop());
+    print(RitualOne,Empty,makePlayer(p1),Empty,GraveOne);
     if (p1.getMyBoard()->numberOfMinions() == 0){
         print(Empty,Empty,Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 1){
@@ -85,7 +133,7 @@ void Text::display(Player &p1, Player &p2) {
                 makeMinion(p2.getMyBoard()->getMinion(3)),makeMinion(p2.getMyBoard()->getMinion(4)),
                 makeMinion(p2.getMyBoard()->getMinion(5)));
     }
-    print((makeRitual(p2.getMyBoard()->getRitual())),Empty,makePlayer(p2),Empty,makeMinion(p2.getMyBoard()->graveyardTop()));
+    print(RitualTwo,Empty,makePlayer(p2),Empty,GraveTwo);
 }
 
 
