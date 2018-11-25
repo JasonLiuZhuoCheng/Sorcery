@@ -59,7 +59,9 @@ void Board::notifyAll(Card::Trigger t, Player &player) {
             getMinion(i).trigger(t, player);
         }
     }
-    getRitual().trigger(t, player);
+    if(hasRitual()) {
+        getRitual().trigger(t, player);
+    }
 }
 
 void Board::notifyAll(Card::Trigger t, Minion  &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
@@ -68,7 +70,9 @@ void Board::notifyAll(Card::Trigger t, Minion  &myMinion, Minion &otherMinion, P
             getMinion(i).trigger(t, myMinion, otherMinion, player, otherPlayer);
         }
     }
-    getRitual().trigger(t, myMinion, otherMinion, player, otherPlayer);
+    if(hasRitual()) {
+        getRitual().trigger(t, myMinion, otherMinion, player, otherPlayer);
+    }
 }
 
 

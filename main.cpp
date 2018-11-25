@@ -26,6 +26,7 @@ void endOfGame(bool quit, Player &p1, Player &p2){
 }
 
 void startTurn(Player &player, Player &otherPlayer, int round){
+    cout << "startTurn Function called" << endl;
     // Resets all active player's minion actionValue
     for(int i = 0; i < player.getMyBoard()->numberOfMinions(); i++){
         player.getMyBoard()->getMinion(i).resetActionValue();
@@ -36,7 +37,8 @@ void startTurn(Player &player, Player &otherPlayer, int round){
 }
 
 //Make a deck from the file
-void makeDeck(istream &in, Player &p) {
+void makeDeck(string deckPath, Player &p) {
+    ifstream fin{deckPath};
     cout << "make a deck" << endl;
     map<string, unique_ptr<Card>> cards;
 
@@ -73,8 +75,11 @@ void makeDeck(istream &in, Player &p) {
     //loop to make a deck
     string name;
     int count = 0 ;
-    while (getline(in, name)) {
+    cout << fin.is_open() << endl;
+    cout << "making a deck..." << endl;
+    while (getline(fin, name)) {
         p.addToDeck(make_unique<DarkRitual>());
+        cout << "add 1 card to deck" << endl;
     }
 }
 
@@ -286,10 +291,9 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    ifstream f1{deckPath1};
-    makeDeck(f1, *p1);
-    ifstream f2{deckPath2};
-    makeDeck(f2, *p2);
+
+    makeDeck(deckPath1, *p1);
+    makeDeck(deckPath2, *p2);
 
     ifstream f{initPath};
     if (readFile) {
