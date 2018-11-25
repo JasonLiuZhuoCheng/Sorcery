@@ -5,8 +5,8 @@
 #include "Enchantment.h"
 #include "Minion.h"
 
-Enchantment::Enchantment(int cost, std::string att, std::string def, std::string name, std::string description, Minion *minion)
-        : Card{cost, name, description}, minion{minion},hasAttDef{true} {
+Enchantment::Enchantment(int cost, std::string att, std::string def, std::string name, std::string description)
+        : Card{cost, name, description},hasAttDef{true} {
 }
 
 Enchantment::~Enchantment() {}
@@ -21,50 +21,41 @@ std::string Enchantment::getAtt() { return att; }
 
 std::string Enchantment::getDef() { return def; }
 
-GiantStrength::GiantStrength(Minion *minion) : Enchantment{1, "+2" , "+2",  "Giant Strength", "", minion} {
-    minion->pushEnchantment(this);
-}
+//------------------------------------Giant Strength-----------------------------------------------------------------
+GiantStrength::GiantStrength() : Enchantment{1, "+2" , "+2",  "Giant Strength", ""} {}
 
-void GiantStrength::changeMinion() {
-    this->minion->mutateAtt(2);   //add two attack
-    this->minion->mutateDef(-2);  //add two defense
+void GiantStrength::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
+    auto &m = dynamic_cast<Minion &>(card);
+    m.mutateAtt(2);
+    m.mutateDef(2);
 }
+//------------------------------------Enlarge-----------------------------------------------------------------
+Enrage::Enrage() : Enchantment{2, "*2", "*2", "Enrage", ""} {}
 
-Enrage::Enrage(Minion *minion) : Enchantment{2, "*2", "*2", "Enrage", "", minion} {
-    minion->pushEnchantment(this);
+void Enrage::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
+    auto &m = dynamic_cast<Minion &>(card);
+    m.mutateAtt(m.getAtt()); // doubles the attack
+    m.mutateDef(m.getDef()); // doubles the defense
 }
+//------------------------------------Haste-----------------------------------------------------------------
+Haste::Haste() : Enchantment{1, "Haste", "", "", "Enchanted minion gains +1 action each turn"} {}
 
-void Enrage::changeMinion() {
-    this->minion->mutateAtt(this->minion->getAtt());  // doubles the attack
-    this->minion->mutateDef(-1 * this->minion->getDef());  // doubles the defense
+void Haste::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
+    auto &m = dynamic_cast<Minion &>(card);
+    m.setRecordActionValue(m.getActionValue() + 1);
 }
+//------------------------------------Magic Fatigue-----------------------------------------------------------------
+MagicFatigue::MagicFatigue() : Enchantment{0, "", "", "Magic Fatigue", "Enchanted minion's activated ability costs 2 more"} {}
 
-Haste::Haste(Minion *minion) : Enchantment{1, "Haste", "", "", "Enchanted minion gains +1 action each turn", minion} {
-    this->hasAttDef = false;
-    minion->pushEnchantment(this);
+void MagicFatigue::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
+    auto &m = dynamic_cast<Minion &>(card);
+    m.setMagic(m.getMagic() + 2); //double the magic used for active ability
 }
+//------------------------------------Silence-----------------------------------------------------------------
+Silence::Silence() : Enchantment{1, "", "", "Silence", "Enchanted minion cannot use abilities"} {}
 
-void Haste::changeMinion() {
-    this->minion->setRecordActionValue(1);
-}
-
-MagicFatigue::MagicFatigue(Minion *minion) : Enchantment{0, "", "", "Magic Fatigue",
-                                                   "Enchanted minion's activated ability costs 2 more", minion} {
-    this->hasAttDef = false;
-    minion->pushEnchantment(this);
-}
-
-void MagicFatigue::changeMinion() {
-    this->minion->setMagic(this->minion->getMagic());  //double the magic used for active ability
-}
-
-Silence::Silence(Minion *minion) : Enchantment{1, "", "", "Silence", "Enchanted minion cannot use abilities", minion} {
-    this->hasAttDef = false;
-    minion->pushEnchantment(this);
-}
-
-void Silence::changeMinion() {
-    this->minion->setMagic(
-            -1 * this->minion->getMagic() - 1); //set the magic needed for ability to -1. when use ability check if
-    // it is negative. Negative means silenced, cannot use ability.
+//set the magic needed for ability to -1. when use ability check if it is negative. Negative means silenced, cannot use ability.
+void Silence::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
+    auto &m = dynamic_cast<Minion &>(card);
+    m.setMagic(-1);
 }

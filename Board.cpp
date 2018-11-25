@@ -50,7 +50,7 @@ void Board::setRitual(std::unique_ptr<Ritual> ritual) {
     this->ritual.swap(ritual);
 }
 
-bool Board::minionFull() { return (minions.size()== 5);}
+bool Board::minionFull() { return (minions.size() == 5);}
 bool Board::hasRitual() { return ritual != nullptr; }
 
 bool Board::isGraveyardEmpty() { return graveyard.empty(); }
