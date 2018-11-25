@@ -13,6 +13,8 @@ Enchantment::~Enchantment() {}
 
 bool Enchantment::hasStats() { return  hasAttDef; }
 
+bool Enchantment::canPlay() { return true; }
+
 std::string Enchantment::getAtt() { return att; }
 
 std::string Enchantment::getDef() { return def; }

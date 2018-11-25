@@ -19,6 +19,10 @@ public:
     Enchantment(int cost, std::string att, std::string def, std::string name, std::string description, Minion *);
     virtual ~Enchantment();
 
+    bool canPlay();
+    void effect(Player &player, Player &otherPlayer);
+    void effect(Player &player, Card &card);
+
     virtual void changeMinion();
 
     bool hasStats();

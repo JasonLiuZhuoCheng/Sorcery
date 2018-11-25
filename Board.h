@@ -13,7 +13,7 @@ class Board final{
     std::unique_ptr<Ritual> ritual;
 
 public:
-    bool removeFromGraveyard(); // removes the last dead minion from "graveyard", and return its pointer
+    void removeFromGraveyard(); // removes the last dead minion from "graveyard", and put it on board
 
     void addToGraveyard(Minion &minion); // adds the minion to the top of "graveyard"
 

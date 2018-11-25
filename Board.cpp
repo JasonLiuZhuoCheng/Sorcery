@@ -32,15 +32,11 @@ std::unique_ptr<Minion> Board::removeMinion(int i) {
     return std::move(temp);
 }
 
-bool Board::removeFromGraveyard() {
-    if(!isGraveyardEmpty() && !minionFull()) {
-        unique_ptr<Minion> MinionGetRemoved  = std::move(graveyard.back());
-        graveyard.erase(graveyard.end());
-        minions.emplace_back(move(MinionGetRemoved));
-        MinionGetRemoved->setDef(1);
-        return true;
-    }
-    return false;
+void Board::removeFromGraveyard() {
+    unique_ptr<Minion> MinionGetRemoved  = std::move(graveyard.back());
+    graveyard.erase(graveyard.end());
+    minions.emplace_back(move(MinionGetRemoved));
+    MinionGetRemoved->setDef(1);
 }
 
 void Board::addToGraveyard(Minion &minion) {
