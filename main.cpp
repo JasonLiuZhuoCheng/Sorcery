@@ -11,9 +11,7 @@
 #include "Card/Ritual.h"
 #include "Card/Enchantment.h"
 #include "Display.h"
-
 using namespace std;
-
 
 void endOfGame(bool quit, Player &p1, Player &p2){
     if(quit) { cout << "the player has quitted the game" << endl; }
@@ -25,9 +23,7 @@ void endOfGame(bool quit, Player &p1, Player &p2){
         //player 2 is dead and player 1 wins
         cout << "player 1 has win!" << endl;
     }
-
 }
-
 
 void startTurn(Player &player, Player &otherPlayer, int round){
     // Resets all active player's minion actionValue
@@ -104,7 +100,6 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
     //display text
     unique_ptr<Display> text = make_unique<Text>();
     view.emplace_back(text);
-
 
     cout << "Welcome to sorcery" << endl;
     cout << "Please indicate both players' name" << endl;
@@ -223,9 +218,9 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     //for Novice Pyromancer
                     iss>>j;
                     Player *targetPlayer = (p == 1) ? p1 : p2;
-                    Card &targetCard = targetPlayer->getMyBoard()->getMinion(j);
+                    Minion &targetMinion = targetPlayer->getMyBoard()->getMinion(j);
                     if(success){
-                        playedMinion.ability(*player, targetCard);
+                        playedMinion.ability(*player, *other, *targetPlayer, targetMinion);
                         player->mutateMagic(-playedMinion.getMagic());//mutate magic
                     }
                 }else{//use i

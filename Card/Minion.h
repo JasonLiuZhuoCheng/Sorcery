@@ -60,7 +60,7 @@ public:
 
     virtual bool canUseAbility(Player &) = 0;
     virtual void ability(Player &) = 0;
-    virtual void ability(Player &, Player &, Card &) = 0;
+    virtual void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) = 0;
 };
 
 
@@ -72,7 +72,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &player, Player &otherPlayer, Card &c) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -84,7 +84,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &player, Player &otherPlayer, Card &c) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -96,7 +96,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &player, Player &otherPlayer, Card &c) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 class FireElemental final : public Minion {
@@ -107,7 +107,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &player, Player &otherPlayer, Card &c) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -119,7 +119,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &player, Player &otherPlayer, Card &c) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -131,7 +131,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &player, Player &otherPlayer, Card &c) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -143,7 +143,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &player, Player &otherPlayer, Card &c) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 
@@ -155,7 +155,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &player, Player &otherPlayer, Card &c) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
 #endif
