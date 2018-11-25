@@ -1,6 +1,3 @@
-//
-// Created by yawen on 2018-11-22.
-//
 #ifndef HEARTHSTONE_DISPLAY_H
 #define HEARTHSTONE_DISPLAY_H
 
@@ -28,17 +25,16 @@ public:
 };
 
 class Text final: public Display{
-    card_template_t printMinion(Minion &minion);
-    card_template_t printEnchantment(Enchantment &enchantment);
-    card_template_t printSpell(Spell &spell);
-    card_template_t printRitual(Ritual &ritual);
-    card_template_t printBoard(Player &board);
-    card_template_t printMinionsOnBoard(Board &board);
+    card_template_t makePlayer(Player &player);
+    card_template_t makeMinion(Minion &minion);
+    card_template_t makeEnchantment(Enchantment &enchantment);
+    card_template_t makeSpell(Spell &spell);
+    card_template_t makeRitual(Ritual &ritual);
 public:
     void displayMinion(Minion &minion) override;
     void displayHand(Player &player) override;
     void display(Player &p1, Player &p2) override;
+    void print(card_template_t);
     void print(card_template_t,card_template_t,card_template_t,card_template_t,card_template_t);
-    void printBoard(Player &p1, Player &p2);
 };
 #endif //HEARTHSTONE_DISPLAY_H

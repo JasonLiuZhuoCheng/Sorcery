@@ -11,19 +11,15 @@ class Minion;
 
 
 class Enchantment : public Card {
-
 protected:
-    Minion* minion;
     std::string att, def;
     bool hasAttDef;
 public:
-    Enchantment(int cost, std::string att, std::string def, std::string name, std::string description, Minion *);
+    Enchantment(int cost, std::string att, std::string def, std::string name, std::string description);
     virtual ~Enchantment();
 
     bool canPlay();
     void effect(Player &player, Player &otherPlayer) override;
-    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
-    virtual void changeMinion();
     bool hasStats();
     std::string getAtt();
     std::string getDef();
@@ -31,40 +27,32 @@ public:
 
 class GiantStrength final : public Enchantment {
 public:
-    explicit GiantStrength(Minion *);
-    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card);
-
-    void changeMinion() override;
+    GiantStrength();
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 class Enrage final : public Enchantment {
 public:
-    explicit Enrage(Minion *);
-
-    void changeMinion() override;
+    Enrage();
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 class Haste final : public Enchantment {
 public:
-    explicit Haste(Minion *);
-
-    void changeMinion() override;
-
-    void triggerChange(Card::Trigger);
+    Haste();
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 class MagicFatigue final : public Enchantment {
 public:
-    explicit MagicFatigue(Minion *);
-
-    void changeMinion() override;
+    MagicFatigue();
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 class Silence final : public Enchantment {
 public:
-    explicit Silence(Minion *);
-
-    void changeMinion() override;
+    Silence();
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
 #endif //HEARTHSTONE_ENCHANTMENT_H

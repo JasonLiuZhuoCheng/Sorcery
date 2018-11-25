@@ -10,9 +10,7 @@ Minion::Minion(int cost, string name, string description, int attack, int defens
         : Card{cost, name, description}, att{attack}, defense{defense}, actionValue{actionValue},
           recordActionValue{recordActionValue}, magic{magic}, haveAbility{haveAbility}, haveTrigger{haveTrigger} {}
 
-void Minion::mutateDef(int i) {
-    defense += i;    //mutate defense. i is the damage
-}
+void Minion::mutateDef(int i) { defense += i; }
 
 int Minion::getDef() { return defense; }
 
@@ -20,21 +18,16 @@ bool Minion::isDead(){ return defense <= 0; }
 
 void Minion::setDef(int i) { defense = i; } //only for Raised Dead
 
-void Minion::setActionValue() {   //when the turn ends, call this function and set every minions' action value = recordAction value;
-    actionValue = recordActionValue;
-}
+//when the turn ends, call this function and set every minions' action value = recordAction value;
+void Minion::resetActionValue() { actionValue = recordActionValue; }
 
 int Minion::getActionValue() { return actionValue; }
 
-void Minion::setRecordActionValue(int i) {
-    recordActionValue = recordActionValue + i;
-}
+void Minion::setRecordActionValue(int i) { recordActionValue = i; }
 
 int Minion::getMagic() { return magic; }
 
-void Minion::setMagic(int i) {
-    this->magic = magic + i;
-}
+void Minion::setMagic(int i) { magic += i; }
 
 int Minion::getAtt() { return att; }
 
@@ -48,7 +41,7 @@ Enchantment &Minion::getEnchant(int i) { return  *(recordEnchantment.at(i)); }
 
 int Minion::numOfEnchant() { return recordEnchantment.size(); }
 
-void Minion::mutateAtt(int i) {  att = att + i; }
+void Minion::mutateAtt(int i) { att += i; }
 
 void Minion::attack(Player &p) {
     if (canAttack()){
@@ -80,19 +73,15 @@ void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
     }
 }
 
-bool Minion::canPlay(Player &player){
-    if (player.getMyBoard()->minionFull()) {
-        cout << "Minion slot is full" << endl;
-    }
-}
+bool Minion::canPlay(Player &player){ return player.getMyBoard()->minionFull(); }
 
 void Minion::effect(Player &player, Player &otherPlayer) {
     player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_ENTER, *this, *this, player, otherPlayer);
     otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_ENTER, *this, *this, otherPlayer, player);
 }
 void Minion::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {}
-void Minion::pushEnchantment(std::unique_ptr<Enchantment> e) { recordEnchantment.emplace_back(e); }
 
+void Minion::pushEnchantment(std::unique_ptr<Enchantment> e) { recordEnchantment.emplace_back(e); }
 //----------------------------------------Air Elemental--------------------------------------------------------
 bool Minion::canAttack() { return actionValue > 0; }
 
@@ -237,5 +226,3 @@ bool MasterSummoner::ability(Player &p) {
 }
 
 bool MasterSummoner::ability(Player &p, Card &c) { return false; }
-
-
