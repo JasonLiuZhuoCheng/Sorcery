@@ -101,7 +101,7 @@ void Minion::effect(Player &player, Player &otherPlayer) {
 }
 void Minion::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {}
 
-void Minion::pushEnchantment(std::unique_ptr<Enchantment> e) { recordEnchantment.emplace_back(e); }
+void Minion::pushEnchantment(std::unique_ptr<Enchantment> e) { recordEnchantment.emplace_back(std::move(e)); }
 
 //----------------------------------------Air Elemental--------------------------------------------------------
 bool Minion::canAttack() { return actionValue > 0; }

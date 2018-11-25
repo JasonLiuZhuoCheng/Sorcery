@@ -5,24 +5,22 @@
 #include "Enchantment.h"
 #include "Minion.h"
 
-Enchantment::Enchantment(int cost, std::string att, std::string def, std::string name, std::string description)
-        : Card{cost, name, description},hasAttDef{true} {
+Enchantment::Enchantment(int cost, std::string att, std::string def, std::string name, std::string description, bool hasAttDef)
+        : Card(cost, name, description),hasAttDef{hasAttDef}, att{att}, def{def} {
 }
-
-Enchantment::~Enchantment() {}
 
 void Enchantment::effect(Player &player, Player &otherPlayer) {}
 
 bool Enchantment::hasStats() { return  hasAttDef; }
 
-bool Enchantment::canPlay() { return true; }
+bool Enchantment::canPlay(Player &) { return true; }
 
 std::string Enchantment::getAtt() { return att; }
 
 std::string Enchantment::getDef() { return def; }
 
 //------------------------------------Giant Strength-----------------------------------------------------------------
-GiantStrength::GiantStrength() : Enchantment{1, "+2" , "+2",  "Giant Strength", ""} {}
+GiantStrength::GiantStrength() : Enchantment(1, "+2" , "+2",  "Giant Strength", "", true) {}
 
 void GiantStrength::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &targetCard) {
     auto &minion = dynamic_cast<Minion &>(targetCard);
@@ -39,7 +37,7 @@ void GiantStrength::removeEnchantment(Minion &minion) {
     }
 }
 //------------------------------------Enlarge-----------------------------------------------------------------
-Enrage::Enrage() : Enchantment{2, "*2", "*2", "Enrage", ""} {}
+Enrage::Enrage() : Enchantment(2, "*2", "*2", "Enrage", "", true) {}
 
 void Enrage::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &targetCard) {
     auto &minion = dynamic_cast<Minion &>(targetCard);
@@ -56,7 +54,7 @@ void Enrage::removeEnchantment(Minion &minion) {
     }
 }
 //------------------------------------Haste-----------------------------------------------------------------
-Haste::Haste() : Enchantment{1, "Haste", "", "", "Enchanted minion gains +1 action each turn"} {}
+Haste::Haste() : Enchantment(1, "Haste", "", "", "Enchanted minion gains +1 action each turn", false) {}
 
 void Haste::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
     auto &m = dynamic_cast<Minion &>(card);
@@ -69,7 +67,7 @@ void Haste::removeEnchantment(Minion &minion) {
     minion.setActionValue(minion.getActionValue() - 1);
 }
 //------------------------------------Magic Fatigue-----------------------------------------------------------------
-MagicFatigue::MagicFatigue() : Enchantment{0, "", "", "Magic Fatigue", "Enchanted minion's activated ability costs 2 more"} {}
+MagicFatigue::MagicFatigue() : Enchantment(0, "", "", "Magic Fatigue", "Enchanted minion's activated ability costs 2 more", false) {}
 
 void MagicFatigue::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
     auto &m = dynamic_cast<Minion &>(card);
@@ -80,7 +78,7 @@ void MagicFatigue::removeEnchantment(Minion &minion) {
     minion.setMagic(minion.getMagic() - 2);
 }
 //------------------------------------Silence-----------------------------------------------------------------
-Silence::Silence() : Enchantment{1, "", "", "Silence", "Enchanted minion cannot use abilities"} {}
+Silence::Silence() : Enchantment(1, "", "", "Silence", "Enchanted minion cannot use abilities", false) {}
 
 void Silence::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
     auto &m = dynamic_cast<Minion &>(card);

@@ -18,7 +18,7 @@ int Ritual::getActiveCost() { return activeCost; }
 int Ritual::getCharges() { return cost; }
 
 bool Ritual::canUse(){ return (activeCost < charges); }
-bool Ritual::canPlay(){ return true; }
+bool Ritual::canPlay(Player &){ return true; }
 
 void Ritual::effect(Player& player, Player &otherPlayer){}
 void Ritual::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card){}

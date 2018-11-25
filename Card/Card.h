@@ -24,6 +24,7 @@ public:
     };
 
     Card(int, std::string &name, std::string &description);
+    virtual ~Card() = default;
 };
 
 #endif

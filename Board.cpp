@@ -2,6 +2,7 @@
 // Created by Matthew on 2018-11-14.
 //
 #include "Board.h"
+#include "Card/Enchantment.h"
 using namespace std;
 
 Minion &Board::getMinion(int i) { return *(minions.at(i)); }
@@ -19,15 +20,10 @@ int Board::getMinion(Minion &minion) {
 
 Ritual &Board::getRitual() { return *ritual; };
 
-void Board::removeRitual() {
-    ritual.reset();
-}
-
-void Board::addMinion(std::unique_ptr<Minion> minion) { minions.emplace_back(minion); }
+void Board::addMinion(std::unique_ptr<Minion> minion) { minions.emplace_back(std::move(minion)); }
 
 std::unique_ptr<Minion> Board::removeMinion(int i) {
-    Minion &minion = getMinion(i);
-    std::unique_ptr<Minion> tempMinion = std::make_unique<Minion>(minion);
+    std::unique_ptr<Minion> tempMinion {minions[i - 1].release()};
     minions.erase(minions.begin() + (i - 1));
     return std::move(tempMinion);
 }

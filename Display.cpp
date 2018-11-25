@@ -10,6 +10,12 @@
 
 using namespace std;
 
+void Graphic::display(Player &p1, Player &p2) {}
+
+void Graphic::displayHand(Player &player) {}
+
+void Graphic::displayMinion(Minion &minion) {}
+
 void Text::print(card_template_t t1) {
     for (int i = 0; i < t1.size(); i++) {
         std::cout << t1.at(i) << endl;
@@ -25,7 +31,7 @@ void Text::print(card_template_t t1, card_template_t t2, card_template_t t3, car
 void Text::displayMinion(Minion &minion){
     int t = 0;
     int numberOfEnchant = minion.numOfEnchant();
-    std::vector<std::string> Empty = CARD_TEMPLATE_EMPTY;
+    card_template_t Empty = CARD_TEMPLATE_EMPTY;
     if(minion.hasEnchant()){
         print(makeMinion(minion));
         while (numberOfEnchant >= 5){
@@ -89,12 +95,14 @@ void Text::displayHand(Player &player) {
 
 void Text::display(Player &p1, Player &p2) {
     std::vector<std::string> c = CENTRE_GRAPHIC;
+
     std::vector<std::string> Empty = CARD_TEMPLATE_BORDER;
-    std::vector<std::string> RitualOne = p1.getMyBoard()->getRitual() == nullptr ? CARD_TEMPLATE_BORDER : makeRitual(p1.getMyBoard()->getRitual());
-    std::vector<std::string> RitualTwo = p2.getMyBoard()->getRitual() == nullptr ? CARD_TEMPLATE_BORDER : makeRitual(p1.getMyBoard()->getRitual());
+    std::vector<std::string> RitualOne = p1.getMyBoard()->hasRitual() ? CARD_TEMPLATE_BORDER : makeRitual(p1.getMyBoard()->getRitual());
+    std::vector<std::string> RitualTwo = p2.getMyBoard()->hasRitual() ? CARD_TEMPLATE_BORDER : makeRitual(p1.getMyBoard()->getRitual());
     std::vector<std::string> GraveOne = p1.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p1.getMyBoard()->graveyardTop());
     std::vector<std::string> GraveTwo = p2.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p2.getMyBoard()->graveyardTop());
     print(RitualOne,Empty,makePlayer(p1),Empty,GraveOne);
+
     if (p1.getMyBoard()->numberOfMinions() == 0){
         print(Empty,Empty,Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 1){

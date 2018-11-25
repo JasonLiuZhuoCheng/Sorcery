@@ -1,5 +1,6 @@
 #include "Spell.h"
 #include "../Player.h"
+#include "Enchantment.h"
 #include <iostream>
 #include <typeindex>
 
@@ -37,8 +38,8 @@ void Unsummon::effect(Player &player, Player &otherPlayer) { }
 
 void Unsummon::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &targetCard) {
     auto minion = dynamic_cast<Minion*>(&targetCard);
-    int index = targetPlayer.getMyBoard()->getMinion(dynamic_cast<Minion &>(targetCard));//get the index of targetCard
-    targetPlayer.addMinionToHand(targetPlayer.getMyBoard()->removeMinion(index));//added the minion to the player's hand
+    int index = targetPlayer.getMyBoard()->getMinion(*minion);//get the index of targetCard
+    targetPlayer.addMinionToHand(std::move(targetPlayer.getMyBoard()->removeMinion(index)));//added the minion to the player's hand
     if(&targetPlayer == &player){
         player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *minion, *minion, player, otherPlayer);
         otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, *minion, *minion, otherPlayer, player);

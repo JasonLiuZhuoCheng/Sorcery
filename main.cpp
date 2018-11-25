@@ -74,7 +74,7 @@ void makeDeck(istream &in, Player &p) {
     string name;
     int count = 0 ;
     while (getline(in, name)) {
-        p.addToDeck(make_unique<Card>(*cards[name]));
+        p.addToDeck(make_unique<DarkRitual>());
     }
 }
 
@@ -94,12 +94,12 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
     if(graphicMode){
         //Display graphic = new Graphic();
        unique_ptr<Display> graphic = make_unique<Graphic>();
-       view.emplace_back(graphic);
+       view.emplace_back(std::move(graphic));
     }
 
     //display text
     unique_ptr<Display> text = make_unique<Text>();
-    view.emplace_back(text);
+    view.emplace_back(std::move(text));
 
     cout << "Welcome to sorcery" << endl;
     cout << "Please indicate both players' name" << endl;

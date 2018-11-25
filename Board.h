@@ -23,8 +23,6 @@ public:
     Ritual &getRitual();
     void setRitual(std::unique_ptr<Ritual> ritual);
 
-    void removeRitual();
-
     bool hasRitual();
 
     bool isGraveyardEmpty();

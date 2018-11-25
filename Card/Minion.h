@@ -61,6 +61,8 @@ public:
     virtual bool canUseAbility(Player &) = 0;
     virtual void ability(Player &) = 0;
     virtual void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) = 0;
+
+    virtual ~Minion() = default;
 };
 
 
@@ -73,6 +75,8 @@ public:
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+    ~AirElemental() = default;
 };
 
 
@@ -85,6 +89,8 @@ public:
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+    ~EarthElemental() = default;
 };
 
 
@@ -97,6 +103,8 @@ public:
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+    ~BoneGolem() = default;
 };
 
 class FireElemental final : public Minion {
@@ -108,6 +116,8 @@ public:
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+    ~FireElemental() = default;
 };
 
 
@@ -120,6 +130,8 @@ public:
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+    ~PotionSeller() = default;
 };
 
 
@@ -132,6 +144,8 @@ public:
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+    ~NovicePyromancer() = default;
 };
 
 
@@ -144,6 +158,8 @@ public:
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+    ~ApprenticeSummoner() = default;
 };
 
 
@@ -156,6 +172,8 @@ public:
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+    ~MasterSummoner() = default;
 };
 
 #endif

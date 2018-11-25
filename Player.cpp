@@ -22,7 +22,7 @@ Card & Player::getCard(int i) { return *(hand.at(i)); }
 
 void Player::addMinionToHand(unique_ptr<Minion> minion) {
     if(!isHandfull()){
-        hand.emplace_back(minion);
+        hand.emplace_back(std::move(minion));
     }
 }
 
@@ -60,7 +60,7 @@ void Player::mutateLife(int i) { life += i; }
 void Player::mutateMagic(int i) { magic += i; }
 
 void Player::addToDeck(std::unique_ptr<Card> card) {
-    deck.emplace_back(card);
+    deck.emplace_back(std::move(card));
 }
 
 void Player::setName(string &name) { this->name = name; }
