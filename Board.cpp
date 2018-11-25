@@ -27,7 +27,7 @@ void Board::addMinion(std::unique_ptr<Minion> minion) { minions.emplace_back(min
 
 std::unique_ptr<Minion> Board::removeMinion(int i) {
     Minion &minion = getMinion(i);
-   std::unique_ptr<Minion> tempMinion = std::make_unique<Minion>(minion);
+    std::unique_ptr<Minion> tempMinion = std::make_unique<Minion>(minion);
     minions.erase(minions.begin() + (i - 1));
     return std::move(tempMinion);
 }
@@ -59,14 +59,18 @@ int Board::numberOfMinions() { return minions.size(); }
 
 void Board::notifyAll(Card::Trigger t, Player &player) {
     for (int i = 0; i < minions.size(); i++) {
-        getMinion(i).trigger(t, player);
+        if(!getMinion(i).isSilence()) {
+            getMinion(i).trigger(t, player);
+        }
     }
     getRitual().trigger(t, player);
 }
 
 void Board::notifyAll(Card::Trigger t, Minion  &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
     for(int i = 0; i < minions.size(); i++){
-        getMinion(i).trigger(t, myMinion, otherMinion, player, otherPlayer);
+        if(!getMinion(i).isSilence()) {
+            getMinion(i).trigger(t, myMinion, otherMinion, player, otherPlayer);
+        }
     }
     getRitual().trigger(t, myMinion, otherMinion, player, otherPlayer);
 }
