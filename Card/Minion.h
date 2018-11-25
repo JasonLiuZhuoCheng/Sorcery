@@ -60,7 +60,7 @@ public:
 
     virtual bool canUseAbility(Player &) = 0;
     virtual void ability(Player &) = 0;
-    virtual void ability(Player &, Card &) = 0;
+    virtual void ability(Player &, Player &, Card &) = 0;
 };
 
 
@@ -72,7 +72,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &otherPlayer, Card &c) override;
 };
 
 
@@ -84,7 +84,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &otherPlayer, Card &c) override;
 };
 
 
@@ -96,7 +96,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &otherPlayer, Card &c) override;
 };
 
 class FireElemental final : public Minion {
@@ -107,7 +107,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &otherPlayer, Card &c) override;
 };
 
 
@@ -119,7 +119,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &otherPlayer, Card &c) override;
 };
 
 
@@ -131,7 +131,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &otherPlayer, Card &c) override;
 };
 
 
@@ -143,7 +143,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &otherPlayer, Card &c) override;
 };
 
 
@@ -155,7 +155,7 @@ public:
 
     bool canUseAbility(Player &) override;
     void ability(Player &) override;
-    void ability(Player &, Card &) override;
+    void ability(Player &player, Player &otherPlayer, Card &c) override;
 };
 
 #endif

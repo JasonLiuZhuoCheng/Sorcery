@@ -114,7 +114,7 @@ void AirElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Pla
 
 bool AirElemental::canUseAbility(Player &) { return !this->isSilence(); }
 void AirElemental::ability(Player &p) {}
-void AirElemental::ability(Player &p, Card &c) {}
+void AirElemental::ability(Player &player, Player &otherPlayer, Card &c) {}
 
 //---------------------------------------Earth Elemental----------------------------------------------------------
 EarthElemental::EarthElemental() :
@@ -125,7 +125,7 @@ void EarthElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, P
 
 bool EarthElemental::canUseAbility(Player &) { return !this->isSilence(); }
 void EarthElemental::ability(Player &p) {}
-void EarthElemental::ability(Player &p, Card &c) { }
+void EarthElemental::ability(Player &player, Player &otherPlayer, Card &c) { }
 
 //---------------------------------------------Bone Golem-----------------------------------------
 BoneGolem::BoneGolem() :
@@ -141,7 +141,7 @@ void BoneGolem::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player
 
 bool BoneGolem::canUseAbility(Player &) { return !this->isSilence(); }
 void BoneGolem::ability(Player &p) {}
-void BoneGolem::ability(Player &p, Card &c) {}
+void BoneGolem::ability(Player &player, Player &otherPlayer, Card &c) {}
 //------------------------------------------Fire Elemental-----------------------------------------------
 FireElemental::FireElemental() :
         Minion{2, "Fire Elemental", "Whenever an opponent's minion enters play, deal 1 damage to it.", 2, 2, 0, 1, 0, 0,
@@ -160,7 +160,7 @@ void FireElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Pl
 
 bool FireElemental::canUseAbility(Player &) { return !this->isSilence(); }
 void FireElemental::ability(Player &p) {}
-void FireElemental::ability(Player &p, Card &c) {}
+void FireElemental::ability(Player &player, Player &otherPlayer, Card &c) {}
 //---------------------------------------------Potion Seller---------------------------------------------------
 PotionSeller::PotionSeller() :
         Minion{2, "Potion Seller", "At the end of your turn, all your minions gain +0/+1", 1, 3, 0, 1, 0, 0, false,
@@ -179,7 +179,7 @@ void PotionSeller::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Pla
 
 bool PotionSeller::canUseAbility(Player &) { return !this->isSilence(); }
 void PotionSeller::ability(Player &p) { }
-void PotionSeller::ability(Player &p, Card &c) { }
+void PotionSeller::ability(Player &player, Player &otherPlayer, Card &c) { }
 //--------------------------------------------Novice Pyromancer------------------------------------------------
 NovicePyromancer::NovicePyromancer() :
         Minion{1, "Novice Pyromancer", "Deals 1 damage to target minion", 1, 1, 0, 1, 1, 0, true, false} {}
@@ -192,12 +192,12 @@ bool NovicePyromancer::canUseAbility(Player &player){ return !this->isSilence();
 
 void NovicePyromancer::ability(Player &p) { }
 
-void NovicePyromancer::ability(Player &p, Player &other, Card &c) {
+void NovicePyromancer::ability(Player &player, Player &otherPlayer, Card &c) {
     Minion &targetMinion = dynamic_cast<Minion &>(c);
         targetMinion.mutateDef(-1);
         if(targetMinion.isDead()){
-            player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
-            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, *this, otherPlayer, player);
+            player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, *this, targetMinion, player, otherPlayer);
+            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, targetMinion, *this, otherPlayer, player);
         }
 }
 //---------------------------------------------Apprentice Summoner-----------------------------------------------
@@ -215,7 +215,7 @@ void ApprenticeSummoner::ability(Player &p) {
         p.getMyBoard()->addMinion(std::move(m));
 }
 
-void ApprenticeSummoner::ability(Player &p, Card &c) {}
+void ApprenticeSummoner::ability(Player &player, Player &otherPlayer, Card &c) {}
 //--------------------------------------------------Master Summoner--------------------------------------
 MasterSummoner::MasterSummoner() :
         Minion{3, "Master Summoner", "Summon up to three 1/1 air elementals", 2, 3, 0, 1, 2, 0, true, false} {}
@@ -234,4 +234,4 @@ void MasterSummoner::ability(Player &player) {
         }
 }
 
-void MasterSummoner::ability(Player &p, Card &c) {}
+void MasterSummoner::ability(Player &player, Player &otherPlayer, Card &c) {}
