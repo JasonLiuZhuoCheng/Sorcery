@@ -14,6 +14,10 @@ Player::Player(int id) : id{id},life{20}, magic{3}{
     myBoard = new Board();
 }
 
+Player::~Player() {
+    delete myBoard;
+}
+
 std::string Player::getName() { return  name; }
 
 int Player::getLife() { return  life; }
