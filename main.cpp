@@ -119,6 +119,12 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
     p1->shuffle();
     p2->shuffle();
 
+    //Draws 5 cards at the start of turn
+    for(int i = 0; i < 5; i++){
+        p1->drawCard();
+        p2->drawCard();
+    }
+
     int round = 0; //count the # of rounds the game has occur, use to track which player is active player
     while ((!p1->isDead() && !p2->isDead()) && !quit) {
 
