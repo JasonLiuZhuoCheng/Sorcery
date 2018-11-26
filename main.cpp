@@ -254,6 +254,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 }
             } else if (input == "board") {
                 for(auto &it: view){
+                    cout << "";
                     it->display(*p1,*p2);
                 }
             }
@@ -278,25 +279,25 @@ int main(int argc, char *argv[]) {
 
     //for loop to do the arguments
     for (int i = 0; i < numArgs; ++i) {
-        if (argv[i] == "-deck1") { //player1 uses another deck
+        string argument =argv[i];
+        if (argument == "-deck1") { //player1 uses another deck
             cout << "player1 gets deck from another file" << endl;
             deckPath1 = argv[++i];
-        } else if (argv[i] == "-deck2") { //player2's deck < filename
+        } else if (argument == "-deck2") { //player2's deck < filename
             cout << "player2 gets deck from another file" << endl;
             deckPath2 = argv[++i];
-        } else if (argv[i] == "-init") {//want to read commands first from a file
+        } else if (argument == "-init") {//want to read commands first from a file
             cout << "init mode" << endl;
             readFile = true;
             initPath = argv[++i];
-        } else if (argv[i] == "-testing") {
+        } else if (argument == "-testing") {
             cout << "testing mode" << endl;
             testMode = true;
-        } else if (argv[i] == "-graphics") {
+        } else if (argument == "-graphics") {
             graphicMode = true;
             cout << "graphic mode" << endl;
         }
     }
-
 
     makeDeck(deckPath1, *p1);
     makeDeck(deckPath2, *p2);
