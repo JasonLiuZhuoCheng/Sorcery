@@ -106,19 +106,19 @@ void Text::display(Player &p1, Player &p2) {
     if (p1.getMyBoard()->numberOfMinions() == 0){
         print(Empty,Empty,Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 1){
-        print(makeMinion(p1.getMyBoard()->getMinion(1)),Empty,Empty,Empty,Empty);
+        print(makeMinion(p1.getMyBoard()->getMinion(0)),Empty,Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 2){
-        print(makeMinion(p1.getMyBoard()->getMinion(1)),makeMinion(p1.getMyBoard()->getMinion(2)),Empty,Empty,Empty);
+        print(makeMinion(p1.getMyBoard()->getMinion(0)),makeMinion(p1.getMyBoard()->getMinion(1)),Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 3){
-        print(makeMinion(p1.getMyBoard()->getMinion(1)),makeMinion(p1.getMyBoard()->getMinion(2)),
-              makeMinion(p1.getMyBoard()->getMinion(3)),Empty,Empty);
+        print(makeMinion(p1.getMyBoard()->getMinion(0)),makeMinion(p1.getMyBoard()->getMinion(1)),
+              makeMinion(p1.getMyBoard()->getMinion(2)),Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 4){
-        print(makeMinion(p1.getMyBoard()->getMinion(1)),makeMinion(p1.getMyBoard()->getMinion(2))
-                ,makeMinion(p1.getMyBoard()->getMinion(3)),makeMinion(p1.getMyBoard()->getMinion(4)),Empty);
+        print(makeMinion(p1.getMyBoard()->getMinion(0)),makeMinion(p1.getMyBoard()->getMinion(1))
+                ,makeMinion(p1.getMyBoard()->getMinion(2)),makeMinion(p1.getMyBoard()->getMinion(3)),Empty);
     } else {
-        print(makeMinion(p1.getMyBoard()->getMinion(1)),makeMinion(p1.getMyBoard()->getMinion(2)),
-              makeMinion(p1.getMyBoard()->getMinion(3)),makeMinion(p1.getMyBoard()->getMinion(4)),
-              makeMinion(p1.getMyBoard()->getMinion(5)));
+        print(makeMinion(p1.getMyBoard()->getMinion(0)),makeMinion(p1.getMyBoard()->getMinion(1)),
+              makeMinion(p1.getMyBoard()->getMinion(2)),makeMinion(p1.getMyBoard()->getMinion(3)),
+              makeMinion(p1.getMyBoard()->getMinion(4)));
     }
 
     for(auto &row : c){
@@ -127,19 +127,19 @@ void Text::display(Player &p1, Player &p2) {
     if (p2.getMyBoard()->numberOfMinions() == 0){
         print(Empty,Empty,Empty,Empty,Empty);
     } else if (p2.getMyBoard()->numberOfMinions() == 1){
-        print(makeMinion(p2.getMyBoard()->getMinion(1)),Empty,Empty,Empty,Empty);
+        print(makeMinion(p2.getMyBoard()->getMinion(0)),Empty,Empty,Empty,Empty);
     } else if (p2.getMyBoard()->numberOfMinions() == 2){
-        print(makeMinion(p2.getMyBoard()->getMinion(1)),makeMinion(p2.getMyBoard()->getMinion(2)),Empty,Empty,Empty);
+        print(makeMinion(p2.getMyBoard()->getMinion(0)),makeMinion(p2.getMyBoard()->getMinion(1)),Empty,Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 3){
-        print(makeMinion(p2.getMyBoard()->getMinion(1)),makeMinion(p2.getMyBoard()->getMinion(2)),
-                makeMinion(p2.getMyBoard()->getMinion(3)),Empty,Empty);
+        print(makeMinion(p2.getMyBoard()->getMinion(0)),makeMinion(p2.getMyBoard()->getMinion(1)),
+                makeMinion(p2.getMyBoard()->getMinion(2)),Empty,Empty);
     } else if (p2.getMyBoard()->numberOfMinions() == 4){
-        print(makeMinion(p2.getMyBoard()->getMinion(1)),makeMinion(p2.getMyBoard()->getMinion(2))
-                ,makeMinion(p2.getMyBoard()->getMinion(3)),makeMinion(p2.getMyBoard()->getMinion(4)),Empty);
+        print(makeMinion(p2.getMyBoard()->getMinion(0)),makeMinion(p2.getMyBoard()->getMinion(1))
+                ,makeMinion(p2.getMyBoard()->getMinion(2)),makeMinion(p2.getMyBoard()->getMinion(3)),Empty);
     } else {
-        print(makeMinion(p2.getMyBoard()->getMinion(1)),makeMinion(p2.getMyBoard()->getMinion(2)),
-                makeMinion(p2.getMyBoard()->getMinion(3)),makeMinion(p2.getMyBoard()->getMinion(4)),
-                makeMinion(p2.getMyBoard()->getMinion(5)));
+        print(makeMinion(p2.getMyBoard()->getMinion(0)),makeMinion(p2.getMyBoard()->getMinion(1)),
+                makeMinion(p2.getMyBoard()->getMinion(2)),makeMinion(p2.getMyBoard()->getMinion(3)),
+                makeMinion(p2.getMyBoard()->getMinion(4)));
     }
     print(RitualTwo,Empty,makePlayer(p2),Empty,GraveTwo);
 }
