@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include "Card/Card.h"
+#include "Card.h"
 #include "Board.h"
 
 using namespace std;

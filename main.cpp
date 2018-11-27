@@ -7,9 +7,9 @@
 
 #include "Board.h"
 #include "Player.h"
-#include "Card/Spell.h"
-#include "Card/Ritual.h"
-#include "Card/Enchantment.h"
+#include "Spell.h"
+#include "Ritual.h"
+#include "Enchantment.h"
 #include "Display.h"
 using namespace std;
 
@@ -28,12 +28,13 @@ void endOfGame(bool quit, Player &p1, Player &p2){
 void startTurn(Player &player, Player &otherPlayer, int round){
     cout << "startTurn Function called" << endl;
     // Resets all active player's minion actionValue
+
+    player.drawCard();
     for(int i = 0; i < player.getMyBoard()->numberOfMinions(); i++){
         player.getMyBoard()->getMinion(i).resetActionValue();
     }
     player.setMagic((round - 1)/2 + 3);
     player.getMyBoard()->notifyAll(Card::Trigger::START_OF_TURN, player);
-    //otherPlayer.getMyBoard()->notifyAll(Card::Trigger::START_OF_TURN, player);
 }
 
 //Make a deck from the file
@@ -181,7 +182,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                         //uses on Enchantments, Spell(Banish, Unsommon, Dischantment)
                         Card &targetCard = targetPlayer->getMyBoard()->getMinion(j-1);
                         if (success) {
-                            player->moveEnchantmentToMinion(i, targetCard);
+                            player->moveEnchantmentToMinion(i-1, targetCard);
                             playedCard.effect(*player, *targetPlayer, *other, targetCard);
                             player->mutateMagic(-playedCard.getCost());//mutate magic
                         }
@@ -237,7 +238,8 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 cin >> i;
                //loop through to output the interface
                 for(auto &it: view){
-                    it->displayMinion(player->getMyBoard()->getMinion(i));
+                    cout << "inside displaying inspect" << endl;
+                    it->displayMinion(player->getMyBoard()->getMinion(i-1));
                 }
             } else if (input == "hand") {
                 //displays the hand of an active player
@@ -249,6 +251,8 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     cout << "";
                     it->display(*p1,*p2);
                 }
+            }else{
+                cout << "Unrecognized command. Enter help for instructions" << endl;
             }
         }
     }

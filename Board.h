@@ -1,8 +1,8 @@
 #ifndef HEARTHSTONE_BOARD_H
 #define HEARTHSTONE_BOARD_H
 
-#include "Card/Minion.h"
-#include "Card/Ritual.h"
+#include "Minion.h"
+#include "Ritual.h"
 #include <vector>
 #include <memory>
 

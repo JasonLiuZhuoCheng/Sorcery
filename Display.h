@@ -4,7 +4,7 @@
 
 #include "Board.h"
 #include "ascii_graphics.h"
-#include "Card/Card.h"
+#include "Card.h"
 
 class Player;
 class Minion;

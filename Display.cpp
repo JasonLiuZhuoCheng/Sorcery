@@ -1,8 +1,8 @@
 #include <iostream>
 #include <typeindex>
 #include "Display.h"
-#include "Card/Enchantment.h"
-#include "Card/Spell.h"
+#include "Enchantment.h"
+#include "Spell.h"
 #include "Player.h"
 
 using namespace std;
@@ -100,7 +100,7 @@ void Text::display(Player &p1, Player &p2) {
     std::vector<std::string> RitualOne = !p1.getMyBoard()->hasRitual() ? CARD_TEMPLATE_BORDER : makeRitual(
             p1.getMyBoard()->getRitual());
     std::vector<std::string> RitualTwo = !p2.getMyBoard()->hasRitual() ? CARD_TEMPLATE_BORDER : makeRitual(
-            p1.getMyBoard()->getRitual());
+            p2.getMyBoard()->getRitual());
 
     std::vector<std::string> GraveOne = p1.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p1.getMyBoard()->graveyardTop());
     std::vector<std::string> GraveTwo = p2.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p2.getMyBoard()->graveyardTop());

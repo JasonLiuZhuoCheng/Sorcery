@@ -3,7 +3,7 @@
 //
 
 #include "Player.h"
-#include "Card/Enchantment.h"
+#include "Enchantment.h"
 
 #include <algorithm>
 #include <iostream>
@@ -34,11 +34,10 @@ void Player::addMinionToHand(unique_ptr<Minion> minion) {
 void Player::moveEnchantmentToMinion(int i, Card &ifMinion) {
     Card *card = hand[i].release();
     Enchantment *enchantment = nullptr;
-    Minion *minion = nullptr;
-    if((enchantment = dynamic_cast<Enchantment *>(card)) && (minion = dynamic_cast<Minion *>(&ifMinion))){
-        minion->pushEnchantment(unique_ptr<Enchantment>(enchantment));
+    if(((enchantment = dynamic_cast<Enchantment *>(card)) != nullptr) && dynamic_cast<Minion*>(&ifMinion)){
+        dynamic_cast<Minion&>(ifMinion).pushEnchantment(unique_ptr<Enchantment>(enchantment));
+        hand.erase(hand.begin() + i);
     }
-    hand.erase(hand.begin() + i);
 }
 
 /*

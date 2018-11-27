@@ -2,7 +2,7 @@
 // Created by Matthew on 2018-11-14.
 //
 #include "Board.h"
-#include "Card/Enchantment.h"
+#include "Enchantment.h"
 using namespace std;
 
 Minion &Board::getMinion(int i) { return *(minions.at(i)); }
