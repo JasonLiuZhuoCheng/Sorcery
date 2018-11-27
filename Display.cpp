@@ -1,12 +1,9 @@
 #include <iostream>
 #include <typeindex>
 #include "Display.h"
-#include "ascii_graphics.h"
-#include "Card/Minion.h"
 #include "Card/Enchantment.h"
 #include "Card/Spell.h"
 #include "Player.h"
-#include "Card/Card.h"
 
 using namespace std;
 
@@ -97,8 +94,10 @@ void Text::display(Player &p1, Player &p2) {
     std::vector<std::string> c = CENTRE_GRAPHIC;
 
     std::vector<std::string> Empty = CARD_TEMPLATE_BORDER;
-    std::vector<std::string> RitualOne = p1.getMyBoard()->hasRitual() ? CARD_TEMPLATE_BORDER : makeRitual(p1.getMyBoard()->getRitual());
-    std::vector<std::string> RitualTwo = p2.getMyBoard()->hasRitual() ? CARD_TEMPLATE_BORDER : makeRitual(p1.getMyBoard()->getRitual());
+    std::vector<std::string> RitualOne = !p1.getMyBoard()->hasRitual() ? CARD_TEMPLATE_BORDER : makeRitual(
+            p1.getMyBoard()->getRitual());
+    std::vector<std::string> RitualTwo = !p2.getMyBoard()->hasRitual() ? CARD_TEMPLATE_BORDER : makeRitual(
+            p1.getMyBoard()->getRitual());
     std::vector<std::string> GraveOne = p1.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p1.getMyBoard()->graveyardTop());
     std::vector<std::string> GraveTwo = p2.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p2.getMyBoard()->graveyardTop());
     print(RitualOne,Empty,makePlayer(p1),Empty,GraveOne);
