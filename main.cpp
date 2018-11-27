@@ -4,6 +4,7 @@
 #include <map>
 #include <memory>
 #include <typeindex>
+#include <unordered_set>
 
 #include "Board.h"
 #include "Player.h"
@@ -83,6 +84,16 @@ void displayFile(const string &path) {
 }
 
 void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMode) {
+    // Use to track cards that can play without a target
+    unordered_set<string> noTargetCards =
+            {"Recharge", "Raise Dead", "Blizzard", "Air Elemental", "Earth Elemental", "Bone Golem", "Fire Elemental",
+             "Potion Seller", "Novice Pyromancer", "Apprentice Summoner", "Master Summoner", "Dark Ritual",
+             "Aura of Power", "Standstill"};
+    // Use to track cards that must play on a target
+    unordered_set<string> targetCards =
+            {"Banish", "Unsummon", "Disenchant", "Giant Strength", "Enrage", "Haste", "Magic Fatigue", "Silence"};
+
+
     string input; // only use with cin for input purpose
     int i, j, p; // only use with cin for input purpose
     bool quit = false; // if the player choose to quit the game so no winner
@@ -170,12 +181,15 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     cout << "Do not have enough magic to play this card" << endl;
                      continue;
                 }
-                bool success = playedCard.canPlay(*player);
+                bool success = playedCard.canPlay(*player) &&
+                        noTargetCards.find(playedCard.getName()) != noTargetCards.end();
                 cout << player->getMyBoard()->numberOfMinions();
                 cout << success << endl;
 
                 //PLAYER HAS ENOUGH MAGIC TO PLAY THIS CARD
                 if(iss >> p){  // play i p t
+                    success = playedCard.canPlay(*player) &&
+                            targetCards.find(playedCard.getName()) != noTargetCards.end();
                     //uses on Enchantment, and Spell(Banish, Unsommon, Dischantment)
                     Player *targetPlayer = (p == 1) ? p1 : p2;
                     if(iss >> j) { // play i p t(number)
