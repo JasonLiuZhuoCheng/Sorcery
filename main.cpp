@@ -29,8 +29,9 @@ void endOfGame(bool quit, Player &p1, Player &p2){
 void startTurn(Player &player, Player &otherPlayer, int round){
     cout << "startTurn Function called" << endl;
     // Resets all active player's minion actionValue
+      player.drawCard();
 
-    player.drawCard();
+
     for(int i = 0; i < player.getMyBoard()->numberOfMinions(); i++){
         player.getMyBoard()->getMinion(i).resetActionValue();
     }
@@ -88,7 +89,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
     unordered_set<string> noTargetCards =
             {"Recharge", "Raise Dead", "Blizzard", "Air Elemental", "Earth Elemental", "Bone Golem", "Fire Elemental",
              "Potion Seller", "Novice Pyromancer", "Apprentice Summoner", "Master Summoner", "Dark Ritual",
-             "Aura of Power", "Standstill"};
+             "Aura Of Power", "Standstill"};
     // Use to track cards that must play on a target
     unordered_set<string> targetCards =
             {"Banish", "Unsummon", "Disenchant", "Giant Strength", "Enrage", "Haste", "Magic Fatigue", "Silence"};
@@ -97,6 +98,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
     string input; // only use with cin for input purpose
     int i, j, p; // only use with cin for input purpose
     bool quit = false; // if the player choose to quit the game so no winner
+    bool startGame = true;
     vector<unique_ptr<Display>> view;//vector for different displays
     if(graphicMode){
         //Display graphic = new Graphic();
@@ -123,7 +125,6 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
    //Draws 5 cards at the start of turn
     for(int i = 0; i < 5; i++){
         p1->drawCard();
-        cout << p1->getCard(i).getName() << endl;
         p2->drawCard();
     }
 
@@ -132,9 +133,11 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
 
         //Game Loop
         round++;
-        cout << "round" << round << endl;
+
         Player *player = round % 2 ? p1 : p2; // This is the active player in current round
         Player *other = (player == p1) ? p2 : p1;
+
+        cout << "round" << round  << " Player " << player->getID() << endl;
         startTurn(*player, *other, round);
 
         while(!quit) {
@@ -267,7 +270,11 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     it->display(*p1,*p2);
                 }
             }else{
-                cout << "Unrecognized command. Enter help for instructions" << endl;
+                if(startGame){
+                    startGame = false;
+                }else{
+                    cout << "Unrecognized command. Enter help for instructions" << endl;
+                }
             }
         }
     }

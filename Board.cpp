@@ -29,9 +29,9 @@ std::unique_ptr<Minion> Board::removeMinion(int i) {
 }
 
 void Board::removeFromGraveyard() {
-    unique_ptr<Minion> minionGetRemoved  = std::move(graveyard.back());
+    unique_ptr<Minion> minionGetRemoved {graveyard.back().release()}; //= std::move(graveyard.back());
+    graveyard.pop_back();
     minionGetRemoved->setDef(1);
-    graveyard.erase(graveyard.end());
     minions.emplace_back(move(minionGetRemoved));
 }
 

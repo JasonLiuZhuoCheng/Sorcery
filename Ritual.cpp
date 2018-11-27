@@ -18,7 +18,10 @@ int Ritual::getActiveCost() { return activeCost; }
 int Ritual::getCharges() { return charges; }
 
 bool Ritual::canUse(){ return (activeCost <= charges); }
-bool Ritual::canPlay(Player &){ return true; }
+bool Ritual::canPlay(Player &){
+    std::cout << "success is True" << std::endl;
+    return true;
+}
 
 void Ritual::effect(Player& player, Player &otherPlayer){}
 void Ritual::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card){}
@@ -32,15 +35,17 @@ void DarkRitual::trigger(Card::Trigger t, Player &player) {
     if(t == Card::Trigger::START_OF_TURN && canUse()) {//if the condition is right and the player is able to use this card
         player.mutateMagic(1);
         mutateCharges(-activeCost);
+        if(activeCost > charges){
+            player.getMyBoard()->setRitual(nullptr);
+        }
     }
 }
-
 void DarkRitual::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 
 //---------------------------------------------------Aura of Power----------------------------------------
 AuraOfPower::AuraOfPower():
-    Ritual(1, "AuraOfPower", "Whenever a minion enter a play under your control, it gains +1/+1", 4, 1){}
+    Ritual(1, "Aura Of Power", "Whenever a minion enter a play under your control, it gains +1/+1", 4, 1){}
 
 void AuraOfPower::trigger(Trigger t, Player &){}
 
@@ -49,6 +54,9 @@ void AuraOfPower::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Play
         myMinion.mutateAtt(1);
         myMinion.mutateDef(1);
         mutateCharges(-activeCost);
+        if(activeCost > charges){
+            player.getMyBoard()->setRitual(nullptr);
+        }
     }
 }
 
@@ -65,12 +73,22 @@ void Standstill::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Playe
         mutateCharges(-activeCost);
         player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, myMinion, otherMinion, player, otherPlayer);
         otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, myMinion, otherPlayer, player);
+        if(activeCost > charges){
+            player.getMyBoard()->setRitual(nullptr);
+        }
     }
-    else if(((t == Card::Trigger::OTHER_MINION_ENTER)) && canUse()&&(&otherPlayer.getMyBoard()->graveyardTop() != &otherMinion)){
-        otherPlayer.getMyBoard()->addToGraveyard(otherMinion);
-        mutateCharges(-activeCost);
-        player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, myMinion, otherMinion, player, otherPlayer);
-        otherPlayer.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, myMinion, otherPlayer, player);
+    else if(((t == Card::Trigger::OTHER_MINION_ENTER)) && canUse()){
+        if(!(otherPlayer.getMyBoard()->isGraveyardEmpty()) && (&otherPlayer.getMyBoard()->graveyardTop() == &otherMinion)){}
+        else{
+            otherPlayer.getMyBoard()->addToGraveyard(otherMinion);
+            mutateCharges(-activeCost);
+            player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, myMinion, otherMinion, player, otherPlayer);
+            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, myMinion, otherPlayer, player);
+
+            if(activeCost > charges){
+                player.getMyBoard()->setRitual(nullptr);
+            }
+        }
     }
 }
 

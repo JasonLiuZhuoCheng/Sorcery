@@ -184,8 +184,9 @@ bool PotionSeller::canUseAbility(Player &) { return !this->isSilence(); }
 void PotionSeller::ability(Player &p) { }
 void PotionSeller::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) { }
 //--------------------------------------------Novice Pyromancer------------------------------------------------
+//cost, name, description, att, def, actionValue, recordActionValue, magic, silence, haveAbility, haveTrigger
 NovicePyromancer::NovicePyromancer() :
-        Minion{1, "Novice Pyromancer", "Deals 1 damage to target minion", 1, 1, 0, 1, 1, 0, true, false} {}
+        Minion{1, "Novice Pyromancer", "Deals 1 damage to target minion", 0, 1, 0, 1, 1, 0, true, false} {}
 
 void NovicePyromancer::trigger(Card::Trigger t, Player &p) {}
 
