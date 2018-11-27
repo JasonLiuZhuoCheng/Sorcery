@@ -62,14 +62,13 @@ void Recharge::effect(Player &player, Player &targetPlayer, Player &otherPlayer,
 //-------------------------------------------Disenchant Class----------------------------------------------
 Disenchant::Disenchant() : Spell(1, "Disenchant", "Destroy the top enchantment on target minion") {}
 
-bool Disenchant::canPlay(Player &player) {}
+bool Disenchant::canPlay(Player &player) { return true; }
 
 void Disenchant::effect(Player &player, Player &otherPlayer) {}
 
 void Disenchant::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
-    //TODO will be implement after Enchantment
-
-
+    int index = targetPlayer.getMyBoard()->getMinion(dynamic_cast<Minion &>(card));
+    targetPlayer.getMyBoard()->getMinion(index).dischant();
 }
 
 //--------------------------------------------Raise Dead---------------------------------------------
