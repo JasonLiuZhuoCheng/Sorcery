@@ -170,11 +170,11 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 iss >> i;
                 cout << "attack is called" << endl;
                 if(iss >> j){
-                    Minion &myMinion = player->getMyBoard()->getMinion(i);
-                    Minion &otherMinion = other->getMyBoard()->getMinion(j);
+                    Minion &myMinion = player->getMyBoard()->getMinion(i-1);
+                    Minion &otherMinion = other->getMyBoard()->getMinion(j-1);
                     myMinion.attack(otherMinion, *player, *other);
                 }else{
-                    player->getMyBoard()->getMinion(i).attack(*other);
+                    player->getMyBoard()->getMinion(i-1).attack(*other);
                 }
             } else if (cmd == "play") {
                 iss >> i;
