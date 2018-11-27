@@ -1,6 +1,6 @@
 #include <iostream>
 #include "Ritual.h"
-#include "../Player.h"
+#include "Player.h"
 
 using namespace std;
 Ritual::Ritual(int cost, std::string name, std::string description, int charges, int activeCost) :

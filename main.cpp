@@ -39,48 +39,38 @@ void startTurn(Player &player, Player &otherPlayer, int round){
 //Make a deck from the file
 void makeDeck(string deckPath, Player &p) {
     ifstream fin{deckPath};
-    cout << "make a deck" << endl;
-    map<string, unique_ptr<Card>> cards;
-
-    //Spells
-    cards["Banish"] = make_unique<Banish>();
-    cards["Unsummon"] = make_unique<Unsummon>();
-    cards["Recharge"] = make_unique<Recharge>();
-    cards["Disenchant"] = make_unique<Disenchant>();
-    cards["Raise Dead"] = make_unique<RaiseDead>();
-    cards["Blizzard"] = make_unique<Blizzard>();
-
-    //Minions
-    cards["Air Elemental"] = make_unique<AirElemental>();
-    cards["Earth Elemental"] = make_unique<EarthElemental>();
-    cards["Boom Golem"] = make_unique<BoneGolem>();
-    cards["Fire Elemental"] = make_unique<FireElemental>();
-    cards["Potion Seller"] = make_unique<PotionSeller>();
-    cards["Novice Pyromancer"] = make_unique<NovicePyromancer>();
-    cards["Apprentice Summoner"] = make_unique<ApprenticeSummoner>();
-    cards["Master Summoner"] = make_unique<MasterSummoner>();
-
-    //Enchantments
-    cards["Giant Strength"] = make_unique<GiantStrength>();
-    cards["Enrarge"] = make_unique<Enrage>();
-    cards["Haste"] = make_unique<Haste>();
-    cards["Magic Fatigue"] = make_unique<MagicFatigue>();
-    cards["Silence"] = make_unique<Silence>();
-
-    //Ritual
-    cards["Dark Ritual"] = make_unique<DarkRitual>();
-    cards["Aura of Power"] = make_unique<AuraOfPower>();
-    cards["Standstill"] = make_unique<Standstill>();
+    string name;
 
     //loop to make a deck
-    string name;
-    int count = 0 ;
-    cout << fin.is_open() << endl;
-    cout << "making a deck..." << endl;
     while (getline(fin, name)) {
-        p.addToDeck(make_unique<DarkRitual>());
-        cout << "add 1 card to deck" << endl;
+        //Spell
+        if(name == "Banish"){ p.addToDeck(make_unique<Banish>());  cout << "Banish has been made"<< endl; }
+        else if(name == "Unsummon"){ p.addToDeck(make_unique<Unsummon>());  cout << "Unsommon has been made"<< endl;}
+        else if(name == "Recharge"){ p.addToDeck(make_unique<Recharge>());  cout << "Recharge has been made"<< endl;}
+        else if(name == "Disenchant"){ p.addToDeck(make_unique<Disenchant>());  cout << "Disenchant has been made"<< endl;}
+        else if(name == "Raise Dead"){ p.addToDeck(make_unique<RaiseDead>());   cout << "Raise Dead has been made"<< endl;}
+        else if(name == "Blizzard"){ p.addToDeck(make_unique<Blizzard>());  cout << "Blizzard has been made"<< endl;}
+        //Minions
+        else if(name == "Air Elemental"){ p.addToDeck(make_unique<AirElemental>());  cout << "Air Elemental has been made"<< endl;}
+        else if(name == "Earth Elemental"){ p.addToDeck(make_unique<EarthElemental>());  cout << "Earth Elemental has been made"<< endl;}
+        else if(name == "Bone Golem"){ p.addToDeck(make_unique<BoneGolem>()); cout << "Bone Golem has been made"<< endl;}
+        else if(name == "Fire Elemental"){ p.addToDeck(make_unique<FireElemental>()); cout << "Fire Elemental Elemental has been made"<< endl;}
+        else if(name == "Potion Seller"){ p.addToDeck(make_unique<PotionSeller>()); cout << "Potion Seller has been made"<< endl;}
+        else if(name == "Novice Pyromancer"){ p.addToDeck(make_unique<NovicePyromancer>()); cout << "Novice Pyromancer has been made"<< endl;}
+        else if(name == "Apprentice Summoner"){ p.addToDeck(make_unique<ApprenticeSummoner>()); cout << "Apprentice Summoner has been made"<< endl;}
+        else if(name == "Master Summoner"){ p.addToDeck(make_unique<MasterSummoner>()); cout << "Master Summoner has been made"<< endl;}
+        //Enchantments
+        else if(name == "Giant Strength"){ p.addToDeck(make_unique<GiantStrength>()); cout << "Giant Strength has been made"<< endl;}
+        else if(name == "Enrarge"){ p.addToDeck(make_unique<Enrage>()); cout << "Enrarge has been made"<< endl;}
+        else if(name == "Haste"){ p.addToDeck(make_unique<Haste>()); cout << "Haste has been made"<< endl;}
+        else if(name == "Magic Fatigue"){ p.addToDeck(make_unique<MagicFatigue>()); cout << "Magic Fatigue has been made"<< endl;}
+        else if(name == "Silence"){ p.addToDeck(make_unique<Silence>()); cout << "Silence has been made"<< endl;}
+        //Ritual
+        else if(name == "Dark Ritual"){ p.addToDeck(make_unique<DarkRitual>()); cout << "Dark Ritual has been made"<< endl;}
+        else if(name == "Aura of Power"){ p.addToDeck(make_unique<AuraOfPower>()); cout << "Aura of Power has been made"<< endl;}
+        else if(name == "Standstill"){ p.addToDeck(make_unique<Standstill>()); cout << "Standstill has been made"<< endl;}
     }
+    cout << endl;
 }
 
 void displayFile(const string &path) {
@@ -114,14 +104,14 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
     p1->setName(input);
     in >> input;
     p2->setName(input);
-
     //shuffle the deck from the players
     p1->shuffle();
     p2->shuffle();
 
-    //Draws 5 cards at the start of turn
+   //Draws 5 cards at the start of turn
     for(int i = 0; i < 5; i++){
         p1->drawCard();
+        cout << p1->getCard(i).getName() << endl;
         p2->drawCard();
     }
 
@@ -135,7 +125,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
         Player *other = (player == p1) ? p2 : p1;
         startTurn(*player, *other, round);
 
-        while(true) {
+        while(!quit) {
             //loop for a round of one player
             string cmd;
             if (getline(in, input)) {}
@@ -172,15 +162,16 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     player->getMyBoard()->getMinion(i).attack(*other);
                 }
             } else if (cmd == "play") {
-                cout << "play is called" << endl;
                 iss >> i;
-                Card &playedCard = player->getCard(i);
+                Card &playedCard = player->getCard(i-1);
+                cout << "play " <<  playedCard.getName() << endl;
                 if(playedCard.getCost() > player->getMagic()){
                     cout << "Do not have enough magic to play this card" << endl;
                      continue;
                 }
                 bool success = playedCard.canPlay(*player);
-
+                cout << player->getMyBoard()->numberOfMinions();
+                cout << success << endl;
 
                 //PLAYER HAS ENOUGH MAGIC TO PLAY THIS CARD
                 if(iss >> p){  // play i p t
@@ -188,7 +179,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     Player *targetPlayer = (p == 1) ? p1 : p2;
                     if(iss >> j) { // play i p t(number)
                         //uses on Enchantments, Spell(Banish, Unsommon, Dischantment)
-                        Card &targetCard = targetPlayer->getMyBoard()->getMinion(j);
+                        Card &targetCard = targetPlayer->getMyBoard()->getMinion(j-1);
                         if (success) {
                             player->moveEnchantmentToMinion(i, targetCard);
                             playedCard.effect(*player, *targetPlayer, *other, targetCard);
@@ -208,16 +199,17 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 else{ //play i
                     //play Minion, Ritual, Spell(Recharge, RaiseDead, Blizzard)
                     if(success) {//The user is able to play this card
-                        player->moveCardToBoard(i);
+                        player->moveCardToBoard(i-1);
                         playedCard.effect(*player, *other);
                         player->mutateMagic(-playedCard.getCost());//mutate magic
+                        cout << playedCard.getName() << "is successfully being played" << endl;
                     }
                 }
 
             } else if (input == "use") {
                 cout << "use ability is called" << endl;
                 iss >> i;
-                Minion &playedMinion = player->getMyBoard()->getMinion(i);
+                Minion &playedMinion = player->getMyBoard()->getMinion(i-1);
 
                 if(playedMinion.getMagic() > player->getMagic()){
                     cout << "Do not have enough magic to use the ability of this minion" << endl;
@@ -229,7 +221,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                     //for Novice Pyromancer
                     iss>>j;
                     Player *targetPlayer = (p == 1) ? p1 : p2;
-                    Minion &targetMinion = targetPlayer->getMyBoard()->getMinion(j);
+                    Minion &targetMinion = targetPlayer->getMyBoard()->getMinion(j-1);
                     if(success){
                         playedMinion.ability(*player, *other, *targetPlayer, targetMinion);
                         player->mutateMagic(-playedMinion.getMagic());//mutate magic
@@ -280,6 +272,7 @@ int main(int argc, char *argv[]) {
     //for loop to do the arguments
     for (int i = 0; i < numArgs; ++i) {
         string argument =argv[i];
+        cout << argument << " arugument got" << endl;
         if (argument == "-deck1") { //player1 uses another deck
             cout << "player1 gets deck from another file" << endl;
             deckPath1 = argv[++i];

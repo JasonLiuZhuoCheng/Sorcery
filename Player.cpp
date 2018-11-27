@@ -77,7 +77,9 @@ void Player::shuffle() { std::random_shuffle(deck.begin(), deck.end()); }
 
 void Player::drawCard() {
     if (!isHandfull() && !deck.empty()) {
-        hand.emplace_back(std::move(deck.back()));
+        unique_ptr<Card> card = std::move(deck.back());
+        deck.pop_back();
+        hand.emplace_back(std::move(card));
     }else{
         cout << "unable to draw card (either hand is full or deck is empty)" << endl;
     }
@@ -91,7 +93,7 @@ void Player::discardCard(int i) {
     hand.erase(hand.begin() + (i - 1));
 }
 
-bool Player::isHandfull() { return hand.size() < maxHand; }
+bool Player::isHandfull() { return hand.size() == maxHand; }
 
 
 

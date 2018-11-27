@@ -21,7 +21,6 @@ class Player{
 public:
     Player(int id);
     ~Player();
-
     int getID();
     Board *getMyBoard(); // returns the pointer to "myBoard", allowing operations on "myBoard"
     Card &getCard(int i); // gets the ith Card from "hand"

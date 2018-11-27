@@ -8,9 +8,10 @@
 
 
 class Board final{
-    std::vector<std::unique_ptr<Minion>> minions;
+    //std::vector<std::unique_ptr<Minion>> minions;
     std::vector<std::unique_ptr<Minion>> graveyard;
     std::unique_ptr<Ritual> ritual;
+    std::vector<std::unique_ptr<Minion>> minions;
 
 public:
     void removeFromGraveyard(); // removes the last dead minion from "graveyard", and put it on board

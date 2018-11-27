@@ -64,16 +64,19 @@ void Text::displayHand(Player &player) {
     std::vector<std::string> Empty = CARD_TEMPLATE_EMPTY;
     std::vector<card_template_t> Store;
     for (int i = 0; i < player.handSize(); i++) {
-        if (std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Minion))) {
+        if (dynamic_cast<Minion *>(&player.getCard(i))) {
             Store.emplace_back(makeMinion(dynamic_cast<Minion &>(player.getCard(i))));
-        } else if (std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Ritual))) {
-            Store.emplace_back(makeRitual(dynamic_cast<Ritual &>(player.getCard(i))));
-        } else if (std::type_index(typeid(player.getCard(i))) == std::type_index(typeid(Enchantment))) {
+                                
+        } else if (dynamic_cast<Ritual *>(&player.getCard(i))) {
+            Store.emplace_back(makeRitual(dynamic_cast<Ritual&>(player.getCard(i))));
+                                
+        } else if (dynamic_cast<Enchantment *>(&player.getCard(i))) {
             Store.emplace_back(makeEnchantment(dynamic_cast<Enchantment &>(player.getCard(i))));
+                                
         } else {
             Store.emplace_back(makeSpell(dynamic_cast<Spell &>(player.getCard(i))));
         }
-    }
+}
     if (Store.size() == 0){
         print(Empty,Empty,Empty,Empty,Empty);
     } else if (Store.size() == 1){
@@ -98,6 +101,7 @@ void Text::display(Player &p1, Player &p2) {
             p1.getMyBoard()->getRitual());
     std::vector<std::string> RitualTwo = !p2.getMyBoard()->hasRitual() ? CARD_TEMPLATE_BORDER : makeRitual(
             p1.getMyBoard()->getRitual());
+
     std::vector<std::string> GraveOne = p1.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p1.getMyBoard()->graveyardTop());
     std::vector<std::string> GraveTwo = p2.getMyBoard()->isGraveyardEmpty() ? CARD_TEMPLATE_BORDER : makeMinion(p2.getMyBoard()->graveyardTop());
     print(RitualOne,Empty,makePlayer(p1),Empty,GraveOne);
@@ -113,7 +117,7 @@ void Text::display(Player &p1, Player &p2) {
               makeMinion(p1.getMyBoard()->getMinion(2)),Empty,Empty);
     } else if (p1.getMyBoard()->numberOfMinions() == 4){
         print(makeMinion(p1.getMyBoard()->getMinion(0)),makeMinion(p1.getMyBoard()->getMinion(1))
-                ,makeMinion(p1.getMyBoard()->getMinion(2)),makeMinion(p1.getMyBoard()->getMinion(3)),Empty);
+                ,makeMinion(p1.getMyBoard()->getMinion(2)),makeMinion(p1.getMyBoard()->getMinion(4)),Empty);
     } else {
         print(makeMinion(p1.getMyBoard()->getMinion(0)),makeMinion(p1.getMyBoard()->getMinion(1)),
               makeMinion(p1.getMyBoard()->getMinion(2)),makeMinion(p1.getMyBoard()->getMinion(3)),

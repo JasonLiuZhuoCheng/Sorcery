@@ -1,5 +1,5 @@
 #include "Spell.h"
-#include "../Player.h"
+#include "Player.h"
 #include "Enchantment.h"
 #include <iostream>
 #include <typeindex>

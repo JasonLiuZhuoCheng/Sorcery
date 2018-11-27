@@ -3,7 +3,7 @@
 
 
 #include "Card.h"
-#include "../Board.h"
+#include "Board.h"
 
 // Spell is the abstract base class for all the possible kinds of spells occur in Sorcery
 

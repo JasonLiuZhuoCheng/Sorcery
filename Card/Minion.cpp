@@ -1,7 +1,7 @@
 #include <iostream>
 #include "Card.h"
 #include "Minion.h"
-#include "../Player.h"
+#include "Player.h"
 #include "Enchantment.h"
 
 
@@ -93,7 +93,7 @@ void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
     }
 }
 
-bool Minion::canPlay(Player &player){ return player.getMyBoard()->minionFull(); }
+bool Minion::canPlay(Player &player){ return !player.getMyBoard()->minionFull(); }
 
 void Minion::effect(Player &player, Player &otherPlayer) {
     player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_ENTER, *this, *this, player, otherPlayer);
@@ -106,8 +106,9 @@ void Minion::pushEnchantment(std::unique_ptr<Enchantment> e) { recordEnchantment
 //----------------------------------------Air Elemental--------------------------------------------------------
 bool Minion::canAttack() { return actionValue > 0; }
 
+//cost, name, description, att, def, actionValue, recordActionValue, magic, silence, haveAbility, haveTrigger
 AirElemental::AirElemental() :
-        Minion{1, "Air Elemental", "", 1, 1, 0, 1, 0, 0, false, false} {}
+        Minion{0, "Air Elemental", "", 1, 1, 0, 0, 0, 0, false, false} {}
 
 void AirElemental::trigger(Card::Trigger t, Player &p) {}
 void AirElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
@@ -117,8 +118,9 @@ void AirElemental::ability(Player &p) {}
 void AirElemental::ability(Player &, Player &, Player &, Minion &) {}
 
 //---------------------------------------Earth Elemental----------------------------------------------------------
+//cost, name, description, att, def, actionValue, recordActionValue, magic, silence, haveAbility, haveTrigger
 EarthElemental::EarthElemental() :
-        Minion{3, "Earth Elemental", "", 4, 4, 0, 1, 0, 0, false, false} {}
+        Minion{3, "Earth Elemental", "", 4, 4, 0, 0, 0, 0, false, false} {}
 
 void EarthElemental::trigger(Card::Trigger t, Player &p) {}
 void EarthElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
@@ -128,6 +130,7 @@ void EarthElemental::ability(Player &p) {}
 void EarthElemental::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) { }
 
 //---------------------------------------------Bone Golem-----------------------------------------
+//cost, name, description, att, def, actionValue, recordActionValue, magic, silence, haveAbility, haveTrigger
 BoneGolem::BoneGolem() :
         Minion{2, "Bone Golem", "Gain +1/+1 whenever a minion leaves play.", 1, 3, 0, 1, 0, 0, false, true} {}
 
