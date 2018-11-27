@@ -184,7 +184,6 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 bool success = playedCard.canPlay(*player) &&
                         noTargetCards.find(playedCard.getName()) != noTargetCards.end();
                 cout << player->getMyBoard()->numberOfMinions();
-                cout << success << endl;
 
                 //PLAYER HAS ENOUGH MAGIC TO PLAY THIS CARD
                 if(iss >> p){  // play i p t
@@ -220,6 +219,8 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                         cout << playedCard.getName() << "is successfully being played" << endl;
                     }
                 }
+                if(!success) cout << "Did not play this card successfully" << endl;
+                else cout << "Played this card successfully" << endl;
 
             } else if (input == "use") {
                 cout << "use ability is called" << endl;

@@ -25,7 +25,7 @@ void Ritual::effect(Player &player, Player &targetPlayer, Player &otherPlayer, C
 
 //---------------------------------------------------Dark Ritual---------------------------------------------
 DarkRitual::DarkRitual():
-    Ritual(0, "DarkRitual", "At the start of you turn, Gain 1 magic", 5, 1){}
+    Ritual(0, "Dark Ritual", "At the start of you turn, Gain 1 magic", 5, 1){}
 
 
 void DarkRitual::trigger(Card::Trigger t, Player &player) {
