@@ -222,7 +222,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 if(!success) cout << "Did not play this card successfully" << endl;
                 else cout << "Played this card successfully" << endl;
 
-            } else if (input == "use") {
+            } else if (cmd == "use") {
                 cout << "use ability is called" << endl;
                 iss >> i;
                 Minion &playedMinion = player->getMyBoard()->getMinion(i-1);
@@ -249,19 +249,19 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                         player->mutateMagic(-playedMinion.getMagic());//mutate magic
                     }
                 }
-            } else if (input == "inspect") {
-                cin >> i;
+            } else if (cmd == "inspect") {
+                iss >> i;
                //loop through to output the interface
                 for(auto &it: view){
                     cout << "inside displaying inspect" << endl;
                     it->displayMinion(player->getMyBoard()->getMinion(i-1));
                 }
-            } else if (input == "hand") {
+            } else if (cmd == "hand") {
                 //displays the hand of an active player
                 for(auto &it: view){
                     it->displayHand(*player);
                 }
-            } else if (input == "board") {
+            } else if (cmd == "board") {
                 for(auto &it: view){
                     cout << "";
                     it->display(*p1,*p2);

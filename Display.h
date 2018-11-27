@@ -36,8 +36,9 @@ class Text final: public Display{
 public:
     void displayMinion(Minion &minion) override;
     void displayHand(Player &player) override;
+    void displayPlayer(Player &player, int num);
     void display(Player &p1, Player &p2) override;
     void print(card_template_t);
-    void print(card_template_t,card_template_t,card_template_t,card_template_t,card_template_t);
+    void print(std::vector<card_template_t> &, bool);
 };
 #endif //HEARTHSTONE_DISPLAY_H
