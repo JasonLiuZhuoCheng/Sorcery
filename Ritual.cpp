@@ -19,7 +19,6 @@ int Ritual::getCharges() { return charges; }
 
 bool Ritual::canUse(){ return (activeCost <= charges); }
 bool Ritual::canPlay(Player &){
-    std::cout << "success is True" << std::endl;
     return true;
 }
 

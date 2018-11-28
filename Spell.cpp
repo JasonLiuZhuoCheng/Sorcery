@@ -32,7 +32,9 @@ void Banish::effect(Player &player, Player &targetPlayer, Player &otherPlayer, C
 //--------------------------------------------Unsommon Class----------------------------------------------
 Unsummon::Unsummon() : Spell(1, "Unsummon", "Return target minion to its owner's hand") {}
 
-bool Unsummon::canPlay(Player &player) { return !player.isHandfull(); }
+bool Unsummon::canPlay(Player &player) {
+    if(player.isHandfull()) std::cout << "Player " << player.getID() << "'s hand is full. Cannot play Unsummon" << endl;
+    return !player.isHandfull(); }
 
 void Unsummon::effect(Player &player, Player &otherPlayer) { }
 

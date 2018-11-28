@@ -17,7 +17,7 @@ private:
 
 public:
     Minion(int cost, std::string name, std::string description, int att, int def, int actionValue,
-           int recordActionValue, int magic, int silence, bool haveAbility, bool haveTrigger);
+           int recor1dActionValue, int magic, int silence, bool haveAbility, bool haveTrigger);
 
     bool canAttack();
     bool isDead();

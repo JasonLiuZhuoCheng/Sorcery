@@ -89,7 +89,7 @@ void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
         actionValue --;
     }
     else {
-        cout << this->name <<" not enough ." << endl;
+        cout << name << " action value = 0." << endl;
     }
 }
 
@@ -108,7 +108,7 @@ bool Minion::canAttack() { return actionValue > 0; }
 
 //cost, name, description, att, def, actionValue, recordActionValue, magic, silence, haveAbility, haveTrigger
 AirElemental::AirElemental() :
-        Minion{0, "Air Elemental", "", 1, 1, 0, 0, 0, 0, false, false} {}
+        Minion{0, "Air Elemental", "", 1, 1, 0, 1, 0, 0, false, false} {}
 
 void AirElemental::trigger(Card::Trigger t, Player &p) {}
 void AirElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
@@ -120,7 +120,7 @@ void AirElemental::ability(Player &, Player &, Player &, Minion &) {}
 //---------------------------------------Earth Elemental----------------------------------------------------------
 //cost, name, description, att, def, actionValue, recordActionValue, magic, silence, haveAbility, haveTrigger
 EarthElemental::EarthElemental() :
-        Minion{3, "Earth Elemental", "", 4, 4, 0, 0, 0, 0, false, false} {}
+        Minion{3, "Earth Elemental", "", 4, 4, 0, 1, 0, 0, false, false} {}
 
 void EarthElemental::trigger(Card::Trigger t, Player &p) {}
 void EarthElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
@@ -152,11 +152,13 @@ FireElemental::FireElemental() :
 
 void FireElemental::trigger(Card::Trigger t, Player &p) {}
 
-void FireElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &other) {
+void FireElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
     if (t == Card::Trigger::OTHER_MINION_ENTER){
         otherMinion.mutateDef(-1);
         if (otherMinion.getDef() <= 0) {
-            other.getMyBoard().addToGraveyard(otherMinion);
+            otherPlayer.getMyBoard().addToGraveyard(otherMinion);
+            player.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, otherMinion, player, otherPlayer);
+            otherPlayer.getMyBoard().notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, otherMinion, otherPlayer, player);
         }
     }
 }

@@ -186,10 +186,9 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 //PLAYER HAS ENOUGH MAGIC TO PLAY THIS CARD
                 if(iss >> p){  // play i p t
                     //uses on Enchantment, and Spell(Banish, Unsommon, Dischantment)
-                    success = playedCard.canPlay(*player) &&
-                            targetCards.find(playedCard.getName()) != noTargetCards.end();
-                    Player *targetPlayer = (p == 1) ? p1 : p2;
-                    if(iss >> j) { // play i p t(number), target on a Minion
+                     Player *targetPlayer = (p == 1) ? p1 : p2;
+                     success = playedCard.canPlay(*targetPlayer) &&targetCards.find(playedCard.getName()) != noTargetCards.end();
+                     if(iss >> j) { // play i p t(number), target on a Minion
                         //uses on Enchantments, Spell(Banish, Unsommon, Dischantment)
                         Card &targetCard = targetPlayer->getMyBoard().getMinion(j - 1);
                         if (success) {
@@ -198,6 +197,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                             playedCard.effect(*player, *targetPlayer, *other, targetCard);
                         }
                     } else{// play i p t(r)
+                         cout << "Play a ritual" << endl;
                         //uses on Banish
                         Card &targetRitual = targetPlayer->getMyBoard().getRitual();
                         if (success) {
