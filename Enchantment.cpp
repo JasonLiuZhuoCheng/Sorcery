@@ -54,7 +54,7 @@ void Enrage::removeEnchantment(Minion &minion) {
     }
 }
 //------------------------------------Haste-----------------------------------------------------------------
-Haste::Haste() : Enchantment(1, "Haste", "", "", "Enchanted minion gains +1 action each turn", false) {}
+Haste::Haste() : Enchantment(1, "", "", "Haste", "Enchanted minion gains +1 action each turn", false) {}
 
 void Haste::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
     auto &m = dynamic_cast<Minion &>(card);

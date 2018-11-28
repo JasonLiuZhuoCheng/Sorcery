@@ -43,7 +43,7 @@ void Text::displayMinion(Minion &minion) {
             }
             Store.emplace_back(makeEnchantment(minion.getEnchant(i)));
         }
-        if (Store.size() < 5) print(Store, false);
+        if (Store.size() <= 5) print(Store, false);
     }
 }
 
