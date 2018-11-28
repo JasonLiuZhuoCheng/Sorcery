@@ -1,11 +1,8 @@
 #include <iostream>
-#include <typeindex>
 #include "Display.h"
 #include "Enchantment.h"
 #include "Spell.h"
 #include "Player.h"
-
-using namespace std;
 
 void Graphic::display(Player &p1, Player &p2) {}
 
@@ -14,8 +11,8 @@ void Graphic::displayHand(Player &player) {}
 void Graphic::displayMinion(Minion &minion) {}
 
 void Text::print(card_template_t t1) {
-    for (int i = 0; i < t1.size(); i++) {
-        std::cout << t1.at(i) << endl;
+    for(auto &it: t1){
+        std::cout << it << endl;
     }
 }
 
@@ -25,8 +22,8 @@ void Text::print(vector<card_template_t> &vec, bool printBoard) {
     for(int i = 0; i < size; i++) {
         std::cout << border;
         string str = "";
-        for (int j = 0; j < vec.size(); j++) {
-            str += vec.at(j).at(i);
+        for(auto &it : vec){
+            str += it.at(i);
         }
         std::cout << str << border << endl;
     }
@@ -61,6 +58,7 @@ void Text::displayHand(Player &player) {
             Store.emplace_back(makeSpell(dynamic_cast<Spell &>(card)));
         }
     }
+    // Fill the rest of hand with Empty Cards
     for(int i = player.handSize(); i < maxHand; i++){
         Store.emplace_back(CARD_TEMPLATE_BORDER);
     }
@@ -74,6 +72,7 @@ void Text::displayPlayer(Player &player, int num){
     for(int i = 0; i < numOfMinions; i++){
         minions.emplace_back(makeMinion(player.getMyBoard().getMinion(i)));
     }
+    // Fill the rest of Minion Slots with Empty Cards
     for(int i = numOfMinions; i < 5; i++){
         minions.emplace_back(CARD_TEMPLATE_BORDER);
     }
@@ -97,8 +96,9 @@ void Text::displayPlayer(Player &player, int num){
 
 void Text::display(Player &p1, Player &p2) {
     // Top Border
+    const int sizeOfBoard = 165;
     std::cout << EXTERNAL_BORDER_CHAR_TOP_LEFT;
-    for(int i = 0; i < 165; i++) std::cout << EXTERNAL_BORDER_CHAR_LEFT_RIGHT;
+    for(int i = 0; i < sizeOfBoard; i++) std::cout << EXTERNAL_BORDER_CHAR_LEFT_RIGHT;
     std::cout << EXTERNAL_BORDER_CHAR_TOP_RIGHT << std::endl;
 
     std::vector<std::string> c = CENTRE_GRAPHIC;
@@ -110,7 +110,7 @@ void Text::display(Player &p1, Player &p2) {
 
     // Bottom Border
     std::cout << EXTERNAL_BORDER_CHAR_BOTTOM_LEFT;
-    for(int i = 0; i < 165; i++)  std::cout << EXTERNAL_BORDER_CHAR_LEFT_RIGHT;
+    for(int i = 0; i < sizeOfBoard; i++)  std::cout << EXTERNAL_BORDER_CHAR_LEFT_RIGHT;
     std::cout << EXTERNAL_BORDER_CHAR_BOTTOM_RIGHT << std::endl;
 }
 
@@ -161,8 +161,7 @@ card_template_t Text::makeEnchantment(Enchantment &enchantment){
        return display_enchantment(
                enchantment.getName(),
                enchantment.getCost(),
-               enchantment.getDescription()
-               );
+               enchantment.getDescription());
     }
 }
 
@@ -189,7 +188,6 @@ card_template_t Text::makePlayer(Player &player) {
             player.getID(),
             player.getName(),
             player.getLife(),
-            player.getMagic()
-            );
+            player.getMagic());
 }
 

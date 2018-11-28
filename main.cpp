@@ -1,9 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include <map>
 #include <memory>
-#include <typeindex>
 #include <unordered_set>
 
 #include "Board.h"
@@ -28,13 +26,14 @@ void endOfGame(bool quit, Player &p1, Player &p2){
 
 void startTurn(Player &player, Player &otherPlayer, int round){
     cout << "startTurn Function called" << endl;
-    // Resets all active player's minion actionValue
-      player.drawCard();
+    player.drawCard(); // Draws one card at begin of turn
 
-
+    // Resets active player's minions' actionValue
     for(int i = 0; i < player.getMyBoard().numberOfMinions(); i++){
         player.getMyBoard().getMinion(i).resetActionValue();
     }
+
+    // Resets active player's magic for the current turn
     player.setMagic((round - 1)/2 + 3);
     player.getMyBoard().notifyAll(Card::Trigger::START_OF_TURN, player);
 }
@@ -76,6 +75,7 @@ void makeDeck(string deckPath, Player &p) {
     cout << endl;
 }
 
+// Use for displaying "help.txt"
 void displayFile(const string &path) {
     ifstream fin(path);
     string s;
@@ -94,14 +94,12 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
     unordered_set<string> targetCards =
             {"Banish", "Unsummon", "Disenchant", "Giant Strength", "Enrage", "Haste", "Magic Fatigue", "Silence"};
 
-
     string input; // only use with cin for input purpose
     int i, j, p; // only use with cin for input purpose
     bool quit = false; // if the player choose to quit the game so no winner
     bool startGame = true;
     vector<unique_ptr<Display>> view;//vector for different displays
     if(graphicMode){
-        //Display graphic = new Graphic();
        unique_ptr<Display> graphic = make_unique<Graphic>();
        view.emplace_back(std::move(graphic));
     }
@@ -122,8 +120,8 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
     p1->shuffle();
     p2->shuffle();
 
-   //Draws 5 cards at the start of turn
-    for(int i = 0; i < 5; i++){
+   //Draws 5 cards at the start of game
+    for(int count = 0; count < 5; count++){
         p1->drawCard();
         p2->drawCard();
     }
@@ -137,7 +135,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
         Player *player = round % 2 ? p1 : p2; // This is the active player in current round
         Player *other = (player == p1) ? p2 : p1;
 
-        cout << "round" << round  << " Player " << player->getID() << endl;
+        cout << "Round Number: " << round  << " Active Player: " << player->getID() << endl;
         startTurn(*player, *other, round);
 
         while(!quit) {
@@ -153,40 +151,37 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
             if (cmd == "help") {
                  displayFile("help.txt");
             } else if (cmd == "end") {
-                cout << "end is called" << endl;
+                cout << "END OF TURN" << endl;
                 player->getMyBoard().notifyAll(Card::Trigger::END_OF_TURN, *player);
                 break;
             } else if (cmd == "quit") {
-                cout << "quit is called" << endl;
+                cout << "Quit is called, quitting the game..." << endl;
                 quit = true;
             } else if (cmd == "draw" && testMode) {
                 cout << "draw is called and it is in testMode" << endl;
-                player->drawCard();// 5.1.4
+                player->drawCard();
             } else if (cmd == "discard" && testMode) {
                 cout << "discard is called and it is in testMode" << endl;
-                cin >> i;  // 5.1.5
+                cin >> i;
                 player->discardCard(i);
             } else if (cmd == "attack") {
                 iss >> i;
                 cout << "attack is called" << endl;
                 if(iss >> j){
-                    Minion &myMinion = player->getMyBoard().getMinion(i-1);
-                    Minion &otherMinion = other->getMyBoard().getMinion(j-1);
-                    myMinion.attack(otherMinion, *player, *other);
+                    player->getMyBoard().getMinion(i - 1)
+                    .attack(other->getMyBoard().getMinion(j - 1), *player, *other);
                 }else{
-                    player->getMyBoard().getMinion(i-1).attack(*other);
+                    player->getMyBoard().getMinion(i - 1).attack(*other);
                 }
             } else if (cmd == "play") {
                 iss >> i;
-                Card &playedCard = player->getCard(i-1);
-                cout << "play " <<  playedCard.getName() << endl;
+                Card &playedCard = player->getCard(i - 1);
+                cout << "Played Card: " <<  playedCard.getName() << endl;
                 if(playedCard.getCost() > player->getMagic()){
                     cout << "Do not have enough magic to play this card" << endl;
-                     continue;
                 }
                 bool success = playedCard.canPlay(*player) &&
                         noTargetCards.find(playedCard.getName()) != noTargetCards.end();
-                cout << player->getMyBoard().numberOfMinions();
 
                 //PLAYER HAS ENOUGH MAGIC TO PLAY THIS CARD
                 if(iss >> p){  // play i p t
@@ -194,53 +189,48 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                             targetCards.find(playedCard.getName()) != noTargetCards.end();
                     //uses on Enchantment, and Spell(Banish, Unsommon, Dischantment)
                     Player *targetPlayer = (p == 1) ? p1 : p2;
-                    if(iss >> j) { // play i p t(number)
+                    if(iss >> j) { // play i p t(number), target on a Minion
                         //uses on Enchantments, Spell(Banish, Unsommon, Dischantment)
-                        Card &targetCard = targetPlayer->getMyBoard().getMinion(j-1);
+                        Card &targetCard = targetPlayer->getMyBoard().getMinion(j - 1);
                         if (success) {
-                            player->moveEnchantmentToMinion(i-1, targetCard);
+                            player->moveEnchantmentToMinion(i - 1, targetCard);
                             playedCard.effect(*player, *targetPlayer, *other, targetCard);
-                            player->mutateMagic(-playedCard.getCost());//mutate magic
                         }
-                    }
-                    else{// play i p t(r)
+                    } else{// play i p t(r)
                         //uses on Banish
                         Card &targetRitual = targetPlayer->getMyBoard().getRitual();
                         if (success) {
-                            player->moveEnchantmentToMinion(i, targetRitual);
+                            player->moveEnchantmentToMinion(i - 1, targetRitual);
                             playedCard.effect(*player, *targetPlayer, *other, targetRitual);
-                            player->mutateMagic(-playedCard.getCost());//mutate magic
                         }
                     }
-                }
-                else{ //play i
+                } else{ //play i
                     //play Minion, Ritual, Spell(Recharge, RaiseDead, Blizzard)
-                    if(success) {//The user is able to play this card
-                        player->moveCardToBoard(i-1);
+                    if(success) {
+                        player->moveCardToBoard(i - 1);
                         playedCard.effect(*player, *other);
-                        player->mutateMagic(-playedCard.getCost());//mutate magic
-                        cout << playedCard.getName() << "is successfully being played" << endl;
                     }
                 }
-                if(!success) cout << "Did not play this card successfully" << endl;
-                else cout << "Played this card successfully" << endl;
-
+                if(!success) {
+                    cout << "Did not play this card successfully" << endl;
+                } else {
+                    player->mutateMagic(-playedCard.getCost());
+                    cout << playedCard.getName() << " is played successfully" << endl;
+                }
             } else if (cmd == "use") {
                 cout << "use ability is called" << endl;
                 iss >> i;
-                Minion &playedMinion = player->getMyBoard().getMinion(i-1);
-
+                Minion &playedMinion = player->getMyBoard().getMinion(i - 1);
                 if(playedMinion.getMagic() > player->getMagic()){
                     cout << "Do not have enough magic to use the ability of this minion" << endl;
-                    continue;
                 }
                 bool success = playedMinion.canUseAbility(*player);
 
                 if(iss >> p){// use i p t
                     //for Novice Pyromancer
-                    iss>>j;
+                    iss >> j;
                     Player *targetPlayer = (p == 1) ? p1 : p2;
-                    Minion &targetMinion = targetPlayer->getMyBoard().getMinion(j-1);
+                    Minion &targetMinion = targetPlayer->getMyBoard().getMinion(j - 1);
                     if(success){
                         playedMinion.ability(*player, *other, *targetPlayer, targetMinion);
                         player->mutateMagic(-playedMinion.getMagic());//mutate magic
@@ -256,8 +246,8 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 iss >> i;
                //loop through to output the interface
                 for(auto &it: view){
-                    cout << "inside displaying inspect" << endl;
-                    it->displayMinion(player->getMyBoard().getMinion(i-1));
+                    cout << "Displaying inspected Minion" << endl;
+                    it->displayMinion(player->getMyBoard().getMinion(i - 1));
                 }
             } else if (cmd == "hand") {
                 //displays the hand of an active player

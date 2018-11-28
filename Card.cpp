@@ -2,14 +2,8 @@
 
 Card::Card(int cost, std::string &name, std::string &description) : cost{cost}, name{name}, description{description} {}
 
-int Card::getCost(){
-    return cost;
-}
+int Card::getCost(){ return cost; }
 
-std::string Card::getName(){
-    return name;
-}
+std::string Card::getName(){ return name; }
 
-std::string Card::getDescription() {
-    return description;
-}
+std::string Card::getDescription() { return description; }

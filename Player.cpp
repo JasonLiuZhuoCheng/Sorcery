@@ -14,11 +14,19 @@ Player::Player(int id) : id{id},life{20}, magic{3}{
     myBoard = make_unique<Board>();
 }
 
-std::string Player::getName() { return  name; }
+std::string Player::getName() { return name; }
 
-int Player::getLife() { return  life; }
+int Player::getLife() { return life; }
 
 Card & Player::getCard(int i) { return *(hand.at(i)); }
+
+int Player::getID() { return id; }
+
+Board &Player::getMyBoard() { return *myBoard; }
+
+int Player::getMagic() { return magic; }
+
+int Player::handSize() { return hand.size(); }
 
 void Player::addMinionToHand(unique_ptr<Minion> minion) {
     if(!isHandfull()){
@@ -26,11 +34,9 @@ void Player::addMinionToHand(unique_ptr<Minion> minion) {
     }
 }
 
-
 void Player::moveEnchantmentToMinion(int i, Card &ifMinion) {
-    Card *card = hand[i].release();
-    Enchantment *enchantment = nullptr;
-    if(((enchantment = dynamic_cast<Enchantment *>(card)) != nullptr) && dynamic_cast<Minion*>(&ifMinion)){
+    auto *enchantment = dynamic_cast<Enchantment *>(hand[i].release());
+    if(enchantment != nullptr && dynamic_cast<Minion*>(&ifMinion)){
         dynamic_cast<Minion&>(ifMinion).pushEnchantment(unique_ptr<Enchantment>(enchantment));
     }
     hand.erase(hand.begin() + i);
@@ -40,27 +46,21 @@ void Player::moveEnchantmentToMinion(int i, Card &ifMinion) {
  * playCard: Will only be invoked if card[i] is played successfully
  */
 void Player::moveCardToBoard(int i) {
-    // Get ith card
     Card *card = hand[i].release();
-    Minion *minion = nullptr;
-    Ritual *ritual = nullptr;
-    // Insert accordingly
-    if ((minion = dynamic_cast<Minion*>(card)) != nullptr) myBoard->addMinion(unique_ptr<Minion>(minion));
-    else if ((ritual = dynamic_cast<Ritual*>(card)) != nullptr) myBoard->setRitual(unique_ptr<Ritual>(ritual));
+    auto *minion = dynamic_cast<Minion *>(card);
+    auto *ritual = dynamic_cast<Ritual*>(card);
+
+    if (minion != nullptr) myBoard->addMinion(unique_ptr<Minion>(minion));
+    else if (ritual != nullptr) myBoard->setRitual(unique_ptr<Ritual>(ritual));
     // Remove card from hand
     hand.erase(hand.begin() + i);
 }
-int Player::getID() { return id; }
 
-Board &Player::getMyBoard() { return *myBoard; }
-int Player::getMagic() { return magic; }
-int Player::handSize() { return hand.size(); }
 void Player::mutateLife(int i) { life += i; }
+
 void Player::mutateMagic(int i) { magic += i; }
 
-void Player::addToDeck(std::unique_ptr<Card> card) {
-    deck.emplace_back(std::move(card));
-}
+void Player::addToDeck(std::unique_ptr<Card> card) { deck.emplace_back(std::move(card)); }
 
 void Player::setName(string &name) { this->name = name; }
 
@@ -72,9 +72,8 @@ void Player::shuffle() { std::random_shuffle(deck.begin(), deck.end()); }
 
 void Player::drawCard() {
     if (!isHandfull() && !deck.empty()) {
-        unique_ptr<Card> card = std::move(deck.back());
+        hand.emplace_back(std::move(deck.back()));
         deck.pop_back();
-        hand.emplace_back(std::move(card));
     }else{
         cout << "unable to draw card (either hand is full or deck is empty)" << endl;
     }
@@ -82,15 +81,10 @@ void Player::drawCard() {
 
 void Player::discardCard(int i) {
     if (i > hand.size()) {
-        cout << "Your hand is less than " << i << endl;
+        cout << "Cannot discard card, your hand is less than " << i << endl;
         return;
     }
     hand.erase(hand.begin() + (i - 1));
 }
 
 bool Player::isHandfull() { return hand.size() == maxHand; }
-
-
-
-
-

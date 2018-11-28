@@ -21,7 +21,7 @@ class Player{
 public:
     Player(int id);
     int getID();
-    Board &getMyBoard(); // returns the pointer to "myBoard", allowing operations on "myBoard"
+    Board &getMyBoard();
     Card &getCard(int i); // gets the ith Card from "hand"
     std::string getName();
     int getLife();
@@ -36,7 +36,7 @@ public:
     bool isDead();
     int handSize();
 
-    void addToDeck(std::unique_ptr<Card> card); // Adds a "card" to "deck"
+    void addToDeck(std::unique_ptr<Card> card); // Adds a "Card" to "deck"
     void moveCardToBoard(int i);
     void moveEnchantmentToMinion(int i, Card &ifMinion);
     void shuffle();

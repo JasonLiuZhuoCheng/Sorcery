@@ -33,12 +33,14 @@ class Text final: public Display{
     card_template_t makeEnchantment(Enchantment &enchantment);
     card_template_t makeSpell(Spell &spell);
     card_template_t makeRitual(Ritual &ritual);
+
+    void print(card_template_t); // prints one card
+    void print(std::vector<card_template_t> &, bool); // prints 5 cards
+    void displayPlayer(Player &player, int num);
 public:
     void displayMinion(Minion &minion) override;
     void displayHand(Player &player) override;
-    void displayPlayer(Player &player, int num);
     void display(Player &p1, Player &p2) override;
-    void print(card_template_t);
-    void print(std::vector<card_template_t> &, bool);
+
 };
 #endif //HEARTHSTONE_DISPLAY_H
