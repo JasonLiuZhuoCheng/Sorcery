@@ -2,7 +2,6 @@
 #include "Player.h"
 #include "Enchantment.h"
 #include <iostream>
-#include <typeindex>
 
 using namespace std;
 
@@ -110,7 +109,7 @@ void Blizzard::effect(Player &player, Player &otherPlayer) {
     }
 
     for(int i = 0; i < otherPlayer.getMyBoard().numberOfMinions(); ++i){
-        Minion &effectedMinion = player.getMyBoard().getMinion(i);
+        Minion &effectedMinion = otherPlayer.getMyBoard().getMinion(i);
         effectedMinion.mutateDef(-2);
         if(effectedMinion.isDead()){
             --i;
