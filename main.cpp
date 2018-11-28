@@ -13,7 +13,7 @@
 using namespace std;
 
 void endOfGame(bool quit, Player &p1, Player &p2){
-    if(quit) { cout << "the player has quitted the game" << endl; }
+    if(quit) { cout << "You have quitted the game, no player wins" << endl; }
     else if(p1.isDead()){
         //player 1 is dead and player 2 wins
         cout << "player 2 has win!" << endl;
@@ -47,7 +47,7 @@ void makeDeck(string deckPath, Player &p) {
     while (getline(fin, name)) {
         //Spell
         if(name == "Banish"){ p.addToDeck(make_unique<Banish>());  cout << "Banish has been made"<< endl; }
-        else if(name == "Unsummon"){ p.addToDeck(make_unique<Unsummon>());  cout << "Unsommon has been made"<< endl;}
+        else if(name == "Unsummon"){ p.addToDeck(make_unique<Unsummon>());  cout << "Unsummon has been made"<< endl;}
         else if(name == "Recharge"){ p.addToDeck(make_unique<Recharge>());  cout << "Recharge has been made"<< endl;}
         else if(name == "Disenchant"){ p.addToDeck(make_unique<Disenchant>());  cout << "Disenchant has been made"<< endl;}
         else if(name == "Raise Dead"){ p.addToDeck(make_unique<RaiseDead>());   cout << "Raise Dead has been made"<< endl;}
@@ -155,7 +155,6 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 player->getMyBoard().notifyAll(Card::Trigger::END_OF_TURN, *player);
                 break;
             } else if (cmd == "quit") {
-                cout << "Quit is called, quitting the game..." << endl;
                 quit = true;
             } else if (cmd == "draw" && testMode) {
                 cout << "draw is called and it is in testMode" << endl;
@@ -179,6 +178,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 cout << "Played Card: " <<  playedCard.getName() << endl;
                 if(playedCard.getCost() > player->getMagic()){
                     cout << "Do not have enough magic to play this card" << endl;
+                    continue;
                 }
                 bool success = playedCard.canPlay(*player) &&
                         noTargetCards.find(playedCard.getName()) != noTargetCards.end();
@@ -193,6 +193,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                         //uses on Enchantments, Spell(Banish, Unsommon, Dischantment)
                         Card &targetCard = targetPlayer->getMyBoard().getMinion(j - 1);
                         if (success) {
+                            cout << "successfully played " << endl;
                             player->moveEnchantmentToMinion(i - 1, targetCard);
                             playedCard.effect(*player, *targetPlayer, *other, targetCard);
                         }
@@ -223,6 +224,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 Minion &playedMinion = player->getMyBoard().getMinion(i - 1);
                 if(playedMinion.getMagic() > player->getMagic()){
                     cout << "Do not have enough magic to use the ability of this minion" << endl;
+                    continue;
                 }
                 bool success = playedMinion.canUseAbility(*player);
 

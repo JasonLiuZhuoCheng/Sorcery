@@ -32,12 +32,15 @@ void Banish::effect(Player &player, Player &targetPlayer, Player &otherPlayer, C
 //--------------------------------------------Unsommon Class----------------------------------------------
 Unsummon::Unsummon() : Spell(1, "Unsummon", "Return target minion to its owner's hand") {}
 
-bool Unsummon::canPlay(Player &player) { return player.isHandfull(); }
+bool Unsummon::canPlay(Player &player) { return !player.isHandfull(); }
 
 void Unsummon::effect(Player &player, Player &otherPlayer) { }
 
 void Unsummon::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &targetCard) {
     auto minion = dynamic_cast<Minion*>(&targetCard);
+    while(minion->hasEnchant()){
+        minion->dischant();
+    }
     int index = targetPlayer.getMyBoard().getMinion(*minion);//get the index of targetCard
     targetPlayer.addMinionToHand(std::move(targetPlayer.getMyBoard().removeMinion(index)));//added the minion to the player's hand
     if(&targetPlayer == &player){

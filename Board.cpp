@@ -20,8 +20,8 @@ Ritual &Board::getRitual() { return *ritual; };
 void Board::addMinion(std::unique_ptr<Minion> minion) { minions.emplace_back(std::move(minion)); }
 
 std::unique_ptr<Minion> Board::removeMinion(int i) {
-    std::unique_ptr<Minion> tempMinion {minions.at(i - 1).release()};
-    minions.erase(minions.begin() + (i - 1));
+    std::unique_ptr<Minion> tempMinion {minions.at(i).release()};
+    minions.erase(minions.begin() + i);
     return std::move(tempMinion);
 }
 
