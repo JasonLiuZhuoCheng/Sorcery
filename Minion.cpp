@@ -77,14 +77,14 @@ void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
         mutateDef(-(otherMinion.getAtt()));
         otherMinion.mutateDef(-att);
         if(defense <= 0){
-            player.getMyBoard()->addToGraveyard(*this);
-            player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
-            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, *this, otherPlayer, player);
+            player.getMyBoard().addToGraveyard(*this);
+            player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
+            otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, otherMinion, *this, otherPlayer, player);
         }
         if(otherMinion.getDef() <=0){
-            otherPlayer.getMyBoard()->addToGraveyard(otherMinion);
-            player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
-            otherPlayer.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, *this, player, otherPlayer);
+            otherPlayer.getMyBoard().addToGraveyard(otherMinion);
+            player.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, *this, otherMinion, player, otherPlayer);
+            otherPlayer.getMyBoard().notifyAll(Card::Trigger::MY_MINION_LEAVE, otherMinion, *this, player, otherPlayer);
         }
         actionValue --;
     }
@@ -93,11 +93,11 @@ void Minion::attack(Minion &otherMinion, Player &player, Player &otherPlayer) {
     }
 }
 
-bool Minion::canPlay(Player &player){ return !player.getMyBoard()->minionFull(); }
+bool Minion::canPlay(Player &player){ return !player.getMyBoard().minionFull(); }
 
 void Minion::effect(Player &player, Player &otherPlayer) {
-    player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_ENTER, *this, *this, player, otherPlayer);
-    otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_ENTER, *this, *this, otherPlayer, player);
+    player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_ENTER, *this, *this, player, otherPlayer);
+    otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_ENTER, *this, *this, otherPlayer, player);
 }
 void Minion::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {}
 
@@ -156,7 +156,7 @@ void FireElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Pl
     if (t == Card::Trigger::OTHER_MINION_ENTER){
         otherMinion.mutateDef(-1);
         if (otherMinion.getDef() <= 0) {
-            other.getMyBoard()->addToGraveyard(otherMinion);
+            other.getMyBoard().addToGraveyard(otherMinion);
         }
     }
 }
@@ -171,9 +171,9 @@ PotionSeller::PotionSeller() :
 
 void PotionSeller::trigger(Card::Trigger t, Player &p) {
     if (t == Card::Trigger::END_OF_TURN){
-        for (int i =0; i < p.getMyBoard()->numberOfMinions();i++){
-            p.getMyBoard()->getMinion(i).mutateAtt(0);
-            p.getMyBoard()->getMinion(i).mutateDef(1);
+        for (int i =0; i < p.getMyBoard().numberOfMinions();i++){
+            p.getMyBoard().getMinion(i).mutateAtt(0);
+            p.getMyBoard().getMinion(i).mutateDef(1);
         }
     }
 }
@@ -200,11 +200,11 @@ void NovicePyromancer::ability(Player &player, Player &otherPlayer, Player &targ
         targetMinion.mutateDef(-1);
         if(targetMinion.isDead()) {
             if (&targetPlayer == &player) {
-                player.getMyBoard()->notifyAll(Card::Trigger::MY_MINION_LEAVE, targetMinion, targetMinion, player, otherPlayer);
-                otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, targetMinion, targetMinion, otherPlayer, player);
+                player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_LEAVE, targetMinion, targetMinion, player, otherPlayer);
+                otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, targetMinion, targetMinion, otherPlayer, player);
             }else{
-                player.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, targetMinion, targetMinion, player, otherPlayer);
-                otherPlayer.getMyBoard()->notifyAll(Card::Trigger::OTHER_MINION_LEAVE, targetMinion, targetMinion, otherPlayer, player);
+                player.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, targetMinion, targetMinion, player, otherPlayer);
+                otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, targetMinion, targetMinion, otherPlayer, player);
             }
         }
 }
@@ -216,11 +216,11 @@ void ApprenticeSummoner::trigger(Card::Trigger t, Player &p) {}
 
 void ApprenticeSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool ApprenticeSummoner::canUseAbility(Player &player) { return !player.getMyBoard()->minionFull() && !this->isSilence(); }
+bool ApprenticeSummoner::canUseAbility(Player &player) { return !player.getMyBoard().minionFull() && !this->isSilence(); }
 
 void ApprenticeSummoner::ability(Player &p) {
         unique_ptr<Minion> m{new AirElemental};
-        p.getMyBoard()->addMinion(std::move(m));
+        p.getMyBoard().addMinion(std::move(m));
 }
 
 void ApprenticeSummoner::ability(Player &, Player &, Player &, Minion &) {}
@@ -232,13 +232,13 @@ void MasterSummoner::trigger(Card::Trigger t, Player &p) {}
 
 void MasterSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
-bool MasterSummoner::canUseAbility(Player &player) { return !player.getMyBoard()->minionFull() && !this->isSilence(); }
+bool MasterSummoner::canUseAbility(Player &player) { return !player.getMyBoard().minionFull() && !this->isSilence(); }
 
 void MasterSummoner::ability(Player &player) {
         for (int i = 0; i < 3; i++) {
-            if (player.getMyBoard()->minionFull()) break;
+            if (player.getMyBoard().minionFull()) break;
             unique_ptr<Minion> m{new AirElemental};
-            player.getMyBoard()->addMinion(std::move(m));
+            player.getMyBoard().addMinion(std::move(m));
         }
 }
 

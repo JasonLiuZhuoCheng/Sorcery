@@ -34,15 +34,17 @@ void Text::print(vector<card_template_t> &vec, bool printBoard) {
 
 void Text::displayMinion(Minion &minion) {
     print(makeMinion(minion));
-    std::vector<card_template_t> Store;
-    for(int i = 0; i < minion.numOfEnchant(); i++){
-        if(Store.size() == 5) {
-            print(Store, false);
-            Store.clear();
+    if(minion.hasEnchant()) {
+        std::vector<card_template_t> Store;
+        for (int i = 0; i < minion.numOfEnchant(); i++) {
+            if (Store.size() == 5) {
+                print(Store, false);
+                Store.clear();
+            }
+            Store.emplace_back(makeEnchantment(minion.getEnchant(i)));
         }
-        Store.emplace_back(makeEnchantment(minion.getEnchant(i)));
+        if (Store.size() < 5) print(Store, false);
     }
-    if(Store.size() < 5) print(Store, false);
 }
 
 void Text::displayHand(Player &player) {
@@ -68,21 +70,21 @@ void Text::displayHand(Player &player) {
 void Text::displayPlayer(Player &player, int num){
     std::vector<card_template_t> minions;
     std::vector<card_template_t> status;
-    int numOfMinions = player.getMyBoard()->numberOfMinions();
+    int numOfMinions = player.getMyBoard().numberOfMinions();
     for(int i = 0; i < numOfMinions; i++){
-        minions.emplace_back(makeMinion(player.getMyBoard()->getMinion(i)));
+        minions.emplace_back(makeMinion(player.getMyBoard().getMinion(i)));
     }
     for(int i = numOfMinions; i < 5; i++){
         minions.emplace_back(CARD_TEMPLATE_BORDER);
     }
 
-    player.getMyBoard()->hasRitual() ? status.emplace_back(makeRitual(player.getMyBoard()->getRitual()))
+    player.getMyBoard().hasRitual() ? status.emplace_back(makeRitual(player.getMyBoard().getRitual()))
     : status.emplace_back(CARD_TEMPLATE_BORDER);
     status.emplace_back(CARD_TEMPLATE_EMPTY);
     status.emplace_back(makePlayer(player));
     status.emplace_back(CARD_TEMPLATE_EMPTY);
-    player.getMyBoard()->isGraveyardEmpty() ? status.emplace_back(CARD_TEMPLATE_BORDER)
-    : status.emplace_back(makeMinion(player.getMyBoard()->graveyardTop()));
+    player.getMyBoard().isGraveyardEmpty() ? status.emplace_back(CARD_TEMPLATE_BORDER)
+    : status.emplace_back(makeMinion(player.getMyBoard().graveyardTop()));
 
     if(num == 1){
         print(status, true);

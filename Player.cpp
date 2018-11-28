@@ -11,11 +11,7 @@ using namespace std;
 
 
 Player::Player(int id) : id{id},life{20}, magic{3}{
-    myBoard = new Board();
-}
-
-Player::~Player() {
-    delete myBoard;
+    myBoard = make_unique<Board>();
 }
 
 std::string Player::getName() { return  name; }
@@ -56,7 +52,7 @@ void Player::moveCardToBoard(int i) {
 }
 int Player::getID() { return id; }
 
-Board *Player::getMyBoard() { return myBoard; }
+Board &Player::getMyBoard() { return *myBoard; }
 int Player::getMagic() { return magic; }
 int Player::handSize() { return hand.size(); }
 void Player::mutateLife(int i) { life += i; }

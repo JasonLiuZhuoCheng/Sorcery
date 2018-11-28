@@ -14,15 +14,14 @@ const int maxHand = 5;
 class Player{
     int id,life, magic;
     string name;
-    Board *myBoard;
+    unique_ptr<Board> myBoard;
     vector<unique_ptr<Card>> hand;
     vector<unique_ptr<Card>> deck;
 
 public:
     Player(int id);
-    ~Player();
     int getID();
-    Board *getMyBoard(); // returns the pointer to "myBoard", allowing operations on "myBoard"
+    Board &getMyBoard(); // returns the pointer to "myBoard", allowing operations on "myBoard"
     Card &getCard(int i); // gets the ith Card from "hand"
     std::string getName();
     int getLife();
