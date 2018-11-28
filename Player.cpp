@@ -32,8 +32,8 @@ void Player::moveEnchantmentToMinion(int i, Card &ifMinion) {
     Enchantment *enchantment = nullptr;
     if(((enchantment = dynamic_cast<Enchantment *>(card)) != nullptr) && dynamic_cast<Minion*>(&ifMinion)){
         dynamic_cast<Minion&>(ifMinion).pushEnchantment(unique_ptr<Enchantment>(enchantment));
-        hand.erase(hand.begin() + i);
     }
+    hand.erase(hand.begin() + i);
 }
 
 /*
