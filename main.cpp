@@ -63,7 +63,7 @@ void makeDeck(string deckPath, Player &p) {
         else if(name == "Master Summoner"){ p.addToDeck(make_unique<MasterSummoner>()); cout << "Master Summoner has been made"<< endl;}
         //Enchantments
         else if(name == "Giant Strength"){ p.addToDeck(make_unique<GiantStrength>()); cout << "Giant Strength has been made"<< endl;}
-        else if(name == "Enrarge"){ p.addToDeck(make_unique<Enrage>()); cout << "Enrarge has been made"<< endl;}
+        else if(name == "Enrage"){ p.addToDeck(make_unique<Enrage>()); cout << "Enrage has been made"<< endl;}
         else if(name == "Haste"){ p.addToDeck(make_unique<Haste>()); cout << "Haste has been made"<< endl;}
         else if(name == "Magic Fatigue"){ p.addToDeck(make_unique<MagicFatigue>()); cout << "Magic Fatigue has been made"<< endl;}
         else if(name == "Silence"){ p.addToDeck(make_unique<Silence>()); cout << "Silence has been made"<< endl;}
@@ -185,9 +185,9 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
 
                 //PLAYER HAS ENOUGH MAGIC TO PLAY THIS CARD
                 if(iss >> p){  // play i p t
+                    //uses on Enchantment, and Spell(Banish, Unsommon, Dischantment)
                     success = playedCard.canPlay(*player) &&
                             targetCards.find(playedCard.getName()) != noTargetCards.end();
-                    //uses on Enchantment, and Spell(Banish, Unsommon, Dischantment)
                     Player *targetPlayer = (p == 1) ? p1 : p2;
                     if(iss >> j) { // play i p t(number), target on a Minion
                         //uses on Enchantments, Spell(Banish, Unsommon, Dischantment)
@@ -275,7 +275,7 @@ int main(int argc, char *argv[]) {
     auto *p1 = new Player{1};
     auto *p2 = new Player{2};
 
-    //5.2 all the command line arguments
+    //5.2 all the command line arguments'
     int numArgs = argc - 1;
     string initPath;
     bool readFile = false;

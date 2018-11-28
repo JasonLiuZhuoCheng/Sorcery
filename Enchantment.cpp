@@ -4,6 +4,7 @@
 
 #include "Enchantment.h"
 #include "Minion.h"
+#include <iostream>
 
 Enchantment::Enchantment(int cost, std::string att, std::string def, std::string name, std::string description, bool hasAttDef)
         : Card(cost, name, description),hasAttDef{hasAttDef}, att{att}, def{def} {
@@ -71,7 +72,10 @@ MagicFatigue::MagicFatigue() : Enchantment(0, "", "", "Magic Fatigue", "Enchante
 
 void MagicFatigue::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {
     auto &m = dynamic_cast<Minion &>(card);
-    m.setMagic(m.getMagic() + 2);
+    if(m.hasAbility()){
+        m.setMagic(m.getMagic() + 2);
+    }else{ std::cout << m.getName() << " does not have ability, Magic Fatigue will only remain as an Enchantment" << std::endl; }
+
 }
 
 void MagicFatigue::removeEnchantment(Minion &minion) {
