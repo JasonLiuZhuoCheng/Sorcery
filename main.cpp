@@ -240,7 +240,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 }else{//use i
                     //for Apprentice Summoner and Master Summoner
                     if(success){
-                        playedMinion.ability(*player);
+                        playedMinion.ability(*player, *other);
                         player->mutateMagic(-playedMinion.getMagic());//mutate magic
                     }
                 }
