@@ -103,8 +103,8 @@ void Blizzard::effect(Player &player, Player &otherPlayer) {
         if(effectedMinion.isDead()){
             --i;
             player.getMyBoard().addToGraveyard(effectedMinion);
-            player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_ENTER, effectedMinion, effectedMinion, player, otherPlayer);
-            otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_ENTER, effectedMinion, effectedMinion, otherPlayer, player);
+            player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_LEAVE, effectedMinion, effectedMinion, player, otherPlayer);
+            otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, effectedMinion, effectedMinion, otherPlayer, player);
         }
     }
 
@@ -115,7 +115,7 @@ void Blizzard::effect(Player &player, Player &otherPlayer) {
             --i;
             otherPlayer.getMyBoard().addToGraveyard(effectedMinion);
             player.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, effectedMinion, effectedMinion, player, otherPlayer);
-            otherPlayer.getMyBoard().notifyAll(Card::Trigger::MY_MINION_ENTER, effectedMinion, effectedMinion, otherPlayer, player);
+            otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, effectedMinion, effectedMinion, otherPlayer, player);
         }
     }
 }
