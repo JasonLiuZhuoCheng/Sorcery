@@ -47,9 +47,9 @@ void Enrage::effect(Player &player, Player &targetPlayer, Player &otherPlayer, C
 }
 
 void Enrage::removeEnchantment(Minion &minion) {
-    minion.mutateAtt(minion.getAtt() / 2);
+    minion.mutateAtt(-minion.getAtt() / 2);
     if(minion.getDef() / 2 > 0){
-        minion.mutateDef(minion.getDef() / 2);
+        minion.mutateDef(-minion.getDef() / 2);
     }else{
         minion.mutateDef(-minion.getDef() + 1);
     }

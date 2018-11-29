@@ -21,10 +21,11 @@ public:
 
 
 class Graphic final: public Display{
+    //std::unique_ptr<XWindow> win;
 public:
     void displayMinion(Minion &minion) override;
     void displayHand(Player &player) override;
-    void display(Player &p1, Player &p2);
+    void display(Player &p1, Player &p2) override;
 };
 
 class Text final: public Display{

@@ -202,11 +202,15 @@ void NovicePyromancer::ability(Player &player, Player &otherPlayer, Player &targ
         targetMinion.mutateDef(-1);
         if(targetMinion.isDead()) {
             if (&targetPlayer == &player) {
+                // Triggers when my Minion is dead
+                player.getMyBoard().addToGraveyard(targetMinion);
                 player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_LEAVE, targetMinion, targetMinion, player, otherPlayer);
                 otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, targetMinion, targetMinion, otherPlayer, player);
             }else{
+                // Triggers when oppoenent's Minion is dead
+                otherPlayer.getMyBoard().addToGraveyard(targetMinion);
                 player.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, targetMinion, targetMinion, player, otherPlayer);
-                otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, targetMinion, targetMinion, otherPlayer, player);
+                otherPlayer.getMyBoard().notifyAll(Card::Trigger::MY_MINION_LEAVE, targetMinion, targetMinion, otherPlayer, player);
             }
         }
 }

@@ -100,8 +100,8 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
     bool startGame = true;
     vector<unique_ptr<Display>> view;//vector for different displays
     if(graphicMode){
-       unique_ptr<Display> graphic = make_unique<Graphic>();
-       view.emplace_back(std::move(graphic));
+       //unique_ptr<Display> graphic = make_unique<Graphic>();
+       //view.emplace_back(std::move(graphic));
     }
 
     //display text
