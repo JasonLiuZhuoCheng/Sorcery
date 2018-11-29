@@ -116,9 +116,12 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     p1.setName(input);
     in >> input;
     p2.setName(input);
-    //shuffle the deck from the players
-    p1.shuffle();
-    p2.shuffle();
+
+    if(!testMode) {
+        //shuffle the deck from the players, disable in -testing mode
+        p1.shuffle();
+        p2.shuffle();
+    }
 
    //Draws 5 cards at the start of game
     for(int count = 0; count < 5; count++){
@@ -161,8 +164,8 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
                 player.drawCard();
             } else if (cmd == "discard" && testMode) {
                 cout << "discard is called and it is in testMode" << endl;
-                cin >> i;
-                player.discardCard(i);
+                iss >> i;
+                player.discardCard(i - 1);
             } else if (cmd == "attack") {
                 iss >> i;
                 cout << "attack is called" << endl;
@@ -178,7 +181,12 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
                 cout << "Played Card: " <<  playedCard.getName() << endl;
                 if(playedCard.getCost() > player.getMagic()){
                     cout << "Do not have enough magic to play this card" << endl;
-                    continue;
+                    if(testMode && dynamic_cast<Spell *>(&playedCard)){
+                        cout << "Testing Mode: Still allow to play this spell" << endl;
+                        player.setMagic(playedCard.getCost());
+                    }else{
+                        continue;
+                    }
                 }
                 bool success = playedCard.canPlay(player) &&
                         noTargetCards.find(playedCard.getName()) != noTargetCards.end();
@@ -224,7 +232,12 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
                 Minion &playedMinion = player.getMyBoard().getMinion(i - 1);
                 if(playedMinion.getMagic() > player.getMagic()){
                     cout << "Do not have enough magic to use the ability of this minion" << endl;
-                    continue;
+                    if(testMode){
+                        cout << "Testing Mode: Still allow to use this abilitiy" << endl;
+                        player.setMagic(playedMinion.getMagic());
+                    }else{
+                        continue;
+                    }
                 }
                 bool success = playedMinion.canUseAbility(player);
 
@@ -288,7 +301,7 @@ int main(int argc, char *argv[]) {
 
 
     //for loop to do the arguments
-    for (int i = 0; i < numArgs; ++i) {
+    for (int i = 0; i < argc; ++i) {
         string argument =argv[i];
         cout << argument << " arugument got" << endl;
         if (argument == "-deck1") { //player1 uses another deck
