@@ -115,7 +115,7 @@ void Blizzard::effect(Player &player, Player &otherPlayer) {
             --i;
             otherPlayer.getMyBoard().addToGraveyard(effectedMinion);
             player.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, effectedMinion, effectedMinion, player, otherPlayer);
-            otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_LEAVE, effectedMinion, effectedMinion, otherPlayer, player);
+            otherPlayer.getMyBoard().notifyAll(Card::Trigger::MY_MINION_LEAVE, effectedMinion, effectedMinion, otherPlayer, player);
         }
     }
 }
