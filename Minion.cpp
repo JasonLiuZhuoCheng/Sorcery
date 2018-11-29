@@ -225,10 +225,14 @@ void ApprenticeSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinio
 bool ApprenticeSummoner::canUseAbility(Player &player) { return !player.getMyBoard().minionFull() && !this->isSilence(); }
 
 void ApprenticeSummoner::ability(Player &player, Player &otherPlayer) {
-        unique_ptr<Minion> m{new AirElemental};
-        player.getMyBoard().addMinion(std::move(m));
-        player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_ENTER, *this, *this, player, otherPlayer);
-        otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_ENTER, *this, *this, otherPlayer, player);
+        //unique_ptr<Minion> m{new AirElemental};
+        //player.getMyBoard().addMinion(std::move(m));
+        player.getMyBoard().addMinion(make_unique<AirElemental>());
+        int lastMinionIndex = player.getMyBoard().numberOfMinions() - 1;
+        player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_ENTER, player.getMyBoard().getMinion(lastMinionIndex),
+                                      player.getMyBoard().getMinion(lastMinionIndex), player, otherPlayer);
+        otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_ENTER, player.getMyBoard().getMinion(lastMinionIndex),
+                                           player.getMyBoard().getMinion(lastMinionIndex), otherPlayer, player);
 }
 
 void ApprenticeSummoner::ability(Player &, Player &, Player &, Minion &) {}
@@ -245,10 +249,15 @@ bool MasterSummoner::canUseAbility(Player &player) { return !player.getMyBoard()
 void MasterSummoner::ability(Player &player, Player &otherPlayer) {
         for (int i = 0; i < 3; i++) {
             if (player.getMyBoard().minionFull()) break;
-            unique_ptr<Minion> m{new AirElemental};
-            player.getMyBoard().addMinion(std::move(m));
-            player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_ENTER, *this, *this, player, otherPlayer);
-            otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_ENTER, *this, *this, otherPlayer, player);
+            //unique_ptr<Minion> m{new AirElemental};
+            //player.getMyBoard().addMinion(std::move(m));
+            player.getMyBoard().addMinion(make_unique<AirElemental>());
+
+            int lastMinionIndex = player.getMyBoard().numberOfMinions() - 1;
+            player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_ENTER, player.getMyBoard().getMinion(lastMinionIndex),
+                                          player.getMyBoard().getMinion(lastMinionIndex), player, otherPlayer);
+            otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_ENTER, player.getMyBoard().getMinion(lastMinionIndex),
+                                               player.getMyBoard().getMinion(lastMinionIndex), otherPlayer, player);
         }
 }
 
