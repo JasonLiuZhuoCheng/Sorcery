@@ -114,7 +114,7 @@ void AirElemental::trigger(Card::Trigger t, Player &p) {}
 void AirElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 bool AirElemental::canUseAbility(Player &) { return !this->isSilence(); }
-void AirElemental::ability(Player &p) {}
+void AirElemental::ability(Player &p, Player&) {}
 void AirElemental::ability(Player &, Player &, Player &, Minion &) {}
 
 //---------------------------------------Earth Elemental----------------------------------------------------------
@@ -126,7 +126,7 @@ void EarthElemental::trigger(Card::Trigger t, Player &p) {}
 void EarthElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 bool EarthElemental::canUseAbility(Player &) { return !this->isSilence(); }
-void EarthElemental::ability(Player &p) {}
+void EarthElemental::ability(Player &p, Player&) {}
 void EarthElemental::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) { }
 
 //---------------------------------------------Bone Golem-----------------------------------------
@@ -136,14 +136,14 @@ BoneGolem::BoneGolem() :
 
 void BoneGolem::trigger(Card::Trigger t, Player &p) {}
 void BoneGolem::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
-    if((t == Card::Trigger::MY_MINION_LEAVE) || (t == Card::Trigger::OTHER_MINION_ENTER)){
+    if ((t == Card::Trigger::MY_MINION_LEAVE) || (t == Card::Trigger::OTHER_MINION_LEAVE)) {
         mutateDef(1);
         mutateAtt(1);
     }
 }
 
 bool BoneGolem::canUseAbility(Player &) { return !this->isSilence(); }
-void BoneGolem::ability(Player &p) {}
+void BoneGolem::ability(Player &p, Player &) {}
 void BoneGolem::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) {}
 //------------------------------------------Fire Elemental-----------------------------------------------
 FireElemental::FireElemental() :
@@ -164,7 +164,7 @@ void FireElemental::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Pl
 }
 
 bool FireElemental::canUseAbility(Player &) { return !this->isSilence(); }
-void FireElemental::ability(Player &p) {}
+void FireElemental::ability(Player &p, Player &) {}
 void FireElemental::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) {}
 //---------------------------------------------Potion Seller---------------------------------------------------
 PotionSeller::PotionSeller() :
@@ -183,7 +183,7 @@ void PotionSeller::trigger(Card::Trigger t, Player &p) {
 void PotionSeller::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
 
 bool PotionSeller::canUseAbility(Player &) { return !this->isSilence(); }
-void PotionSeller::ability(Player &p) { }
+void PotionSeller::ability(Player &p, Player&) {}
 void PotionSeller::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) { }
 //--------------------------------------------Novice Pyromancer------------------------------------------------
 //cost, name, description, att, def, actionValue, recordActionValue, magic, silence, haveAbility, haveTrigger
@@ -196,7 +196,7 @@ void NovicePyromancer::trigger(Trigger t, Minion&, Minion&, Player&, Player&) {}
 
 bool NovicePyromancer::canUseAbility(Player &player){ return !this->isSilence();  }
 
-void NovicePyromancer::ability(Player &p) {}
+void NovicePyromancer::ability(Player &p, Player&) {}
 
 void NovicePyromancer::ability(Player &player, Player &otherPlayer, Player &targetPlayer, Minion &targetMinion) {
         targetMinion.mutateDef(-1);
@@ -224,9 +224,11 @@ void ApprenticeSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinio
 
 bool ApprenticeSummoner::canUseAbility(Player &player) { return !player.getMyBoard().minionFull() && !this->isSilence(); }
 
-void ApprenticeSummoner::ability(Player &p) {
+void ApprenticeSummoner::ability(Player &player, Player &otherPlayer) {
         unique_ptr<Minion> m{new AirElemental};
-        p.getMyBoard().addMinion(std::move(m));
+        player.getMyBoard().addMinion(std::move(m));
+        player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_ENTER, *this, *this, player, otherPlayer);
+        otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_ENTER, *this, *this, otherPlayer, player);
 }
 
 void ApprenticeSummoner::ability(Player &, Player &, Player &, Minion &) {}
@@ -240,11 +242,13 @@ void MasterSummoner::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, P
 
 bool MasterSummoner::canUseAbility(Player &player) { return !player.getMyBoard().minionFull() && !this->isSilence(); }
 
-void MasterSummoner::ability(Player &player) {
+void MasterSummoner::ability(Player &player, Player &otherPlayer) {
         for (int i = 0; i < 3; i++) {
             if (player.getMyBoard().minionFull()) break;
             unique_ptr<Minion> m{new AirElemental};
             player.getMyBoard().addMinion(std::move(m));
+            player.getMyBoard().notifyAll(Card::Trigger::MY_MINION_ENTER, *this, *this, player, otherPlayer);
+            otherPlayer.getMyBoard().notifyAll(Card::Trigger::OTHER_MINION_ENTER, *this, *this, otherPlayer, player);
         }
 }
 

@@ -16,11 +16,11 @@ void endOfGame(bool quit, Player &p1, Player &p2){
     if(quit) { cout << "You have quitted the game, no player wins" << endl; }
     else if(p1.isDead()){
         //player 1 is dead and player 2 wins
-        cout << "player 2 has win!" << endl;
+        cout << "player 2 has win! " << p1.getName() << "is dead!"  << endl;
     }
     else if(p2.isDead()){
         //player 2 is dead and player 1 wins
-        cout << "player 1 has win!" << endl;
+        cout << "player 1 has win! " << p2.getName() << " is dead!" << endl;
     }
 }
 
@@ -138,7 +138,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
         cout << "Round Number: " << round  << " Active Player: " << player->getID() << endl;
         startTurn(*player, *other, round);
 
-        while(!quit) {
+        while((!p1->isDead() && !p2->isDead()) && !quit) {
             //loop for a round of one player
             string cmd;
             if (getline(in, input)) {}
@@ -240,7 +240,7 @@ void playGame(istream &in, Player *p1, Player *p2, bool testMode, bool graphicMo
                 }else{//use i
                     //for Apprentice Summoner and Master Summoner
                     if(success){
-                        playedMinion.ability(*player);
+                        playedMinion.ability(*player, *other);
                         player->mutateMagic(-playedMinion.getMagic());//mutate magic
                     }
                 }
