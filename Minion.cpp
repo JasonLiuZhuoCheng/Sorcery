@@ -136,7 +136,7 @@ BoneGolem::BoneGolem() :
 
 void BoneGolem::trigger(Card::Trigger t, Player &p) {}
 void BoneGolem::trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
-    if((t == Card::Trigger::MY_MINION_LEAVE) || (t == Card::Trigger::OTHER_MINION_ENTER)){
+    if ((t == Card::Trigger::MY_MINION_LEAVE) || (t == Card::Trigger::OTHER_MINION_LEAVE)) {
         mutateDef(1);
         mutateAtt(1);
     }
