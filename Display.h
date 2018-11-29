@@ -20,6 +20,7 @@ public:
 };
 
 
+
 class Graphic final: public Display{
     //std::unique_ptr<XWindow> win;
 public:
