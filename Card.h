@@ -17,6 +17,7 @@ public:
     virtual bool canPlay( Player &player) = 0;
     virtual void effect(Player &player, Player &otherPlayer) = 0;
     virtual void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) = 0;
+    virtual ~Card() = default;
 
     int getCost();
     std::string getName();

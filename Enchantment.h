@@ -16,6 +16,7 @@ protected:
     bool hasAttDef;
 public:
     Enchantment(int cost, std::string att, std::string def, std::string name, std::string description, bool hasAttDef);
+    virtual ~Enchantment() = default;
     void effect(Player &, Player&) override;
 
     virtual void removeEnchantment(Minion &minion) = 0;

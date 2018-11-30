@@ -71,11 +71,13 @@ bool Player::isDead() { return life <= 0; }
 void Player::shuffle() { std::random_shuffle(deck.begin(), deck.end()); }
 
 void Player::drawCard() {
-    if (!isHandfull() && !deck.empty()) {
+    if(isHandfull()){
+        cout << "Your hand is full, unable to draw card" << endl;
+    }else if(deck.empty()) {
+        cout << "Your deck is empty, unable to draw card" << endl;
+    }else{
         hand.emplace_back(std::move(deck.back()));
         deck.pop_back();
-    }else{
-        cout << "unable to draw card (either hand is full or deck is empty)" << endl;
     }
 }
 

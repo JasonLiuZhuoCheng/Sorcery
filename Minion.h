@@ -18,7 +18,7 @@ private:
 public:
     Minion(int cost, std::string name, std::string description, int att, int def, int actionValue,
            int recor1dActionValue, int magic, int silence, bool haveAbility, bool haveTrigger);
-
+    virtual ~Minion() = default;
     bool canAttack();
     bool isDead();
     int getActionValue();

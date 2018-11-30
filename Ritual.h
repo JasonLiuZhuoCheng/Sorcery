@@ -11,6 +11,7 @@ protected:
 
 public:
     Ritual(int cost, std::string name, std::string description, int charges, int activeCost);
+    virtual ~Ritual()= default;
 
     void mutateCharges(int);
     bool canPlay(Player &) override;

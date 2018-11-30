@@ -10,6 +10,7 @@
 class Spell : public Card {
 public:
     Spell(int cost, std::string name, std::string description);
+    virtual ~Spell() = default;
 };
 
 class Banish final: public Spell {

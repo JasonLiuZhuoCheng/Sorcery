@@ -4,6 +4,15 @@
 #include "Spell.h"
 #include "Player.h"
 
+//-----------------------------------Graphic------------------------------------
+void Graphic::print(card_template_t){}
+void Graphic::print(std::vector<card_template_t> &, bool){
+
+}
+void Graphic::displayPlayer(Player &player, int num){
+
+}
+
 void Graphic::display(Player &p1, Player &p2) {}
 
 void Graphic::displayHand(Player &player) {}
@@ -16,6 +25,7 @@ void Text::print(card_template_t t1) {
     }
 }
 
+//----------------------------------------Text--------------------------------------
 void Text::print(vector<card_template_t> &vec, bool printBoard) {
     int size = vec.at(0).size();
     string border = printBoard ? EXTERNAL_BORDER_CHAR_UP_DOWN : "";

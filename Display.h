@@ -14,6 +14,7 @@ class Ritual;
 
 class Display{
 public:
+    virtual ~Display() = default;
     virtual void displayMinion(Minion &minion) = 0;
     virtual void displayHand(Player &player) = 0;
     virtual void display(Player &p1, Player &p2) = 0;
@@ -22,7 +23,9 @@ public:
 
 
 class Graphic final: public Display{
-    //std::unique_ptr<XWindow> win;
+    void print(card_template_t); // prints one card
+    void print(std::vector<card_template_t> &, bool); // prints 5 cards
+    void displayPlayer(Player &player, int num);
 public:
     void displayMinion(Minion &minion) override;
     void displayHand(Player &player) override;
