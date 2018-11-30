@@ -2,6 +2,7 @@
 #include <sstream>
 #include <fstream>
 #include <memory>
+#include <string>
 #include <unordered_set>
 
 #include "Board.h"
@@ -44,7 +45,7 @@ void makeDeck(string deckPath, Player &p) {
     string name;
 
     //loop to make a deck
-    while (getline(fin, name)) {
+    while (getline(fin, name, '\n')) {
         //Spell
         if(name == "Banish"){ p.addToDeck(make_unique<Banish>());  cout << "Banish has been made"<< endl; }
         else if(name == "Unsummon"){ p.addToDeck(make_unique<Unsummon>());  cout << "Unsummon has been made"<< endl;}
