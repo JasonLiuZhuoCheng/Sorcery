@@ -143,9 +143,9 @@ void Graphic::display(Player &p1, Player &p2, int round) {
     }
 }
 
-void Graphic::init(Player &p1, Player &p2) {
-    display(p1, p2, 0);
-}
+//void Graphic::init(Player &p1, Player &p2) {
+//    display(p1, p2, 0);
+//}
 
 void Graphic::draw(vector<card_template_t> &vec, int y, Xwindow &xw){
     vector<string> v = convert(vec, true);
@@ -153,6 +153,10 @@ void Graphic::draw(vector<card_template_t> &vec, int y, Xwindow &xw){
         xw.drawString(11, y, str, Xwindow::Black);
         y = y + 10;
     }
+}
+
+void Graphic::clear() {
+    win->fillRectangle(0, 0, 1050, 800, Xwindow::White);
 }
 //----------------------------------------Text--------------------------------------
 void Text::print(card_template_t t1) {
@@ -219,6 +223,8 @@ void Text::display(Player &p1, Player &p2, int round) {
     for(int i = 0; i < sizeOfBoard; i++)  std::cout << EXTERNAL_BORDER_CHAR_LEFT_RIGHT;
     std::cout << EXTERNAL_BORDER_CHAR_BOTTOM_RIGHT << std::endl;
 }
+
+void Text::clear() {}
 
 card_template_t View::makeMinion(Minion &minion){
     if(minion.hasAbility()){

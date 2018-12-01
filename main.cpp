@@ -116,9 +116,10 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     view.emplace_back(make_unique<Text>());
     //if(graphicMode){
 
-        unique_ptr<Graphic> graphic = make_unique<Graphic>(make_unique<Xwindow>(1050,800));
-        graphic->init(p1, p2);
-        view.emplace_back(std::move(graphic));
+    unique_ptr<Graphic> graphic = make_unique<Graphic>(make_unique<Xwindow>(1050,800));
+    //graphic->init(p1, p2);
+    view.emplace_back(std::move(graphic));
+
     cout << "Welcome to sorcery, type help to see the commands" << endl;
     cout << "Please indicate both players' name" << endl;
 
@@ -127,8 +128,6 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     p1.setName(input);
     in >> input;
     p2.setName(input);
-
-    //graphics->init(p1, p2);
 
     if(!testMode) {
         //shuffle the deck from the players, disable in -testing mode
@@ -144,7 +143,6 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
 
     int round = 0; //count the # of rounds the game has occur, use to track which player is active player
     while ((!p1.isDead() && !p2.isDead()) && !quit) {
-
         //Game Loop
         round++;
 
@@ -155,6 +153,8 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
         startTurn(player, other, round);
 
         while((!p1.isDead() && !p2.isDead()) && !quit) {
+            view.at(1)->clear();
+            view.at(1)->display(p1, p2, round);
             //loop for a round of one player
             string cmd;
             if (getline(in, input)) {}

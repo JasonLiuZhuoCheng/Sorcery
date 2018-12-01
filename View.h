@@ -19,6 +19,7 @@ public:
     virtual void displayMinion(Minion &minion) = 0;
     virtual void displayHand(Player &player) = 0;
     virtual void display(Player &p1, Player &p2, int round) = 0;
+    virtual void clear() = 0;
 
     card_template_t makePlayer(Player &player);
     card_template_t makeMinion(Minion &minion);
@@ -42,9 +43,10 @@ public:
     void displayMinion(Minion &minion) override;
     void displayHand(Player &player) override;
     void display(Player &p1, Player &p2, int round) override;
+    void clear() override;
 
     void draw(std::vector<card_template_t> &vec, int x, Xwindow&); // Display 5 cards on window
-    void init(Player &p1, Player &p2);
+    //void init(Player &p1, Player &p2);
     //void notify(Player &p1, Player &p2);
 };
 
@@ -58,6 +60,7 @@ public:
     void displayMinion(Minion &minion) override;
     void displayHand(Player &player) override;
     void display(Player &p1, Player &p2, int round) override;
+    void clear() override;
 
 };
-#endif //HEARTHSTONE_DISPLAY_H
+#endif //HEARTHSTONE_VIEW_H
