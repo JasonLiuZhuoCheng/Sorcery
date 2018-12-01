@@ -114,11 +114,10 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     vector<unique_ptr<View>> view;//vector for different displays
 
     view.emplace_back(make_unique<Text>());
-    //if(graphicMode){
-
-    unique_ptr<Graphic> graphic = make_unique<Graphic>(make_unique<Xwindow>(1050,800));
-    //graphic->init(p1, p2);
-    view.emplace_back(std::move(graphic));
+    if(graphicMode) {
+        unique_ptr<Graphic> graphic = make_unique<Graphic>(make_unique<Xwindow>(1050, 800));
+        view.emplace_back(std::move(graphic));
+    }
 
     cout << "Welcome to sorcery, type help to see the commands" << endl;
     cout << "Please indicate both players' name" << endl;
