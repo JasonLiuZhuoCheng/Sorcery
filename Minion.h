@@ -158,4 +158,27 @@ public:
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
+class AcidicSwamp : public Minion{
+public:
+    AcidicSwamp();
+    void trigger(Trigger t,Player&) override;
+    void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
+
+    bool canUseAbility(Player &) override;
+    void ability(Player &, Player &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+};
+
+class Wolfrider : public Minion{
+public:
+    Wolfrider();
+    void trigger(Trigger t,Player&) override;
+    void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
+
+    bool canUseAbility(Player &) override;
+    void ability(Player &, Player &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+};
+
 #endif

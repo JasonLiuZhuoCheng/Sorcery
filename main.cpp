@@ -11,7 +11,7 @@
 #include "Spell.h"
 #include "Ritual.h"
 #include "Enchantment.h"
-#include "window.h"
+//#include "window.h"
 #include "View.h"
 using namespace std;
 
@@ -84,6 +84,8 @@ void makeDeck(string deckPath, Player &p) {
         else if(name == "Dark Ritual"){ p.addToDeck(make_unique<DarkRitual>()); cout << "Dark Ritual is made" << endl;}//Dark Ritual has been made
         else if(name == "Aura of Power"){ p.addToDeck(make_unique<AuraOfPower>()); cout << "Aura of Power is made" << endl;}//Aura of Power has been made
         else if(name == "Standstill"){ p.addToDeck(make_unique<Standstill>()); cout << "Standstill is made" << endl;}//Standstill has been made
+        else if(name == "Acidic Swamp") {p.addToDeck(make_unique<AcidicSwamp>()); cout << "Acidic is made" << endl;}//Acidic Swamp has been made
+        else if(name == "Wolf Rider") {p.addToDeck(make_unique<Wolfrider>()); cout << "Wolf Rider is made" << endl;}//Wolf Rider has been made
     }
      cout << endl;
 }
@@ -102,7 +104,7 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     unordered_set<string> noTargetCards =
             {"Recharge", "Raise Dead", "Blizzard", "Air Elemental", "Earth Elemental", "Bone Golem", "Fire Elemental",
              "Potion Seller", "Novice Pyromancer", "Apprentice Summoner", "Master Summoner", "Dark Ritual",
-             "Aura Of Power", "Standstill"};
+             "Aura Of Power", "Standstill","Acidic Swamp","Wolf Rider"};
     // Use to track cards that must play on a target
     unordered_set<string> targetCards =
             {"Banish", "Unsummon", "Disenchant", "Giant Strength", "Enrage", "Haste", "Magic Fatigue", "Silence"};

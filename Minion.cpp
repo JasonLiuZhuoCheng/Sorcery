@@ -262,3 +262,35 @@ void MasterSummoner::ability(Player &player, Player &otherPlayer) {
 }
 
 void MasterSummoner::ability(Player &, Player &, Player &, Minion &) {}
+
+
+AcidicSwamp::AcidicSwamp() : Minion(2,"Acidic Swamp","Destroy opponent's Ritual",3,2,0,1,0,0,false,true){}
+
+void AcidicSwamp::trigger(Card::Trigger t, Player &p) {}
+
+void AcidicSwamp::trigger(Card::Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
+    if (t == Card::Trigger::MY_MINION_ENTER){
+        if (otherPlayer.getMyBoard().hasRitual()){
+            otherPlayer.getMyBoard().setRitual(nullptr);
+        }
+    }
+}
+
+bool AcidicSwamp::canUseAbility(Player &player) { return !this->isSilence();}
+
+void AcidicSwamp::ability(Player &, Player &) {}
+
+void AcidicSwamp::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) {}
+
+
+Wolfrider::Wolfrider() : Minion(3,"Wolf Rider","Charge",3,1,1,1,0,0,1,0){}
+
+void Wolfrider::trigger(Card::Trigger t, Player &) {}
+
+void Wolfrider::trigger(Card::Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {}
+
+bool Wolfrider::canUseAbility(Player &player) { return !this->isSilence();}
+
+void Wolfrider::ability(Player &, Player &) {}
+
+void Wolfrider::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) {}
