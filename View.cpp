@@ -1,41 +1,170 @@
 #include <iostream>
-#include "Display.h"
+#include <chrono>
+#include <thread>
+#include "View.h"
 #include "Enchantment.h"
 #include "Spell.h"
 #include "Player.h"
 
+//--------------------------------View--------------------------------
+std::vector<std::string> View::convert(vector<card_template_t> &vec, bool printBoard){
+    int size = vec.at(0).size();
+    string border = printBoard ? EXTERNAL_BORDER_CHAR_UP_DOWN : "";
+    vector<string> v;
+    for(int i = 0; i < size; i++) {
+        string str = border;
+        for (auto &it : vec) {
+            str += it.at(i);
+        }
+        str += border;
+        v.emplace_back(str);
+    }
+    return v;
+}
+
+std::vector<card_template_t> View::convertHand(Player &player) {
+    std::vector<card_template_t> Store;
+    for (int i = 0; i < player.handSize(); i++) {
+        Card &card = player.getCard(i);
+        if (dynamic_cast<Minion *>(&card)) {
+            Store.emplace_back(makeMinion(dynamic_cast<Minion &>(card)));
+        } else if (dynamic_cast<Ritual *>(&card)) {
+            Store.emplace_back(makeRitual(dynamic_cast<Ritual &>(card)));
+        } else if (dynamic_cast<Enchantment *>(&card)) {
+            Store.emplace_back(makeEnchantment(dynamic_cast<Enchantment &>(card)));
+        } else {
+            Store.emplace_back(makeSpell(dynamic_cast<Spell &>(card)));
+        }
+    }
+    // Fill the rest of hand with Empty Cards
+    for(int i = player.handSize(); i < maxHand; i++){
+        Store.emplace_back(CARD_TEMPLATE_BORDER);
+    }
+    return Store;
+}
+
+std::vector<card_template_t> View::convertMinions(Player &player) {
+    std::vector<card_template_t> minions;
+    int numOfMinions = player.getMyBoard().numberOfMinions();
+    for(int i = 0; i < numOfMinions; i++){
+        minions.emplace_back(makeMinion(player.getMyBoard().getMinion(i)));
+    }
+    // Fill the rest of Minion Slots with Empty Cards
+    for(int i = numOfMinions; i < 5; i++){
+        minions.emplace_back(CARD_TEMPLATE_BORDER);
+    }
+    return minions;
+}
+
+std::vector<card_template_t> View::convertStatus(Player &player) {
+    std::vector<card_template_t> status;
+    player.getMyBoard().hasRitual() ? status.emplace_back(makeRitual(player.getMyBoard().getRitual()))
+                                    : status.emplace_back(CARD_TEMPLATE_BORDER);
+    status.emplace_back(CARD_TEMPLATE_EMPTY);
+    status.emplace_back(makePlayer(player));
+    status.emplace_back(CARD_TEMPLATE_EMPTY);
+    player.getMyBoard().isGraveyardEmpty() ? status.emplace_back(CARD_TEMPLATE_BORDER)
+                                           : status.emplace_back(makeMinion(player.getMyBoard().graveyardTop()));
+    return status;
+}
 //-----------------------------------Graphic------------------------------------
-void Graphic::print(card_template_t){}
-void Graphic::print(std::vector<card_template_t> &, bool){
+Graphic::Graphic(std::unique_ptr<Xwindow> win):win{std::move(win)}{}
 
+void Graphic::displayMinion(Minion &minion) {
+    Xwindow xw = Xwindow{};
+    card_template_t m = makeMinion(minion);
+    int y = 10;
+    for(auto &str : m){
+        xw.drawString(10, y, str, Xwindow::Black);
+        y += 15;
+    }
+    if(minion.hasEnchant()){
+        std::vector<card_template_t> Store;
+        for(int i = 0; i < minion.numOfEnchant(); i++){
+            if(Store.size() == 5){
+                draw(Store, 0, xw);
+                Store.clear();
+            }
+            Store.emplace_back(makeEnchantment(minion.getEnchant(i)));
+        }
+        if(Store.size() <= 5) draw(Store, false, xw);
+    }
+    std::this_thread::sleep_for(15s);
 }
-void Graphic::displayPlayer(Player &player, int num){
 
+void Graphic::displayHand(Player &player) {
+    vector<card_template_t> hand = convertHand(player);
+    draw(hand, 600, *win);
 }
 
-void Graphic::display(Player &p1, Player &p2) {}
+void Graphic::displayPlayer(Player &player, int num) {
+    vector<card_template_t> minions = convertMinions(player);
+    vector<card_template_t> status = convertStatus(player);
+    if(num == 1){
+        draw(status, 20, *win);
+        draw(minions, 130, *win);
+    }else{
+        draw(minions, 340, *win);
+        draw(status, 450, *win);
+    }
+}
 
-void Graphic::displayHand(Player &player) {}
+void Graphic::display(Player &p1, Player &p2, int round) {
+    // Top Border
+    const int sizeOfBoard = 165;
+    string str = EXTERNAL_BORDER_CHAR_TOP_LEFT;
+    for(int i = 0; i < sizeOfBoard; i++) {
+        str += EXTERNAL_BORDER_CHAR_LEFT_RIGHT;
+    }
+    str += EXTERNAL_BORDER_CHAR_TOP_RIGHT;
+    win->drawString(10, 10, str, Xwindow::Black);
 
-void Graphic::displayMinion(Minion &minion) {}
+    displayPlayer(p1, 1);
 
+    int y = 240;
+    for(auto &row : CENTRE_GRAPHIC){
+        win->drawString(11, y, row, Xwindow::Black);
+        y += 10;
+    }
+    displayPlayer(p2, 2);
+
+    // Bottom Border
+    str = EXTERNAL_BORDER_CHAR_BOTTOM_LEFT;
+    for(int i = 0; i < sizeOfBoard; i++){
+        str += EXTERNAL_BORDER_CHAR_LEFT_RIGHT;
+    }
+    str += EXTERNAL_BORDER_CHAR_BOTTOM_RIGHT;
+    win->drawString(11, 560, str, Xwindow::Black);
+
+    if(round % 2){
+        displayHand(p1);
+    }else{
+        displayHand(p2);
+    }
+}
+
+void Graphic::init(Player &p1, Player &p2) {
+    display(p1, p2, 0);
+}
+
+void Graphic::draw(vector<card_template_t> &vec, int y, Xwindow &xw){
+    vector<string> v = convert(vec, true);
+    for(auto &str : v) {
+        xw.drawString(11, y, str, Xwindow::Black);
+        y = y + 10;
+    }
+}
+//----------------------------------------Text--------------------------------------
 void Text::print(card_template_t t1) {
     for(auto &it: t1){
         std::cout << it << endl;
     }
 }
 
-//----------------------------------------Text--------------------------------------
 void Text::print(vector<card_template_t> &vec, bool printBoard) {
-    int size = vec.at(0).size();
-    string border = printBoard ? EXTERNAL_BORDER_CHAR_UP_DOWN : "";
-    for(int i = 0; i < size; i++) {
-        std::cout << border;
-        string str = "";
-        for(auto &it : vec){
-            str += it.at(i);
-        }
-        std::cout << str << border << endl;
+    vector<string> v = convert(vec, printBoard);
+    for(auto &str : v) {
+        std::cout << str << endl;
     }
 }
 
@@ -55,46 +184,13 @@ void Text::displayMinion(Minion &minion) {
 }
 
 void Text::displayHand(Player &player) {
-    std::vector<card_template_t> Store;
-    for (int i = 0; i < player.handSize(); i++) {
-        Card &card = player.getCard(i);
-        if (dynamic_cast<Minion *>(&card)) {
-            Store.emplace_back(makeMinion(dynamic_cast<Minion &>(card)));
-        } else if (dynamic_cast<Ritual *>(&card)) {
-            Store.emplace_back(makeRitual(dynamic_cast<Ritual &>(card)));
-        } else if (dynamic_cast<Enchantment *>(&card)) {
-            Store.emplace_back(makeEnchantment(dynamic_cast<Enchantment &>(card)));
-        } else {
-            Store.emplace_back(makeSpell(dynamic_cast<Spell &>(card)));
-        }
-    }
-    // Fill the rest of hand with Empty Cards
-    for(int i = player.handSize(); i < maxHand; i++){
-        Store.emplace_back(CARD_TEMPLATE_BORDER);
-    }
-    print(Store, false);
+    vector<card_template_t> t = convertHand(player);
+    print(t, false);
 }
 
 void Text::displayPlayer(Player &player, int num){
-    std::vector<card_template_t> minions;
-    std::vector<card_template_t> status;
-    int numOfMinions = player.getMyBoard().numberOfMinions();
-    for(int i = 0; i < numOfMinions; i++){
-        minions.emplace_back(makeMinion(player.getMyBoard().getMinion(i)));
-    }
-    // Fill the rest of Minion Slots with Empty Cards
-    for(int i = numOfMinions; i < 5; i++){
-        minions.emplace_back(CARD_TEMPLATE_BORDER);
-    }
-
-    player.getMyBoard().hasRitual() ? status.emplace_back(makeRitual(player.getMyBoard().getRitual()))
-    : status.emplace_back(CARD_TEMPLATE_BORDER);
-    status.emplace_back(CARD_TEMPLATE_EMPTY);
-    status.emplace_back(makePlayer(player));
-    status.emplace_back(CARD_TEMPLATE_EMPTY);
-    player.getMyBoard().isGraveyardEmpty() ? status.emplace_back(CARD_TEMPLATE_BORDER)
-    : status.emplace_back(makeMinion(player.getMyBoard().graveyardTop()));
-
+    vector<card_template_t> status = convertStatus(player);
+    vector<card_template_t> minions = convertMinions(player);
     if(num == 1){
         print(status, true);
         print(minions, true);
@@ -104,7 +200,7 @@ void Text::displayPlayer(Player &player, int num){
     }
 }
 
-void Text::display(Player &p1, Player &p2) {
+void Text::display(Player &p1, Player &p2, int round) {
     // Top Border
     const int sizeOfBoard = 165;
     std::cout << EXTERNAL_BORDER_CHAR_TOP_LEFT;
@@ -124,7 +220,7 @@ void Text::display(Player &p1, Player &p2) {
     std::cout << EXTERNAL_BORDER_CHAR_BOTTOM_RIGHT << std::endl;
 }
 
-card_template_t Text::makeMinion(Minion &minion){
+card_template_t View::makeMinion(Minion &minion){
     if(minion.hasAbility()){
         // display_minion_activated_ability(std::string name,int cost,int attack, int defence,
         // int ability_cost,std::string ability_desc)
@@ -156,7 +252,7 @@ card_template_t Text::makeMinion(Minion &minion){
     }
 }
 
-card_template_t Text::makeEnchantment(Enchantment &enchantment){
+card_template_t View::makeEnchantment(Enchantment &enchantment){
     if(enchantment.hasStats()){
         //display_enchantment_attack_defence(std::string name,int cost,std::string desc,
         // std::string attack,std::string defence);
@@ -175,14 +271,14 @@ card_template_t Text::makeEnchantment(Enchantment &enchantment){
     }
 }
 
-card_template_t Text::makeSpell(Spell &spell){
+card_template_t View::makeSpell(Spell &spell){
     //display_spell(std::string name,int cost,std::string desc)
     return display_spell(
             spell.getName(),
             spell.getCost(),
             spell.getDescription());
 }
-card_template_t Text::makeRitual(Ritual &ritual){
+card_template_t View::makeRitual(Ritual &ritual){
     //display_ritual(std::string name,int cost,int ritual_cost,std::string ritual_desc,
     // int ritual_charges)
     return display_ritual(
@@ -193,7 +289,7 @@ card_template_t Text::makeRitual(Ritual &ritual){
             ritual.getCharges());
 }
 
-card_template_t Text::makePlayer(Player &player) {
+card_template_t View::makePlayer(Player &player) {
     return display_player_card(
             player.getID(),
             player.getName(),

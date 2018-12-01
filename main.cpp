@@ -11,7 +11,8 @@
 #include "Spell.h"
 #include "Ritual.h"
 #include "Enchantment.h"
-#include "Display.h"
+#include "window.h"
+#include "View.h"
 using namespace std;
 
 bool checkValidInputHand(Player &player, int i){
@@ -110,16 +111,14 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     int i, j, p; // only use with cin for input purpose
     bool quit = false; // if the player choose to quit the game so no winner
     bool startGame = true;
-    vector<unique_ptr<Display>> view;//vector for different displays
+    vector<unique_ptr<View>> view;//vector for different displays
 
-    if(graphicMode){
-       //unique_ptr<Display> graphic = make_unique<Graphic>();
-       //view.emplace_back(std::move(graphic));
-    }
-    //display text
-    unique_ptr<Display> text = make_unique<Text>();
-    view.emplace_back(std::move(text));
+    view.emplace_back(make_unique<Text>());
+    //if(graphicMode){
 
+        unique_ptr<Graphic> graphic = make_unique<Graphic>(make_unique<Xwindow>(1050,800));
+        graphic->init(p1, p2);
+        view.emplace_back(std::move(graphic));
     cout << "Welcome to sorcery, type help to see the commands" << endl;
     cout << "Please indicate both players' name" << endl;
 
@@ -128,6 +127,8 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     p1.setName(input);
     in >> input;
     p2.setName(input);
+
+    //graphics->init(p1, p2);
 
     if(!testMode) {
         //shuffle the deck from the players, disable in -testing mode
@@ -316,7 +317,7 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
             } else if (cmd == "board") {
                 for(auto &it: view){
                     cout << "";
-                    it->display(p1,p2);
+                    it->display(p1,p2, round);
                 }
             }else{
                 if(startGame){
@@ -374,3 +375,4 @@ int main(int argc, char *argv[]) {
         playGame(cin, *p1, *p2, testMode, graphicMode);
     }
 }
+
