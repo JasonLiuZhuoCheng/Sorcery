@@ -181,4 +181,16 @@ public:
     void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
 };
 
+class GnomishInventor : public Minion{
+public:
+    GnomishInventor();
+    void trigger(Trigger t,Player&) override;
+    void trigger(Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) override;
+
+    bool canUseAbility(Player &) override;
+    void ability(Player &, Player &) override;
+    void ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) override;
+
+};
+
 #endif

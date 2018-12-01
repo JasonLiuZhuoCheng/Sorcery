@@ -122,3 +122,16 @@ void Blizzard::effect(Player &player, Player &otherPlayer) {
 
 void Blizzard::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {}
 
+
+//------------------------------------------------Arcane Intellect--------------------------------------------------
+ArcaneIntellect::ArcaneIntellect(): Spell(3,"Arcane Intellect", "Draw 2 cards") {}
+
+bool ArcaneIntellect::canPlay(Player &player) {return true;}
+
+void ArcaneIntellect::effect(Player &player, Player &otherPlayer) {
+    player.drawCard();
+    player.drawCard();
+}
+
+void ArcaneIntellect::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {}
+

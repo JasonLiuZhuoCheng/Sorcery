@@ -264,6 +264,7 @@ void MasterSummoner::ability(Player &player, Player &otherPlayer) {
 void MasterSummoner::ability(Player &, Player &, Player &, Minion &) {}
 
 
+//--------------------------------------------------Acidic Swamp--------------------------------------
 AcidicSwamp::AcidicSwamp() : Minion(2,"Acidic Swamp","Destroy opponent's Ritual",3,2,0,1,0,0,false,true){}
 
 void AcidicSwamp::trigger(Card::Trigger t, Player &p) {}
@@ -283,7 +284,9 @@ void AcidicSwamp::ability(Player &, Player &) {}
 void AcidicSwamp::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) {}
 
 
-Wolfrider::Wolfrider() : Minion(3,"Wolf Rider","Charge",3,1,1,1,0,0,1,0){}
+
+//--------------------------------------------------Wolf Rider--------------------------------------
+Wolfrider::Wolfrider() : Minion(3,"Wolf Rider","Charge",3,1,1,1,0,0,true,false){}
 
 void Wolfrider::trigger(Card::Trigger t, Player &) {}
 
@@ -294,3 +297,22 @@ bool Wolfrider::canUseAbility(Player &player) { return !this->isSilence();}
 void Wolfrider::ability(Player &, Player &) {}
 
 void Wolfrider::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) {}
+
+
+//--------------------------------------------------Gnomish Inventor--------------------------------------
+GnomishInventor::GnomishInventor(): Minion{4,"Gnomish Inventor","Draw a Card",2,4,0,1,0,0,false,true} {}
+
+void GnomishInventor::trigger(Card::Trigger t, Player &player) {}
+
+void GnomishInventor::trigger(Card::Trigger t, Minion &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer) {
+    if (t == Card::Trigger::MY_MINION_ENTER){
+        player.drawCard();
+    }
+}
+
+bool GnomishInventor::canUseAbility(Player &player) {return !this->isSilence();}
+
+void GnomishInventor::ability(Player &, Player &player) {}
+
+void GnomishInventor::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) {}
+

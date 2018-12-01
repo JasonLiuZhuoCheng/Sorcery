@@ -65,6 +65,7 @@ void makeDeck(string deckPath, Player &p) {
         else if(name == "Disenchant"){ p.addToDeck(make_unique<Disenchant>());cout << "Disenchant is made" << endl; } // Disenchant has been made
         else if(name == "Raise Dead"){ p.addToDeck(make_unique<RaiseDead>()); cout << "Raise Dead is made" << endl;} // Raise Dead has been made
         else if(name == "Blizzard"){ p.addToDeck(make_unique<Blizzard>()); cout << "Blizzard is made" << endl;}// Blizzard has been made
+        else if(name == "Arcane Intellect") {p.addToDeck(make_unique<ArcaneIntellect>()); cout << "Arcane Intellect is made" << endl;}//Arcane Intellect has been made
         //Minions
         else if(name == "Air Elemental"){ p.addToDeck(make_unique<AirElemental>()); cout << "Air Elemental is made" << endl;}// Air Elemental has been made
         else if(name == "Earth Elemental"){ p.addToDeck(make_unique<EarthElemental>()); cout << "Earth Elemental is made" << endl;}// Earth Elemental has been made
@@ -86,6 +87,7 @@ void makeDeck(string deckPath, Player &p) {
         else if(name == "Standstill"){ p.addToDeck(make_unique<Standstill>()); cout << "Standstill is made" << endl;}//Standstill has been made
         else if(name == "Acidic Swamp") {p.addToDeck(make_unique<AcidicSwamp>()); cout << "Acidic is made" << endl;}//Acidic Swamp has been made
         else if(name == "Wolf Rider") {p.addToDeck(make_unique<Wolfrider>()); cout << "Wolf Rider is made" << endl;}//Wolf Rider has been made
+        else if(name == "Gnomish Inventor") {p.addToDeck(make_unique<GnomishInventor>()); cout << "Gnomish Inventor is made" << endl;} //Gnomish Inventor has been made
     }
      cout << endl;
 }
@@ -104,7 +106,7 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     unordered_set<string> noTargetCards =
             {"Recharge", "Raise Dead", "Blizzard", "Air Elemental", "Earth Elemental", "Bone Golem", "Fire Elemental",
              "Potion Seller", "Novice Pyromancer", "Apprentice Summoner", "Master Summoner", "Dark Ritual",
-             "Aura Of Power", "Standstill","Acidic Swamp","Wolf Rider"};
+             "Aura Of Power", "Standstill","Acidic Swamp","Wolf Rider","Gnomish Inventor","Arcane Intellect"};
     // Use to track cards that must play on a target
     unordered_set<string> targetCards =
             {"Banish", "Unsummon", "Disenchant", "Giant Strength", "Enrage", "Haste", "Magic Fatigue", "Silence"};
@@ -117,8 +119,8 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
 
     view.emplace_back(make_unique<Text>());
     if(graphicMode) {
-        unique_ptr<Graphic> graphic = make_unique<Graphic>(make_unique<Xwindow>(1050, 800));
-        view.emplace_back(std::move(graphic));
+        //unique_ptr<Graphic> graphic = make_unique<Graphic>(make_unique<Xwindow>(1050, 800));
+        //view.emplace_back(std::move(graphic));
     }
 
     cout << "Welcome to sorcery, type help to see the commands" << endl;

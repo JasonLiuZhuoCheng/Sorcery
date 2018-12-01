@@ -67,4 +67,13 @@ public:
     void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
 };
 
+
+class ArcaneIntellect final : public Spell{
+public:
+    ArcaneIntellect();
+    bool canPlay(Player &player) override;
+    void effect(Player &player, Player &otherPlayer) override;
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
+};
+
 #endif
