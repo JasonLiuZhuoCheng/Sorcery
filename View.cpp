@@ -7,6 +7,84 @@
 #include "Player.h"
 
 //--------------------------------View--------------------------------
+card_template_t View::makeMinion(Minion &minion){
+    if(minion.hasAbility()){
+        // display_minion_activated_ability(std::string name,int cost,int attack, int defence,
+        // int ability_cost,std::string ability_desc)
+        return display_minion_activated_ability(
+                minion.getName(),
+                minion.getCost(),
+                minion.getAtt(),
+                minion.getDef(),
+                minion.getMagic(),
+                minion.getDescription());
+    }
+    else if(minion.hasTrigger()){
+        //display_minion_triggered_ability(std::string name,int cost,int attack,int defence,
+        // std::string trigger_desc)
+        return display_minion_triggered_ability(
+                minion.getName(),
+                minion.getCost(),
+                minion.getAtt(),
+                minion.getDef(),
+                minion.getDescription());
+    }
+    else{
+        // display_minion_no_ability(std::string name,int cost,int attack,int defence);
+        return display_minion_no_ability(
+                minion.getName(),
+                minion.getCost(),
+                minion.getAtt(),
+                minion.getDef());
+    }
+}
+
+card_template_t View::makeEnchantment(Enchantment &enchantment){
+    if(enchantment.hasStats()){
+        //display_enchantment_attack_defence(std::string name,int cost,std::string desc,
+        // std::string attack,std::string defence);
+        return display_enchantment_attack_defence(
+                enchantment.getName(),
+                enchantment.getCost(),
+                enchantment.getDescription(),
+                enchantment.getAtt(),
+                enchantment.getDef());
+    }else{
+        // display_enchantment(std::string name,int cost,std::string desc);
+        return display_enchantment(
+                enchantment.getName(),
+                enchantment.getCost(),
+                enchantment.getDescription());
+    }
+}
+
+card_template_t View::makeSpell(Spell &spell){
+    //display_spell(std::string name,int cost,std::string desc)
+    return display_spell(
+            spell.getName(),
+            spell.getCost(),
+            spell.getDescription());
+}
+
+card_template_t View::makeRitual(Ritual &ritual){
+    //display_ritual(std::string name,int cost,int ritual_cost,std::string ritual_desc,
+    // int ritual_charges)
+    return display_ritual(
+            ritual.getName(),
+            ritual.getCost(),
+            ritual.getActiveCost(),
+            ritual.getDescription(),
+            ritual.getCharges());
+}
+
+card_template_t View::makePlayer(Player &player) {
+    return display_player_card(
+            player.getID(),
+            player.getName(),
+            player.getLife(),
+            player.getMagic());
+}
+
 std::vector<std::string> View::convert(vector<card_template_t> &vec, bool printBoard){
     int size = vec.at(0).size();
     string border = printBoard ? EXTERNAL_BORDER_CHAR_UP_DOWN : "";
@@ -67,45 +145,65 @@ std::vector<card_template_t> View::convertStatus(Player &player) {
                                            : status.emplace_back(makeMinion(player.getMyBoard().graveyardTop()));
     return status;
 }
+
+std::vector<card_template_t> View::convertEnchantment(Minion &minion) {
+    std::vector<card_template_t> Store;
+    if(minion.hasEnchant()){
+        for(int i = 0; i < minion.numOfEnchant(); i++){
+            Store.emplace_back(makeEnchantment(minion.getEnchant(i)));
+        }
+    }
+    return Store;
+}
 //-----------------------------------Graphic------------------------------------
 Graphic::Graphic(std::unique_ptr<Xwindow> win):win{std::move(win)}{}
 
+void Graphic::draw(vector<card_template_t> &vec, int y, Xwindow &xw, bool printBoard){
+    vector<string> v = convert(vec, printBoard);
+    for(auto &str : v) {
+        xw.drawString(11, y, str, Xwindow::Black);
+        y = y + 10;
+    }
+}
+
 void Graphic::displayMinion(Minion &minion) {
-    Xwindow xw = Xwindow{};
+    Xwindow xw = Xwindow{1050, 800};
     card_template_t m = makeMinion(minion);
     int y = 10;
     for(auto &str : m){
-        xw.drawString(10, y, str, Xwindow::Black);
-        y += 15;
+        xw.drawString(11, y, str, Xwindow::Black);
+        y += 10;
     }
+
     if(minion.hasEnchant()){
         std::vector<card_template_t> Store;
         for(int i = 0; i < minion.numOfEnchant(); i++){
             if(Store.size() == 5){
-                draw(Store, 0, xw);
+                draw(Store, y, xw, false);
+                y += 110;
                 Store.clear();
             }
             Store.emplace_back(makeEnchantment(minion.getEnchant(i)));
         }
-        if(Store.size() <= 5) draw(Store, false, xw);
+        if(Store.size() <= 5) draw(Store, y, xw, false);
     }
     std::this_thread::sleep_for(15s);
 }
 
 void Graphic::displayHand(Player &player) {
     vector<card_template_t> hand = convertHand(player);
-    draw(hand, 600, *win);
+    draw(hand, 600, *win, false);
 }
 
 void Graphic::displayPlayer(Player &player, int num) {
     vector<card_template_t> minions = convertMinions(player);
     vector<card_template_t> status = convertStatus(player);
     if(num == 1){
-        draw(status, 20, *win);
-        draw(minions, 130, *win);
+        draw(status, 20, *win, true);
+        draw(minions, 130, *win, true);
     }else{
-        draw(minions, 340, *win);
-        draw(status, 450, *win);
+        draw(minions, 340, *win, true);
+        draw(status, 450, *win, true);
     }
 }
 
@@ -143,21 +241,7 @@ void Graphic::display(Player &p1, Player &p2, int round) {
     }
 }
 
-//void Graphic::init(Player &p1, Player &p2) {
-//    display(p1, p2, 0);
-//}
-
-void Graphic::draw(vector<card_template_t> &vec, int y, Xwindow &xw){
-    vector<string> v = convert(vec, true);
-    for(auto &str : v) {
-        xw.drawString(11, y, str, Xwindow::Black);
-        y = y + 10;
-    }
-}
-
-void Graphic::clear() {
-    win->fillRectangle(0, 0, 1050, 800, Xwindow::White);
-}
+void Graphic::clear() { win->fillRectangle(0, 0, 1050, 800, Xwindow::White); }
 //----------------------------------------Text--------------------------------------
 void Text::print(card_template_t t1) {
     for(auto &it: t1){
@@ -225,81 +309,4 @@ void Text::display(Player &p1, Player &p2, int round) {
 }
 
 void Text::clear() {}
-
-card_template_t View::makeMinion(Minion &minion){
-    if(minion.hasAbility()){
-        // display_minion_activated_ability(std::string name,int cost,int attack, int defence,
-        // int ability_cost,std::string ability_desc)
-        return display_minion_activated_ability(
-                minion.getName(),
-                minion.getCost(),
-                minion.getAtt(),
-                minion.getDef(),
-                minion.getMagic(),
-                minion.getDescription());
-    }
-    else if(minion.hasTrigger()){
-        //display_minion_triggered_ability(std::string name,int cost,int attack,int defence,
-        // std::string trigger_desc)
-        return display_minion_triggered_ability(
-                minion.getName(),
-                minion.getCost(),
-                minion.getAtt(),
-                minion.getDef(),
-                minion.getDescription());
-    }
-    else{
-       // display_minion_no_ability(std::string name,int cost,int attack,int defence);
-        return display_minion_no_ability(
-                minion.getName(),
-                minion.getCost(),
-                minion.getAtt(),
-                minion.getDef());
-    }
-}
-
-card_template_t View::makeEnchantment(Enchantment &enchantment){
-    if(enchantment.hasStats()){
-        //display_enchantment_attack_defence(std::string name,int cost,std::string desc,
-        // std::string attack,std::string defence);
-        return display_enchantment_attack_defence(
-                enchantment.getName(),
-                enchantment.getCost(),
-                enchantment.getDescription(),
-                enchantment.getAtt(),
-                enchantment.getDef());
-    }else{
-       // display_enchantment(std::string name,int cost,std::string desc);
-       return display_enchantment(
-               enchantment.getName(),
-               enchantment.getCost(),
-               enchantment.getDescription());
-    }
-}
-
-card_template_t View::makeSpell(Spell &spell){
-    //display_spell(std::string name,int cost,std::string desc)
-    return display_spell(
-            spell.getName(),
-            spell.getCost(),
-            spell.getDescription());
-}
-card_template_t View::makeRitual(Ritual &ritual){
-    //display_ritual(std::string name,int cost,int ritual_cost,std::string ritual_desc,
-    // int ritual_charges)
-    return display_ritual(
-            ritual.getName(),
-            ritual.getCost(),
-            ritual.getActiveCost(),
-            ritual.getDescription(),
-            ritual.getCharges());
-}
-
-card_template_t View::makePlayer(Player &player) {
-    return display_player_card(
-            player.getID(),
-            player.getName(),
-            player.getLife(),
-            player.getMagic());
-}
 

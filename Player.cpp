@@ -76,8 +76,8 @@ void Player::drawCard() {
     }else if(deck.empty()) {
         cout << "Your deck is empty, unable to draw card" << endl;
     }else{
-        hand.emplace_back(std::move(deck.back()));
-        deck.pop_back();
+        hand.emplace_back(std::move(deck.at(0)));
+        deck.erase(deck.begin());
     }
 }
 
@@ -86,7 +86,7 @@ void Player::discardCard(int i) {
         cout << "Cannot discard card, your hand is less than " << i << endl;
         return;
     }
-    hand.erase(hand.begin() + (i - 1));
+    hand.erase(hand.begin() + i);
 }
 
 bool Player::isHandfull() { return hand.size() == maxHand; }

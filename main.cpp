@@ -153,8 +153,10 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
         startTurn(player, other, round);
 
         while((!p1.isDead() && !p2.isDead()) && !quit) {
-            view.at(1)->clear();
-            view.at(1)->display(p1, p2, round);
+            if(graphicMode) {
+                view.at(1)->clear();
+                view.at(1)->display(p1, p2, round);
+            }
             //loop for a round of one player
             string cmd;
             if (getline(in, input)) {}
