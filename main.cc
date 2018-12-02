@@ -101,7 +101,7 @@ void displayFile(const string &path) {
     }
 }
 
-void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMode) {
+void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMode, bool featureMode) {
     // Use to track cards that can play without a target
     unordered_set<string> noTargetCards =
             {"Recharge", "Raise Dead", "Blizzard", "Air Elemental", "Earth Elemental", "Bone Golem", "Fire Elemental",
@@ -154,6 +154,10 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
 
         cout << "Round Number: " << round  << " Active Player: " << player.getName() << endl;
         startTurn(player, other, round);
+
+        if(featureMode&& (player.getMagic()>10){
+                player.setMagic(10);
+        }
 
         while((!p1.isDead() && !p2.isDead()) && !quit) {
             if(graphicMode) {
@@ -379,9 +383,9 @@ int main(int argc, char *argv[]) {
 
     ifstream f{initPath};
     if (readFile) {
-        playGame(f, *p1, *p2, testMode, graphicMode);
+        playGame(f, *p1, *p2, testMode, graphicMode, featureMode);
     } else {
-        playGame(cin, *p1, *p2, testMode, graphicMode);
+        playGame(cin, *p1, *p2, testMode, graphicMode, featureMode);
     }
 }
 
