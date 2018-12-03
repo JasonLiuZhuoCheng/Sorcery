@@ -103,6 +103,7 @@ void HunterMark::effect(Player &player, Player &targetPlayer, Player &otherPlaye
     m.mutateDef(-m.getDef()+1);
 }
 
+
 void HunterMark::removeEnchantment(Minion &minion) {
     minion.mutateDef(this->recordDef - 1);
 }
