@@ -316,3 +316,4 @@ void GnomishInventor::ability(Player &, Player &player) {}
 
 void GnomishInventor::ability(Player &player, Player &other, Player &targetPlayer, Minion &targetminion) {}
 
+

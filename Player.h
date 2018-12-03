@@ -15,7 +15,6 @@ class Player{
     int id,life, magic;
     string name;
     unique_ptr<Board> myBoard;
-    vector<unique_ptr<Card>> hand;
     vector<unique_ptr<Card>> deck;
 
 public:
@@ -43,7 +42,10 @@ public:
     void drawCard(); // player draws a card from "deck", given "hand" is not full and "deck" is not empty
     void addMinionToHand(unique_ptr<Minion> minion); //Adds a minion to the player's "hand"
     void discardCard(int); // discards ith card in a player's "hand"
+    vector<unique_ptr<Card>> hand;
+
 };
 
 #endif
+
 

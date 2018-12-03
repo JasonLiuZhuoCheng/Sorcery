@@ -35,8 +35,9 @@ void Player::addMinionToHand(unique_ptr<Minion> minion) {
 }
 
 void Player::moveEnchantmentToMinion(int i, Card &ifMinion) {
-    auto *enchantment = dynamic_cast<Enchantment *>(hand[i].release());
-    if(enchantment != nullptr && dynamic_cast<Minion*>(&ifMinion)){
+    auto enchantment = dynamic_cast<Enchantment *>(hand[i].get());
+    if(enchantment != nullptr && dynamic_cast<Minion*>(&ifMinion)) {
+        hand[i].release();
         dynamic_cast<Minion&>(ifMinion).pushEnchantment(unique_ptr<Enchantment>(enchantment));
     }
     hand.erase(hand.begin() + i);
@@ -90,3 +91,4 @@ void Player::discardCard(int i) {
 }
 
 bool Player::isHandfull() { return hand.size() == maxHand; }
+
