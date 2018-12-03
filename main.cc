@@ -56,8 +56,6 @@ void makeDeck(string deckPath, Player &p, bool featureMode) {
 
     //loop to make a deck
     while (getline(fin, name, '\n')) {
-
-        cout << name << endl;
         //Spell
         if(name == "Banish"){ p.addToDeck(make_unique<Banish>()); cout << "Banish is made" << endl; }  //Banish has been made
         else if(name == "Unsummon"){ p.addToDeck(make_unique<Unsummon>());  cout << "Unsummon is made" << endl; } // Unsummon has been made
@@ -118,11 +116,7 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     bool startGame = true;
     vector<unique_ptr<View>> view;//vector for different displays
 
-    view.emplace_back(make_unique<Text>());
-    if(graphicMode) {
-        //unique_ptr<Graphic> graphic = make_unique<Graphic>(make_unique<Xwindow>(1050, 800));
-        //view.emplace_back(std::move(graphic));
-    }
+
 
     cout << "Welcome to sorcery, type help to see the commands" << endl;
     cout << "Please indicate both players' name" << endl;
@@ -143,6 +137,12 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     for(int count = 0; count < 5; count++){
         p1.drawCard();
         p2.drawCard();
+    }
+
+    view.emplace_back(make_unique<Text>());
+    if(graphicMode) {
+        unique_ptr<Graphic> graphic = make_unique<Graphic>(make_unique<Xwindow>(1050, 800));
+        view.emplace_back(std::move(graphic));
     }
 
     int round = 0; //count the # of rounds the game has occur, use to track which player is active player

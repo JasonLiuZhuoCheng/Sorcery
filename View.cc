@@ -187,7 +187,7 @@ void Graphic::displayMinion(Minion &minion) {
         }
         if(Store.size() <= 5) draw(Store, y, xw, false);
     }
-    std::this_thread::sleep_for(15s);
+    std::this_thread::sleep_for(8s);
 }
 
 void Graphic::displayHand(Player &player) {
