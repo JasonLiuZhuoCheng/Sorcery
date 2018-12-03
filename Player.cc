@@ -93,3 +93,4 @@ void Player::discardCard(int i) {
 }
 
 bool Player::isHandfull() { return hand.size() == maxHand; }
+

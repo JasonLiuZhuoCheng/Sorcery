@@ -114,6 +114,7 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
     int i, j, p; // only use with cin for input purpose
     bool quit = false; // if the player choose to quit the game so no winner
     bool startGame = true;
+    bool ctrD = false;
     vector<unique_ptr<View>> view;//vector for different displays
 
 
@@ -169,7 +170,10 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
             string cmd;
             if (getline(in, input)) {}
             else if(&in != &cin && getline(cin, input)) {}
-            else { break; }
+            else {
+                ctrD = true;
+                break;
+            }
 
             istringstream iss(input);
             iss>>cmd;
@@ -243,31 +247,38 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
                         }
                         Card &targetCard = targetPlayer.getMyBoard().getMinion(j - 1);
                         if (success) {
-                            player.moveEnchantmentToMinion(i - 1, targetCard);
                             playedCard.effect(player, targetPlayer, other, targetCard);
+                            player.mutateMagic(-playedCard.getCost());
+                            cout << "Played Card: " <<  playedCard.getName() << endl;
+                            player.moveEnchantmentToMinion(i - 1, targetCard);
                         }
                     } else{// play i p t(r)
                          cout << "Play a ritual" << endl;
                         //uses on Banish
                         Card &targetRitual = targetPlayer.getMyBoard().getRitual();
                         if (success) {
-                            player.moveEnchantmentToMinion(i - 1, targetRitual);
                             playedCard.effect(player, targetPlayer, other, targetRitual);
+                            player.mutateMagic(-playedCard.getCost());
+                            cout << "Played Card: " <<  playedCard.getName() << endl;
+                            player.moveEnchantmentToMinion(i - 1, targetRitual);
                         }
                     }
                 } else{ //play i
                     //play Minion, Ritual, Spell(Recharge, RaiseDead, Blizzard)
                     if(success) {
-                        player.moveCardToBoard(i - 1);
                         playedCard.effect(player, other);
+                        player.mutateMagic(-playedCard.getCost());
+                        cout << "Played Card: " <<  playedCard.getName() << endl;
+                        player.moveCardToBoard(i - 1);
                     }
                 }
                 if(!success) {
                     cout << "Did not play this card successfully" << endl;
-                } else {
-                    player.mutateMagic(-playedCard.getCost());
-                    cout << "Played Card: " <<  playedCard.getName() << endl;
                 }
+//                else {
+//                    player.mutateMagic(-playedCard.getCost());
+//                    cout << "Played Card: " <<  playedCard.getName() << endl;
+//                }
             } else if (cmd == "use") {
                 cout << "use ability is called" << endl;
                 iss >> i;
@@ -337,6 +348,9 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
                 }
             }
         }
+        if(ctrD){
+            break;
+        }
     }
     endOfGame(quit, p1, p2);
 }
@@ -389,4 +403,5 @@ int main(int argc, char *argv[]) {
         playGame(cin, *p1, *p2, testMode, graphicMode, featureMode);
     }
 }
+
 
