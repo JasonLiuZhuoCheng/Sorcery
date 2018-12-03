@@ -49,12 +49,13 @@ void Player::moveEnchantmentToMinion(int i, Card &ifMinion) {
  * playCard: Will only be invoked if card[i] is played successfully
  */
 void Player::moveCardToBoard(int i) {
-    Card *card = hand[i].release();
+    auto *card = hand[i].release();
     auto *minion = dynamic_cast<Minion *>(card);
     auto *ritual = dynamic_cast<Ritual*>(card);
 
     if (minion != nullptr) myBoard->addMinion(unique_ptr<Minion>(minion));
     else if (ritual != nullptr) myBoard->setRitual(unique_ptr<Ritual>(ritual));
+    else garbage.emplace_back(unique_ptr<Card>(card));
     // Remove card from hand
     hand.erase(hand.begin() + i);
 }
