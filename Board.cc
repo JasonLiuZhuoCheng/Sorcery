@@ -60,4 +60,3 @@ void Board::notifyAll(Card::Trigger t, Minion  &myMinion, Minion &otherMinion, P
     }
     if(hasRitual()) getRitual().trigger(t, myMinion, otherMinion, player, otherPlayer);
 }
-

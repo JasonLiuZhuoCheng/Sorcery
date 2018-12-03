@@ -463,4 +463,3 @@ static void prepare_for_replace(card_template_t &text) {
     }
   }
 }
-

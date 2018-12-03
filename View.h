@@ -67,4 +67,3 @@ public:
     void clear() override;
 };
 #endif
-

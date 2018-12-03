@@ -33,4 +33,3 @@ public:
     void notifyAll(Card::Trigger t, Minion  &myMinion, Minion &otherMinion, Player &player, Player &otherPlayer); // Trigger for Minions
 };
 #endif
-

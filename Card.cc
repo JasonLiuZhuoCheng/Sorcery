@@ -6,7 +6,4 @@ int Card::getCost(){ return cost; }
 
 std::string Card::getName(){ return name; }
 
-
 std::string Card::getDescription() { return description; }
-
-

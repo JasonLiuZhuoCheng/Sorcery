@@ -135,4 +135,3 @@ void ArcaneIntellect::effect(Player &player, Player &otherPlayer) {
 
 void ArcaneIntellect::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) {}
 
-

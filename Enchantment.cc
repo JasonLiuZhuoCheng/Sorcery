@@ -108,4 +108,3 @@ void HunterMark::removeEnchantment(Minion &minion) {
     minion.mutateDef(this->recordDef - 1);
 }
 
-

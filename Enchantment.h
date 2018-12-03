@@ -70,4 +70,3 @@ public:
 };
 
 #endif //HEARTHSTONE_ENCHANTMENT_H
-
