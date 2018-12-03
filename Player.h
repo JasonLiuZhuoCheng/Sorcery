@@ -17,6 +17,7 @@ class Player{
     unique_ptr<Board> myBoard;
     vector<unique_ptr<Card>> hand;
     vector<unique_ptr<Card>> deck;
+    vector<unique_ptr<Card>> garbage;
 
 public:
     Player(int id);

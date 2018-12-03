@@ -35,9 +35,12 @@ void Player::addMinionToHand(unique_ptr<Minion> minion) {
 }
 
 void Player::moveEnchantmentToMinion(int i, Card &ifMinion) {
-    auto *enchantment = dynamic_cast<Enchantment *>(hand[i].release());
+    auto *card = hand[i].release();
+    auto *enchantment = dynamic_cast<Enchantment *>(card);
     if(enchantment != nullptr && dynamic_cast<Minion*>(&ifMinion)){
         dynamic_cast<Minion&>(ifMinion).pushEnchantment(unique_ptr<Enchantment>(enchantment));
+    }else{
+        garbage.emplace_back(unique_ptr<Card>(card));
     }
     hand.erase(hand.begin() + i);
 }
