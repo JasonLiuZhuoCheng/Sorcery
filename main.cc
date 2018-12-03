@@ -238,7 +238,7 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
                      if(iss >> j) { // play i p t(number), target on a Minion
                         //uses on Enchantments, Spell(Banish, Unsommon, Dischantment)
                         if(!checkValidInputMinion(targetPlayer, j)) {
-                            cout << "ERROR: Other player's Minion" << j << " DOES NOT EXIT, CANNOT BE PLAYED ON" << endl;
+                            cout << "ERROR: Target player's Minion" << j << " DOES NOT EXIT, CANNOT BE PLAYED ON" << endl;
                             continue;
                         }
                         Card &targetCard = targetPlayer.getMyBoard().getMinion(j - 1);
@@ -247,7 +247,7 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
                             playedCard.effect(player, targetPlayer, other, targetCard);
                         }
                     } else{// play i p t(r)
-                         cout << "Play a ritual" << endl;
+                         cout << "This Spell is played on a ritual" << endl;
                         //uses on Banish
                         Card &targetRitual = targetPlayer.getMyBoard().getRitual();
                         if (success) {

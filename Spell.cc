@@ -39,6 +39,7 @@ void Unsummon::effect(Player &player, Player &otherPlayer) { }
 
 void Unsummon::effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &targetCard) {
     auto minion = dynamic_cast<Minion*>(&targetCard);
+    minion->setActionValue(0);
     while(minion->hasEnchant()){
         minion->dischant();
     }

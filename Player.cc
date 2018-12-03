@@ -86,7 +86,7 @@ void Player::drawCard() {
 }
 
 void Player::discardCard(int i) {
-    if (i > hand.size()) {
+    if (i >= hand.size()) {
         cout << "Cannot discard card, your hand is less than " << i << endl;
         return;
     }
