@@ -11,7 +11,7 @@
 #include "Spell.h"
 #include "Ritual.h"
 #include "Enchantment.h"
-//#include "window.h"
+#include "window.h"
 #include "View.h"
 using namespace std;
 
@@ -81,6 +81,7 @@ void makeDeck(string deckPath, Player &p, bool featureMode) {
         else if(name == "Haste"){ p.addToDeck(make_unique<Haste>()); cout << "Haste is made" << endl;}//Haste has been made
         else if(name == "Magic Fatigue"){ p.addToDeck(make_unique<MagicFatigue>()); cout << "Magic Fatigue is made" << endl;}//Magic Fatigue has been made
         else if(name == "Silence"){ p.addToDeck(make_unique<Silence>()); cout << "Silence is made" << endl;}//Silence has been made
+        else if(name == "Hunter's Mark" && featureMode){p.addToDeck(make_unique<HunterMark>()); cout << "Hunter's Mark is made" << endl;}//Hunter's mark is made
         //Ritual
         else if(name == "Dark Ritual"){ p.addToDeck(make_unique<DarkRitual>()); cout << "Dark Ritual is made" << endl;}//Dark Ritual has been made
         else if(name == "Aura of Power"){ p.addToDeck(make_unique<AuraOfPower>()); cout << "Aura of Power is made" << endl;}//Aura of Power has been made
@@ -109,7 +110,7 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
              "Aura Of Power", "Standstill","Acidic Swamp","Wolf Rider","Gnomish Inventor","Arcane Intellect"};
     // Use to track cards that must play on a target
     unordered_set<string> targetCards =
-            {"Banish", "Unsummon", "Disenchant", "Giant Strength", "Enrage", "Haste", "Magic Fatigue", "Silence"};
+            {"Banish", "Unsummon", "Disenchant", "Giant Strength", "Enrage", "Haste", "Magic Fatigue", "Silence","Hunter's Mark"};
 
     string input; // only use with cin for input purpose
     int i, j, p; // only use with cin for input purpose
@@ -155,7 +156,7 @@ void playGame(istream &in, Player &p1, Player &p2, bool testMode, bool graphicMo
         cout << "Round Number: " << round  << " Active Player: " << player.getName() << endl;
         startTurn(player, other, round);
 
-        if(featureMode&& (player.getMagic()>10){
+        if(featureMode&& (player.getMagic()>10)){
                 player.setMagic(10);
         }
 

@@ -14,6 +14,7 @@ class Enchantment : public Card {
 protected:
     std::string att, def;
     bool hasAttDef;
+    int recordDef;
 public:
     Enchantment(int cost, std::string att, std::string def, std::string name, std::string description, bool hasAttDef);
     virtual ~Enchantment() = default;
@@ -57,6 +58,13 @@ public:
 class Silence final : public Enchantment {
 public:
     Silence();
+    void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
+    void removeEnchantment(Minion &minion) override;
+};
+
+class HunterMark final : public Enchantment{
+public:
+    HunterMark();
     void effect(Player &player, Player &targetPlayer, Player &otherPlayer, Card &card) override;
     void removeEnchantment(Minion &minion) override;
 };
